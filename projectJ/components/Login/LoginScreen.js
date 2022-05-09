@@ -4,7 +4,7 @@ import * as Animatable from 'react-native-animatable';
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import Feather from "react-native-vector-icons/Feather";
 
-const LoginScreen = () => {
+const LoginScreen = ({navigation}) => {
 
     const [data, setData] = React.useState({
         email: "",
@@ -127,7 +127,8 @@ const LoginScreen = () => {
                         </TouchableOpacity>
 
                         <Text>You don't have an Account ? Sign up now</Text>
-                        <TouchableOpacity style={styles.reg}>
+                        <TouchableOpacity style={styles.reg}
+                            onPress={() => navigation.navigate("SignUp")}>
                             <Text style={{fontWeight: "bold"}}>Sign up</Text>
 
                         </TouchableOpacity>
@@ -164,7 +165,8 @@ const styles = StyleSheet.create({
     footer:{
         flex:1,
         backgroundColor: "#fff",
-        paddingBottom: 150,
+        //paddingBottom: 150,
+        paddingBottom: 220,
         //paddingHorizontal: 30
         width: "100%",
         borderTopLeftRadius: 30,
@@ -209,7 +211,8 @@ const styles = StyleSheet.create({
         paddingVertical: 8,
         borderRadius: 10,
         justifyContent: "center",
-        marginTop: 9,
+        //marginTop: 9
+        marginTop: 30,
         borderColor: "black",
         borderWidth: 1,
         marginBottom: 15

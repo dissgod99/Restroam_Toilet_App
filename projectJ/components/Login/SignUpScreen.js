@@ -205,7 +205,7 @@ const styles = StyleSheet.create({
     footer:{
         flex:1,
         backgroundColor: "#fff",
-        paddingBottom: 150,
+        paddingBottom: 180,
         //paddingHorizontal: 30
         width: "100%",
         borderTopLeftRadius: 30,
@@ -213,12 +213,14 @@ const styles = StyleSheet.create({
         //alignItems: "center"
     },
     logo:{
-        width: 180,
-        height: 180
+        // width: 180,
+        // height: 180
+        width: 140,
+        height: 140
 
     },
     headerMoto:{
-        fontSize: 20,
+        fontSize: 17,
         fontWeight: "bold"
     },
     alignBox:{
@@ -268,7 +270,7 @@ const styles = StyleSheet.create({
         paddingVertical: 8,
         borderRadius: 10,
         justifyContent: "center",
-        marginTop: 9,
+        marginTop: 35,
         borderColor: "black",
         borderWidth: 1
 

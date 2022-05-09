@@ -1,9 +1,10 @@
 import React from "react";
 import {View, Text, Button, StyleSheet, Dimensions, TouchableOpacity, Image} from "react-native";
 import * as Animatable from 'react-native-animatable';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
-
-const SplashScreen = () => {
+const SplashScreen = ({navigation}) => {
     return (
         <View style={styles.container}>
             <View style={styles.header}>
@@ -17,7 +18,7 @@ const SplashScreen = () => {
                 <Text style={styles.title}>Welcome to RestRoam</Text>
                 <Text style={styles.text}>Locate all the toilet facilities around you in a quick glance!</Text>
                 <View style={styles.adjustBtn}>
-                    <TouchableOpacity style={styles.getStarted} onPress={() => console.log("Hello")}>
+                    <TouchableOpacity style={styles.getStarted} onPress={() => navigation.navigate("Login")}>
                         <Text>Get started </Text>
                     </TouchableOpacity>
                 </View>
@@ -84,8 +85,10 @@ const styles = StyleSheet.create({
 
     },
     logo:{
-        height: 280,
-        width: 300
+        // height: 280,
+        // width: 300
+        height: 180,
+        width: 180
 
     },
     moto:{
