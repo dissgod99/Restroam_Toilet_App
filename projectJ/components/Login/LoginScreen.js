@@ -3,8 +3,6 @@ import {View, Text, Button, StyleSheet, Platform, Image, TextInput, TouchableOpa
 import * as Animatable from 'react-native-animatable';
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import Feather from "react-native-vector-icons/Feather";
-//import LinearGradient from 'react-native-linear-gradient';
-//import MaterialIcons from "react-native-vector-icons/MaterialIcons";
 
 const LoginScreen = () => {
 
@@ -14,7 +12,7 @@ const LoginScreen = () => {
         check_textInputChange: false,
         secureTextEntry: true
     });
-
+    
     const textInputChange = (value) =>{
         if(value.length != 0){
             setData({
@@ -58,7 +56,11 @@ const LoginScreen = () => {
         <View style={styles.container}>
         
             <View style={styles.header}>
-                <Image style={styles.logo} source={require("../../assets/finder.png")}/>
+            <Animatable.Image   style={styles.logo} 
+                                    source={require("../../assets/finder.png")} 
+                                    animation="pulse" 
+                                    easing="ease-out" 
+                                    iterationCount="infinite"/>
                 <Text style={styles.headerMoto}>Login right now</Text>
             </View>
 
