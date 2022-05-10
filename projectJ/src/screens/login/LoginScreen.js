@@ -1,10 +1,10 @@
 import React from "react";
-import {View, Text, Button, StyleSheet, Platform, Image, TextInput, TouchableOpacity} from "react-native";
+import { View, Text, Button, StyleSheet, Platform, Image, TextInput, TouchableOpacity } from "react-native";
 import * as Animatable from 'react-native-animatable';
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import Feather from "react-native-vector-icons/Feather";
 
-const LoginScreen = ({navigation}) => {
+const LoginScreen = ({ navigation }) => {
 
     const [data, setData] = React.useState({
         email: "",
@@ -12,16 +12,23 @@ const LoginScreen = ({navigation}) => {
         check_textInputChange: false,
         secureTextEntry: true
     });
-    
-    const textInputChange = (value) =>{
-        if(value.length != 0){
+
+    const handleLoginClick = () => {
+        // do some backend logic here
+
+        // once that is finished navigate to next route
+        navigation.navigate('Home');
+    }
+
+    const textInputChange = (value) => {
+        if (value.length != 0) {
             setData({
                 ...data,
                 email: value,
                 check_textInputChange: true
 
             });
-        }else{
+        } else {
             setData({
                 ...data,
                 email: value,
@@ -32,7 +39,7 @@ const LoginScreen = ({navigation}) => {
 
     };
 
-    const handleEye = () =>{
+    const handleEye = () => {
         setData({
             ...data,
             secureTextEntry: !data.secureTextEntry
@@ -52,15 +59,15 @@ const LoginScreen = ({navigation}) => {
 
 
     return (
-        
+
         <View style={styles.container}>
-        
+
             <View style={styles.header}>
-            <Animatable.Image   style={styles.logo} 
-                                    source={require("../../assets/finder.png")} 
-                                    animation="pulse" 
-                                    easing="ease-out" 
-                                    iterationCount="infinite"/>
+                <Animatable.Image style={styles.logo}
+                    source={require("../../../assets/finder.png")}
+                    animation="pulse"
+                    easing="ease-out"
+                    iterationCount="infinite" />
                 <Text style={styles.headerMoto}>Login right now</Text>
             </View>
 
@@ -69,76 +76,64 @@ const LoginScreen = ({navigation}) => {
                 <View style={styles.box}>
                     <Text style={styles.entry}> Email Address</Text>
                     <View style={styles.alignBox}>
-                            <FontAwesome name="envelope" size={23}/>
-                            <TextInput style={styles.enterInputField}
-                                placeholder="Enter your Email"
-                                autoCapitalize="none"
-                                onChangeText={(value) => textInputChange(value)}
-                            />
-                            {data.check_textInputChange ?
+                        <FontAwesome name="envelope" size={23} />
+                        <TextInput style={styles.enterInputField}
+                            placeholder="Enter your Email"
+                            autoCapitalize="none"
+                            onChangeText={(value) => textInputChange(value)}
+                        />
+                        {data.check_textInputChange ?
                             <Animatable.View animation="bounceIn">
-                            
-                            <Feather 
-                            name="check-circle"
-                            color={"green"}
-                            size={20}/>
+
+                                <Feather
+                                    name="check-circle"
+                                    color={"green"}
+                                    size={20} />
                             </Animatable.View>
-                            :null}
+                            : null}
 
                     </View>
-
-
                 </View>
-
                 <View style={styles.box}>
                     <Text style={styles.entry}> Password</Text>
                     <View style={styles.alignBox}>
-                            <FontAwesome name="lock" size={23}/>
-                            <TextInput style={styles.enterInputField}
-                                placeholder="Enter your Password"
-                                autoCapitalize="none"
-                                secureTextEntry={data.secureTextEntry? true: false}
-                                onChangeText={(value) => handlePassword(value)}
-                            />
-                            <TouchableOpacity
-                                onPress={handleEye}
-                            >
-                            {data.secureTextEntry ? 
-                            <Feather 
-                            name="eye-off"
-                            color={"grey"}
-                            size={20}/>
-                            :
-                            <Feather 
-                            name="eye"
-                            color={"grey"}
-                            size={20}/>
-                            
+                        <FontAwesome name="lock" size={23} />
+                        <TextInput style={styles.enterInputField}
+                            placeholder="Enter your Password"
+                            autoCapitalize="none"
+                            secureTextEntry={data.secureTextEntry ? true : false}
+                            onChangeText={(value) => handlePassword(value)}
+                        />
+                        <TouchableOpacity
+                            onPress={handleEye}
+                        >
+                            {data.secureTextEntry ?
+                                <Feather
+                                    name="eye-off"
+                                    color={"grey"}
+                                    size={20} />
+                                :
+                                <Feather
+                                    name="eye"
+                                    color={"grey"}
+                                    size={20} />
+
 
                             }
-                            </TouchableOpacity>
+                        </TouchableOpacity>
                     </View>
                 </View>
-
                 <View style={styles.buttons}>
-                        <TouchableOpacity style={styles.login}>
-                            <Text style={{fontWeight: "bold"}}>Login</Text>
+                    <TouchableOpacity style={styles.login} onPress={ handleLoginClick } >
+                        <Text style={{ fontWeight: "bold" }}>Login</Text>
+                    </TouchableOpacity>
+                    <Text>You don't have an Account ? Sign up now</Text>
+                    <TouchableOpacity style={styles.reg}
+                        onPress={() => navigation.navigate("SignUp")}>
+                        <Text style={{ fontWeight: "bold" }}>Sign up</Text>
 
-                        </TouchableOpacity>
-
-                        <Text>You don't have an Account ? Sign up now</Text>
-                        <TouchableOpacity style={styles.reg}
-                            onPress={() => navigation.navigate("SignUp")}>
-                            <Text style={{fontWeight: "bold"}}>Sign up</Text>
-
-                        </TouchableOpacity>
-
-
-
+                    </TouchableOpacity>
                 </View>
-
-
-
             </Animatable.View>
         </View>
     )
@@ -148,22 +143,22 @@ export default LoginScreen;
 
 const styles = StyleSheet.create({
     container: {
-      flex: 1,
-      //backgroundColor: '#ddbea9',
-      //backgroundColor: "#6b9080",
-      //backgroundColor: "#f88b89",
-      //backgroundColor: "#ffacaa",
-      backgroundColor: "#f28d82",
-      alignItems: 'center',
-      justifyContent: 'center',
+        flex: 1,
+        //backgroundColor: '#ddbea9',
+        //backgroundColor: "#6b9080",
+        //backgroundColor: "#f88b89",
+        //backgroundColor: "#ffacaa",
+        backgroundColor: "#f28d82",
+        alignItems: 'center',
+        justifyContent: 'center',
     },
-    header:{
+    header: {
         flex: 2,
         justifyContent: "center",
         alignItems: "center"
     },
-    footer:{
-        flex:1,
+    footer: {
+        flex: 1,
         backgroundColor: "#fff",
         //paddingBottom: 150,
         paddingBottom: 220,
@@ -173,36 +168,36 @@ const styles = StyleSheet.create({
         borderTopRightRadius: 30,
         //alignItems: "center"
     },
-    logo:{
+    logo: {
         width: 180,
         height: 180
 
     },
-    headerMoto:{
+    headerMoto: {
         fontSize: 20,
         fontWeight: "bold"
     },
-    alignBox:{
+    alignBox: {
         flexDirection: "row",
         marginVertical: 12,
-        
+
     },
-    box:{
+    box: {
         marginLeft: 25,
         marginTop: 32
     },
-    enterInputField:{
+    enterInputField: {
         marginLeft: 20,
         width: "70%"
     },
-    check:{
-        
+    check: {
+
     },
-    entry:{
+    entry: {
         fontSize: 15,
         fontWeight: "bold"
     },
-    login:{
+    login: {
         //backgroundColor: "#f9dcc4",
         backgroundColor: "#fae8e0",
         width: "80%",
@@ -218,11 +213,11 @@ const styles = StyleSheet.create({
         marginBottom: 15
 
     },
-    buttons:{
+    buttons: {
         justifyContent: "center",
         alignItems: "center"
     },
-    reg:{
+    reg: {
         //backgroundColor: "#f9dcc4",
         width: "80%",
         //justifyContent: "center",
@@ -235,7 +230,7 @@ const styles = StyleSheet.create({
         borderWidth: 1
 
     }
-  });
-  
+});
+
 
 
