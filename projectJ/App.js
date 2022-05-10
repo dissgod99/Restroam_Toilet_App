@@ -2,6 +2,13 @@ import React from 'react';
 import {View, Text, StyleSheet,TouchableOpacity} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
+const switchSite = (site) => {
+
+}
+const logout = () => {
+  
+}
+
 const App = () => {
   return(
     <View style={styles.view}>
@@ -20,24 +27,26 @@ const App = () => {
         <Text style={styles.data}>
           Toilets reviewed: 111 
         </Text>
-        <Text style={styles.logoutbtn}>
-        <Icon name="logout" size={30} color="#900" />
-          Logout
-        </Text>
+        
+        <Icon name="logout" size={35} color="#900" onPress={()=> logout()}>
+          <Text style={styles.logoutbtn}>
+            Logout
+          </Text>
+        </Icon>
       </View>
-      <TouchableOpacity>
+      <TouchableOpacity onPress={switchSite('ownedtoilets')}>
         <Text style={styles.menu}>
         <Icon name="toilet" size={35} color='black' />
           Owned Toilets 
         </Text>
       </TouchableOpacity>
-      <TouchableOpacity>
+      <TouchableOpacity onPress={switchSite('reviews')}>
         <Text style={styles.menu}>
         <Icon name="account-star-outline" size={35} color="black" />
           Reviews 
         </Text>
       </TouchableOpacity>
-      <TouchableOpacity>
+      <TouchableOpacity onPress={switchSite('reports')}>
         <Text style={styles.menu}>
         <Icon name="notebook-outline" size={35} color="black" />
           Reports 
@@ -50,6 +59,7 @@ const App = () => {
 const styles = StyleSheet.create({
   view:{
     flexDirection:'column',
+    backgroundColor: '#f28d82',
   },
   person:{
     margin:30,
@@ -69,9 +79,11 @@ const styles = StyleSheet.create({
   logoutbtn:{
     textAlign:'center',
     color:'#900',
+    fontSize:20,
+    justifyContent:'center',
   },
   menu:{
-
+    backgroundColor: '#fae8e0', 
     borderWidth:1,
     fontSize:25,
     padding:20,
