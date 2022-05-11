@@ -1,5 +1,11 @@
 import React from 'react';
 import {View, Text, StyleSheet,TouchableOpacity} from 'react-native';
+import { NavigationContainer, NavigationHelpersContext } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import OwnedToiletsScreen from './components/profile/OwnedToiletsScreen';
+import ReviewsScreen from './components/profile/ReviewsScreen';
+import ReportsScreen from './components/profile/ReportsScreen';
+
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const switchSite = (site) => {
@@ -9,7 +15,9 @@ const logout = () => {
   
 }
 
-const App = () => {
+const Stack = createNativeStackNavigator();
+
+const App = ({navigation}) => {
   return(
     <View style={styles.view}>
       <View style={styles.person}>
@@ -34,7 +42,47 @@ const App = () => {
           </Text>
         </Icon>
       </View>
-      <TouchableOpacity onPress={switchSite('ownedtoilets')}>
+
+      <NavigationContainer>
+        <Stack.Navigator>
+
+          <Stack.Screen
+            name='Owned Toilets'
+            component={OwnedToiletsScreen}
+          />
+          <Stack.Screen
+            name='Reviews'
+            component={ReviewsScreen}
+          />
+          <Stack.Screen
+            name='Reports'
+            component={ReportsScreen}
+          />
+
+        </Stack.Navigator>
+      </NavigationContainer>
+
+
+      {/* <TouchableOpacity onPress={switchSite('ownedtoilets')}>
+        <Text style={styles.menu}>
+        <Icon name="toilet" size={35} color='black' />
+          Owned Toilets 
+        </Text>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={switchSite('reviews')}>
+        <Text style={styles.menu}>
+        <Icon name="account-star-outline" size={35} color="black" />
+          Reviews 
+        </Text>
+      </TouchableOpacity>
+      <TouchableOpacity onPress={switchSite('reports')}>
+        <Text style={styles.menu}>
+        <Icon name="notebook-outline" size={35} color="black" />
+          Reports 
+        </Text>
+      </TouchableOpacity> */}
+
+      <TouchableOpacity onPress={() => navigate("Owned Toilets")}>
         <Text style={styles.menu}>
         <Icon name="toilet" size={35} color='black' />
           Owned Toilets 
@@ -52,6 +100,9 @@ const App = () => {
           Reports 
         </Text>
       </TouchableOpacity>
+
+
+
     </View>
 
   );
