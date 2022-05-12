@@ -12,7 +12,7 @@ const logout = () => {
 
 const Profile = ({navigation}) => {
   return(
-    <View style={styles.view}>
+    <View style={styles.container}>
       <View style={styles.person}>
         <Text style={styles.name}>
           Max Mustermann  
@@ -28,12 +28,13 @@ const Profile = ({navigation}) => {
         <Text style={styles.data}>
           Toilets reviewed: 111 
         </Text>
-        
-        <Icon name="logout" size={35} color="#900" onPress={()=> logout()}>
+        <TouchableOpacity onPress={logout()}>
+        <Icon name="logout" size={35} color="#900">
           <Text style={styles.logoutbtn}>
             Logout
           </Text>
         </Icon>
+        </TouchableOpacity>
       </View>
 
     
@@ -58,25 +59,6 @@ const Profile = ({navigation}) => {
         </Text>
       </TouchableOpacity> 
 
- {/*  <TouchableOpacity onPress={() => navigate("Owned Toilets")}>
-        <Text style={styles.menu}>
-        <Icon name="toilet" size={35} color='black' />
-          Owned Toilets 
-        </Text>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={switchSite('reviews')}>
-        <Text style={styles.menu}>
-        <Icon name="account-star-outline" size={35} color="black" />
-          Reviews 
-        </Text>
-      </TouchableOpacity>
-      <TouchableOpacity onPress={switchSite('reports')}>
-        <Text style={styles.menu}>
-        <Icon name="notebook-outline" size={35} color="black" />
-          Reports 
-        </Text>
-    </TouchableOpacity>*/}
-
 
 
     </View>
@@ -84,9 +66,9 @@ const Profile = ({navigation}) => {
   );
 };
 const styles = StyleSheet.create({
-  view:{
+  container:{
+    flex:1,
     flexDirection:'column',
-    backgroundColor: '#f28d82',
   },
   person:{
     margin:30,
