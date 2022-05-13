@@ -56,6 +56,8 @@ export default function App() {
     //      />
     //   </Stack.Navigator>
     // </NavigationContainer>
+
+
     <NavigationContainer>
       <Stack.Navigator initialRouteName='Rating'>
         <Stack.Screen 

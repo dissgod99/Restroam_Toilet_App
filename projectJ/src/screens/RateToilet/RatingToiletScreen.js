@@ -29,7 +29,7 @@ const RatingToiletScreen = ({ navigation }) => {
         navigation.navigate("ThankYou");
     }
     // Average of all ratings
-    const total = ((starCount1 + starCount2 + starCount3)/3).toFixed(2);
+    const total = parseFloat(((starCount1 + starCount2 + starCount3)/3).toFixed(2));
 
     return (
         <View style={styles.container}>
@@ -122,11 +122,13 @@ const styles = StyleSheet.create({
         alignItems: "center"
     },
     rateToilet:{
-        marginVertical: 50
+        marginVertical: 35,
+        fontWeight: "bold",
+        fontSize: 20
     },
     smallMargin:{
         marginVertical: 10,
-        fontWeight: "bold"
+        fontWeight: "bold",
     },
     btn: {
         backgroundColor: "#e6697e",
