@@ -1,15 +1,19 @@
 import React from "react";
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import FontAwesome from "react-native-vector-icons/FontAwesome";
+import StarRating from 'react-native-star-rating';
+
 
 const edit =()=>{
 
-}
+};
 
 const deleteReview =()=>{
     
-}
-
+};
+const nothing =()=>{
+    
+};
 
 const Review = (props) => {
     return (
@@ -23,12 +27,14 @@ const Review = (props) => {
                 </Text>
             </View>
             <View style={styles.stars}>
-                <FontAwesome name="star" size={20}/>
-                <FontAwesome name="star" size={20}/>
-                <FontAwesome name="star" size={20}/>
-                <FontAwesome name="star" size={20}/>
-                <FontAwesome name="star" size={20}/>
-                
+            <StarRating
+                maxStars={5}
+                disabled={true}
+                rating={props.stars}
+                selectedStar={(rating) => nothing()}
+                fullStarColor={"gold"}
+                starSize={20}
+            />
             </View>
             <View style={styles.text}>
                 <Text>
