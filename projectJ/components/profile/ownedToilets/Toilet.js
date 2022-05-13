@@ -1,5 +1,6 @@
 import React from "react";
-import {View, Text, StyleSheet} from 'react-native';
+import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
+import FontAwesome from "react-native-vector-icons/FontAwesome";
 
 const Toilet = (props) => {
     return(
@@ -10,6 +11,11 @@ const Toilet = (props) => {
                     <Text style={styles.price}>Price: {props.price}</Text>
                 </View>
             </View>
+            <View style={styles.itemRight}>
+                <TouchableOpacity>
+                    <FontAwesome name="edit" size={25}/>
+                </TouchableOpacity>
+            </View>
         </View>
     );
 }
@@ -19,6 +25,8 @@ const styles = StyleSheet.create({
         backgroundColor: '#FFF',
         padding: 15,
         borderRadius: 10,
+        borderWidth: 6,
+        borderColor: '#C0C0C0',
         flexDirection: 'row',
         alignItems: 'center',
         justifyContent: 'space-between',
