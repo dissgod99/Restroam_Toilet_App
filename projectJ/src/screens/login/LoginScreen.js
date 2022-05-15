@@ -1,8 +1,10 @@
-import React from "react";
-import { View, Text, Button, StyleSheet, Platform, Image, TextInput, TouchableOpacity } from "react-native";
+import React, { useState } from "react";
+import { View, Text, StyleSheet, TextInput, TouchableOpacity } from "react-native";
 import * as Animatable from 'react-native-animatable';
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import Feather from "react-native-vector-icons/Feather";
+
+import axios from "axios";
 
 const LoginScreen = ({ navigation }) => {
 
@@ -13,11 +15,32 @@ const LoginScreen = ({ navigation }) => {
         secureTextEntry: true
     });
 
-    const handleLoginClick = () => {
-        // do some backend logic here
+    const [message, setMessage] = useState('test');
+    const [messageType, setMessageType] = useState('red');
 
-        // once that is finished navigate to next route
-        navigation.navigate('Home');
+    const handleLoginClick = (credentials) => {
+        // do some backend logic here
+        const url = 'url for backend login api (on heroku)';
+        axios
+            .post(url, credentials)
+            .then((response) => {
+                result = response.data;
+                const { message, status, data } = result;
+                if (status !== 'SUCCESS') {
+                    handleMessage(message, status);
+                } else {
+                    // once that is finished navigate to next route
+                    navigation.navigate('Home');
+                }
+            })
+            .catch((error) => {
+                console.log(error);
+            });
+    }
+
+    const handleMessage = (message, type = 'FAILED') => {
+        setMessage(message);
+        setMessageType(type);
     }
 
     const textInputChange = (value) => {
@@ -36,7 +59,6 @@ const LoginScreen = ({ navigation }) => {
 
             });
         }
-
     };
 
     const handleEye = () => {
@@ -45,8 +67,6 @@ const LoginScreen = ({ navigation }) => {
             secureTextEntry: !data.secureTextEntry
 
         })
-
-
     };
 
     const handlePassword = (value) => {
@@ -54,14 +74,11 @@ const LoginScreen = ({ navigation }) => {
             ...data,
             password: value
         })
-
     };
 
 
     return (
-
         <View style={styles.container}>
-
             <View style={styles.header}>
                 <Animatable.Image style={styles.logo}
                     source={require("../../../assets/finder.png")}
@@ -70,7 +87,6 @@ const LoginScreen = ({ navigation }) => {
                     iterationCount="infinite" />
                 <Text style={styles.headerMoto}>Login right now</Text>
             </View>
-
             <Animatable.View style={styles.footer}
                 animation="fadeInUpBig">
                 <View style={styles.box}>
@@ -84,14 +100,12 @@ const LoginScreen = ({ navigation }) => {
                         />
                         {data.check_textInputChange ?
                             <Animatable.View animation="bounceIn">
-
                                 <Feather
                                     name="check-circle"
                                     color={"green"}
                                     size={20} />
                             </Animatable.View>
                             : null}
-
                     </View>
                 </View>
                 <View style={styles.box}>
@@ -104,9 +118,7 @@ const LoginScreen = ({ navigation }) => {
                             secureTextEntry={data.secureTextEntry ? true : false}
                             onChangeText={(value) => handlePassword(value)}
                         />
-                        <TouchableOpacity
-                            onPress={handleEye}
-                        >
+                        <TouchableOpacity onPress={handleEye}>
                             {data.secureTextEntry ?
                                 <Feather
                                     name="eye-off"
@@ -117,21 +129,21 @@ const LoginScreen = ({ navigation }) => {
                                     name="eye"
                                     color={"grey"}
                                     size={20} />
-
-
                             }
                         </TouchableOpacity>
                     </View>
                 </View>
+                <View style={styles.container}>
+                    <Text style={{ color: messageType }}> {message} </Text>
+                </View>
                 <View style={styles.buttons}>
-                    <TouchableOpacity style={styles.login} onPress={ handleLoginClick } >
+                    <TouchableOpacity style={styles.login} onPress={handleLoginClick} >
                         <Text style={{ fontWeight: "bold" }}>Login</Text>
                     </TouchableOpacity>
                     <Text>You don't have an Account ? Sign up now</Text>
                     <TouchableOpacity style={styles.reg}
                         onPress={() => navigation.navigate("SignUp")}>
                         <Text style={{ fontWeight: "bold" }}>Sign up</Text>
-
                     </TouchableOpacity>
                 </View>
             </Animatable.View>
