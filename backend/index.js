@@ -10,16 +10,11 @@ const clusterPassword = 'SbPotmFKy5V8tyBF';
 const databaseName = 'myFirstDatabase';
 
 mongoose.connect(
-    `mongodb+srv://${clusterUsername}:${clusterPassword}@cluster0.2l3zw.mongodb.net/${databaseName}?retryWrites=true&w=majority`,
-    // {
-    //     useNewUrlParser: true,
-    //     useFindAndModify: false,
-    //     useUnifiedTopology: true,
-    // }
+    `mongodb+srv://${clusterUsername}:${clusterPassword}@cluster0.2l3zw.mongodb.net/${databaseName}?retryWrites=true&w=majority`
 );
 
 const db = mongoose.connection;
-db.on('error', () => {console.log('ZEBI')});
+db.on('error', () => {console.log('Connection error')});
 db.once("open", function () {
     console.log("Connected successfully");
 });
