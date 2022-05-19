@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState, useEffect } from "react";
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import StarRating from 'react-native-star-rating';
@@ -16,6 +16,8 @@ const nothing =()=>{
 };
 
 const Review = (props) => {
+    const [text, setText] = useState(props.text);
+
     return (
         <View style={styles.container}>
             <View>
@@ -38,7 +40,7 @@ const Review = (props) => {
             </View>
             <View style={styles.text}>
                 <Text>
-                   {'\t'} {props.text} {'\n'}
+                   {'\t'} {text} {'\n'}
                 </Text>
             </View>
             <View style={styles.toolbar}>
