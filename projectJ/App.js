@@ -6,8 +6,7 @@ import ProfileScreen from './components/profile/ProfileScreen';
 import OwnedToiletsScreen from './components/profile/OwnedToiletsScreen';
 import ReviewsScreen from './components/profile/ReviewsScreen';
 import ReportsScreen from './components/profile/ReportsScreen';
-
-
+import WriteReportScreen from './components/profile/WriteReportScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -50,6 +49,15 @@ const App = () => {
           <Stack.Screen
             name='Reports'
             component={ReportsScreen}
+            options={
+              {headerStyle: {
+                backgroundColor: "#f28d82"
+              }}
+            }
+          />
+          <Stack.Screen
+            name='WriteReport'
+            component={WriteReportScreen}
             options={
               {headerStyle: {
                 backgroundColor: "#f28d82"

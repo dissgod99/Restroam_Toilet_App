@@ -58,6 +58,11 @@ const Profile = ({navigation}) => {
           Reports 
         </Text>
       </TouchableOpacity> 
+      <TouchableOpacity onPress={() => navigation.navigate('WriteReport')}>
+        <Text style={styles.menu}>
+          <Icon name="flag-outline" size={35} color="black"/>
+        </Text>
+      </TouchableOpacity>
 
 
 
