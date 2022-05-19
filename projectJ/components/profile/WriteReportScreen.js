@@ -41,49 +41,65 @@ const ReportsScreen = ({navigation}) => {
                     onChangeText={onChangeText}
                     value={text}
                     placeholder="Your report"
+                    multiline={true}
+                    activeOutlineColor="#e6697e"
+
+
                 />)}
-            <TouchableOpacity 
-                        style={styles.btn}
-                        onPress={handleSubmit}
-                        >
-                        <Text style={styles.submit}>
-                                Submit
+                <View style={styles.buttonFlex}>
+                <TouchableOpacity 
+                            style={styles.btn}
+                            onPress={handleSubmit}
+                            >
+                            <Text style={styles.submit}>
+                                    Submit
 
-                        </Text>
-                </TouchableOpacity>
-
+                            </Text>
+                    </TouchableOpacity>
+                </View>
             </View>
     )
 }
 const styles = StyleSheet.create({
     container:{
-        flex: 2,
+        flex: 1,
         alignItems: 'center',
-        justifyContent: 'center',
+        justifyContent:'center',
+        flexDirection:'column',
 
     },
     text:{
+        marginTop:50,
+        flex:1,
         margin:10,
         fontSize:20,
         fontWeight:'bold',
+        justifyContent:'center',
+        textAlign:'center'
     },
     dropdown:{
-        flex:2,
+        flex:1,
+        justifyContent:'center',
+        marginBottom:60,
     },
     input:{
         flex:1,
-        height: 40,
-        margin: 12,
         borderWidth: 1,
-        padding: 10,
+        padding:10,
+        width:300,
+        
+    },
+    buttonFlex:{
+        flex:2,
     },
     btn: {
-        margin:20,
         backgroundColor: "#e6697e",
-        paddingHorizontal: 100,
-        paddingVertical: 15,
+        paddingHorizontal:100,
+        paddingVertical: 10,
         borderRadius: 5,
-        marginVertical: 30
+        marginVertical: 30,
+        justifyContent: "center",
+
 
     },
 
