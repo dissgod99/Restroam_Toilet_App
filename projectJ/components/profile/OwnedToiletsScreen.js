@@ -13,26 +13,32 @@ const OwnedToiletsScreen = () => {
                     <View style={styles.items}>
                         <Toilet 
                             title={'Hauptbahnhof'} 
+                            location={'Hauptbahnhof'}
                             price={'1,00 €'}
                         />
                         <Toilet 
                             title={'Luisencenter'}
+                            location={'Luisencenter'}
                             price={'0,50 €'}    
                         />
                         <Toilet
                             title={'Universität'}
+                            location={'Audimax'}
                             price={'0,00 €'}
                         />
                         <Toilet
                             title={'Universität'}
+                            location={'Lichtwiese'}
                             price={'0,00 €'}
                         />
                         <Toilet
                             title={'Universität'}
+                            location={'Lichtwiese'}
                             price={'0,00 €'}
                         />
                         <Toilet
                             title={'Universität'}
+                            location={'Lichtwiese'}
                             price={'0,00 €'}
                         />
                     </View>
