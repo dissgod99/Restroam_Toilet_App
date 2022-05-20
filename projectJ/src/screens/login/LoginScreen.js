@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, Button, StyleSheet, Platform, Image, TextInput, TouchableOpacity } from "react-native";
+import { View, Text, Button, StyleSheet, Platform, Image, TextInput, TouchableOpacity, ScrollView } from "react-native";
 import * as Animatable from 'react-native-animatable';
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import Feather from "react-native-vector-icons/Feather";
@@ -73,6 +73,7 @@ const LoginScreen = ({ navigation }) => {
 
             <Animatable.View style={styles.footer}
                 animation="fadeInUpBig">
+                <ScrollView>
                 <View style={styles.box}>
                     <Text style={styles.entry}> Email Address</Text>
                     <View style={styles.alignBox}>
@@ -134,6 +135,7 @@ const LoginScreen = ({ navigation }) => {
 
                     </TouchableOpacity>
                 </View>
+                </ScrollView>
             </Animatable.View>
         </View>
     )
@@ -153,15 +155,16 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     header: {
-        flex: 2,
+        flex: 1,
         justifyContent: "center",
-        alignItems: "center"
+        alignItems: "center",
+        marginBottom: 50
     },
     footer: {
-        flex: 1,
+        flex: 2,
         backgroundColor: "#fff",
         //paddingBottom: 150,
-        paddingBottom: 220,
+        //paddingBottom: 50,
         //paddingHorizontal: 30
         width: "100%",
         borderTopLeftRadius: 30,
@@ -184,7 +187,7 @@ const styles = StyleSheet.create({
     },
     box: {
         marginLeft: 25,
-        marginTop: 32
+        marginTop: 25
     },
     enterInputField: {
         marginLeft: 20,

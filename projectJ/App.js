@@ -14,78 +14,78 @@ const Stack = createNativeStackNavigator();
 export default function App() {
 
   return (
-    // <NavigationContainer>
-    //   <Stack.Navigator initialRouteName='Welcome to Restroam' >
-    //     <Stack.Screen
-    //       name='Welcome to Restroam'
-    //       component={SplashScreen}
-    //       options={{
-    //         headerStyle: {
-    //           backgroundColor: "#f28d82"
-    //         },
-    //         headerShown: false,
-    //       }} />
-    //     <Stack.Screen
-    //       name='Login'
-    //       component={LoginScreen}
-    //       options={{
-    //         headerStyle: {
-    //           backgroundColor: "#f28d82"
-    //         }
-    //       }} />
-    //     <Stack.Screen
-    //       name='SignUp'
-    //       component={SignUpScreen}
-    //       options={{
-    //         headerStyle: {
-    //           backgroundColor: "#f28d82"
-    //         }
-    //       }} />
-    //     <Stack.Screen
-    //       name='Home'
-    //       component={CustomButtonNavigationBar}
-    //       options={{
-    //         headerStyle: {
-    //           backgroundColor: "#f28d82"
-    //         }
-    //       }} />
-    //     <Stack.Screen 
-    //       name='Rate Toilet'
-    //       component={RatingToiletScreen}
-          
-    //      />
-    //   </Stack.Navigator>
-    // </NavigationContainer>
-
-
     <NavigationContainer>
-      <Stack.Navigator initialRouteName='Rating'>
+      <Stack.Navigator initialRouteName='Welcome to Restroam' >
+        <Stack.Screen
+          name='Welcome to Restroam'
+          component={SplashScreen}
+          options={{
+            headerStyle: {
+              backgroundColor: "#f28d82"
+            },
+            headerShown: false,
+          }} />
+        <Stack.Screen
+          name='Login'
+          component={LoginScreen}
+          options={{
+            headerStyle: {
+              backgroundColor: "#f28d82"
+            }
+          }} />
+        <Stack.Screen
+          name='SignUp'
+          component={SignUpScreen}
+          options={{
+            headerStyle: {
+              backgroundColor: "#f28d82"
+            }
+          }} />
+        <Stack.Screen
+          name='Home'
+          component={CustomButtonNavigationBar}
+          options={{
+            headerStyle: {
+              backgroundColor: "#f28d82"
+            }
+          }} />
         <Stack.Screen 
-          name="Rating"
+          name='Rate Toilet'
           component={RatingToiletScreen}
-          options={{
-              headerStyle:{
-                backgroundColor: "#f28d82"
-              }
-            }
-          }
-        />
-
-        <Stack.Screen 
-          name="ThankYou"
-          component={ThankYou}
-          options={{
-              headerStyle:{
-                backgroundColor: "#f28d82"
-              },
-              headerShown: false,
-            }
-          }
-        />
-
+          
+         />
       </Stack.Navigator>
-
     </NavigationContainer>
+
+
+    // <NavigationContainer>
+    //   <Stack.Navigator initialRouteName='Rating'>
+    //     <Stack.Screen 
+    //       name="Rating"
+    //       component={RatingToiletScreen}
+    //       options={{
+    //           headerStyle:{
+    //             backgroundColor: "#f28d82"
+    //           }
+    //         }
+    //       }
+    //     />
+
+    //     <Stack.Screen 
+    //       name="ThankYou"
+    //       component={ThankYou}
+    //       options={{
+    //           headerStyle:{
+    //             backgroundColor: "#f28d82"
+    //           },
+    //           headerShown: false,
+    //         }
+    //       }
+    //     />
+
+    //   </Stack.Navigator>
+
+    // </NavigationContainer>
   );
 
 

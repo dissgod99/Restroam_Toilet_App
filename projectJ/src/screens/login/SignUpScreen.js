@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, Button, StyleSheet, Platform, Image, TextInput, TouchableOpacity } from "react-native";
+import { View, Text, Button, StyleSheet, Platform, Image, TextInput, TouchableOpacity, ScrollView } from "react-native";
 import * as Animatable from 'react-native-animatable';
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import Feather from "react-native-vector-icons/Feather";
@@ -9,8 +9,10 @@ const LoginScreen = ({ navigation }) => {
 
     const [data, setData] = React.useState({
         email: "",
+        username: "",
         password: "",
         check_textInputChange: false,
+        check_username_change: false,
         secureTextEntry: true,
         secureTextEntry_Reenter: true
     });
@@ -40,6 +42,23 @@ const LoginScreen = ({ navigation }) => {
         }
 
     };
+
+    const usernameChange = (usr) =>{
+        if(usr.length != 0){
+            setData({
+                ...data,
+                username: usr,
+                check_username_change: true
+            });
+        }else{
+            setData({
+                ...data,
+                username: usr,
+                check_username_change: false
+            });
+        }
+    }
+    
 
     const handleEye = () => {
         setData({
@@ -82,6 +101,7 @@ const LoginScreen = ({ navigation }) => {
 
             <Animatable.View style={styles.footer}
                 animation="fadeInUpBig">
+                    <ScrollView>
                 <View style={styles.box}>
                     <Text style={styles.entry}> Email Address</Text>
                     <View style={styles.alignBox}>
@@ -105,6 +125,31 @@ const LoginScreen = ({ navigation }) => {
 
 
                 </View>
+
+                <View style={styles.box}>
+                    <Text style={styles.entry}> Username</Text>
+                    <View style={styles.alignBox}>
+                        <FontAwesome name="user" size={23} />
+                        <TextInput style={styles.enterInputField}
+                            placeholder="Enter your username"
+                            autoCapitalize="none"
+                            onChangeText={(usr) => usernameChange(usr)}
+                        />
+                        {data.check_username_change ?
+                            <Animatable.View animation="bounceIn">
+
+                                <Feather
+                                    name="check-circle"
+                                    color={"green"}
+                                    size={20} />
+                            </Animatable.View>
+                            : null}
+
+                    </View>
+
+
+                </View>
+
 
                 <View style={styles.box}>
                     <Text style={styles.entry}> Password</Text>
@@ -163,6 +208,7 @@ const LoginScreen = ({ navigation }) => {
 
                     </TouchableOpacity>
                 </View>
+                </ScrollView>
             </Animatable.View>
         </View>
     )
@@ -178,14 +224,14 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     header: {
-        flex: 2,
+        flex: 1,
         justifyContent: "center",
         alignItems: "center"
     },
     footer: {
-        flex: 1,
+        flex: 2,
         backgroundColor: "#fff",
-        paddingBottom: 180,
+        //paddingBottom: 180,
         width: "100%",
         borderTopLeftRadius: 30,
         borderTopRightRadius: 30,
