@@ -25,7 +25,27 @@ const LoginScreen = ({ navigation }) => {
     }
 
     const textInputChange = (value) => {
-        if (value.length != 0) {
+        /**
+         * Strict Validation: 
+         * 1) local-part:
+         * uppercase and lowercase Latin letters A to Z and a to z
+            digits 0 to 9
+            Allow dot (.), underscore (_) and hyphen (-)
+            dot (.) is not the first or last character
+            dot (.) does not appear consecutively, e.g. mkyong..yong@example.com is not allowed
+            Max 64 characters 
+         * 
+         * 2) Domain:
+         * uppercase and lowercase Latin letters A to Z and a to z
+            digits 0 to 9
+            hyphen (-) is not the first or last character
+            dot (.) is not the first or last character
+            dot (.) does not appear consecutively
+            tld min 2 characters
+         * 
+         */
+        let regex_email = new RegExp("^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$");
+        if (value.length != 0 && regex_email.test(value)) {
             setData({
                 ...data,
                 email: value,
@@ -44,7 +64,8 @@ const LoginScreen = ({ navigation }) => {
     };
 
     const usernameChange = (usr) =>{
-        if(usr.length != 0){
+        let regex_usr = new RegExp("[A-Za-z0-9]{6,}")
+        if(usr.length != 0 && regex_usr.test(usr)){
             setData({
                 ...data,
                 username: usr,
