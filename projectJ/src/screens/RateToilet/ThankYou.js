@@ -32,7 +32,6 @@ export default ThankYou;
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        //backgroundColor: "#f28d82",
         alignItems: 'center',
         justifyContent: 'center',
     },
@@ -46,7 +45,6 @@ const styles = StyleSheet.create({
         marginVertical: 10
     },
     backTxt: {
-        //color: "#5a80ae",
         color: "#038dca",
         fontWeight: "bold"
     },

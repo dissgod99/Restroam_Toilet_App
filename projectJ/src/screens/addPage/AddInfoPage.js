@@ -50,9 +50,7 @@ const AddInfoPage = ({navigation}) =>{
                         <TextInput style={styles.boxPrice}
                             defaultValue= "0,00 €"
                             mode="outlined"
-                            //label="Price"
                             placeholder="Type place"
-                            // right={<TextInput.Affix text="/5" />}
                             activeOutlineColor="#e6697e"
                             onChangeText={(value) => changePrice(value)}
                         />
@@ -120,9 +118,7 @@ const styles = StyleSheet.create({
         marginVertical: 20
     },
     box:{
-        //backgroundColor: "#ded8d9",
         width: 250,
-        //marginVertical: 10,
         paddingLeft: 8,
         fontWeight: "bold"
     },

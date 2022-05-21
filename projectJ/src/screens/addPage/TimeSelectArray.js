@@ -52,12 +52,8 @@ export default function TimeSelectArray() {
 
 const styles = StyleSheet.create({
   cadreInput: {
-    //borderWidth: 1,
-    //backgroundColor: "#fae8e0",
-    //padding: 2,
     margin: 5,
     borderRadius: 15,
     fontSize: 150,
-    //minWidth: 430,
   },
 });

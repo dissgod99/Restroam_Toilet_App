@@ -48,12 +48,6 @@ const styles = StyleSheet.create({
 
   },
   cadre: {
-    //borderWidth: 1,
-    //backgroundColor: "#fae8e0",
-    //padding: "2%",
-    //paddingLeft: "35%",
-    //paddingRight: "35%",
-    //marginTop: "2.5%",
     fontSize: 20,
     fontWeight: "bold"
   },
