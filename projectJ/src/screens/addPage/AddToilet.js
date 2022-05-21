@@ -27,7 +27,7 @@ export default function AddToilet({navigation}) {
       </View>
         <TouchableOpacity 
                 style={styles.btn}
-                //onPress={handleSubmit}
+                onPress={() => navigation.navigate("More Toilet Infomation")}
                         >
                 <Text style={styles.stOfSubmit}>
                                 Next

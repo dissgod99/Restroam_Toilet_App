@@ -7,6 +7,7 @@ import LoginScreen from './src/screens/login/LoginScreen';
 import CustomButtonNavigationBar from './src/navigation/CustomBottomNavigationBar';
 import RatingToiletScreen from './src/screens/RateToilet/RatingToiletScreen';
 import ThankYou from './src/screens/RateToilet/ThankYou';
+import AddInfoPage from './src/screens/addPage/AddInfoPage'
 
 
 const Stack = createNativeStackNavigator();
@@ -54,6 +55,38 @@ export default function App() {
           component={RatingToiletScreen}
           
          />
+         <Stack.Screen 
+          name='More Toilet Infomation'
+          component={AddInfoPage}
+          options={{
+            headerStyle: {
+              backgroundColor: "#f28d82"
+            }
+          }}
+         />
+
+        <Stack.Screen 
+              name="Rating"
+              component={RatingToiletScreen}
+              options={{
+                  headerStyle:{
+                    backgroundColor: "#f28d82"
+                  }
+                }
+              }
+            />
+
+          <Stack.Screen 
+            name="ThankYou"
+            component={ThankYou}
+            options={{
+                headerStyle:{
+                  backgroundColor: "#f28d82"
+                },
+                headerShown: false,
+              }
+            }
+            />
       </Stack.Navigator>
     </NavigationContainer>
 
