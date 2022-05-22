@@ -57,6 +57,18 @@ export default function MapScreen({ navigation }) {
         
     }
 
+    var item = {
+        name: "toilet1",
+        location: "kethastraße",
+        stars: 2.5,
+        description: "very good",
+    }
+
+    const [markerclicked,setMarkerlicked]= useState(false);
+    
+    const markerClick = (item1) => {
+        setMarkerlicked(!markerclicked);
+    }
     return (
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
             <MapView 
@@ -68,15 +80,28 @@ export default function MapScreen({ navigation }) {
             followsUserLocation={true}
             >
                 {toiletsAround.map((item,index) =>{
-                    return <MapView.Marker coordinate={item} key={index.toString()}>
-                        <Image source={require('../../../assets/toiletMarker.png')}
+                    return <MapView.Marker 
+                    coordinate={item} 
+                    key={index.toString()}
+                    //title={marker.title}
+                    //description={marker.description}
+                    onPress={() => markerClick(item)}>
+                        <Image source={require('../../assets/restroomMarker.png')}
                         style={styles.toiletsAround}
                         resizeMode="cover"/>
                     </MapView.Marker>
                 })}
+            <MapViewDirections
+            origin={toiletsAround[1]}
+            destination={toiletsAround[0]}
+            
+            apikey={"AIzaSyCFbwdnUJoJA5FD6NiAwFevhUnU5jHWycA"}
+            strokeWidth={3}
+            strokeColor="#222"
+            />
             </MapView>
-            <View style={styles.top}>
-                <View >
+            
+                <View style={styles.top}>
                     <TouchableOpacity 
                         onPress={handleSubmit}
                         >
@@ -84,7 +109,7 @@ export default function MapScreen({ navigation }) {
                     </TouchableOpacity>
                 </View>
                 {renderIf(clicked)(
-                    <View style={styles.container}>
+                    <View style={styles.tophidden}>
                         <FlatList
                             data={[
                             {key: 'Devin'},
@@ -101,53 +126,116 @@ export default function MapScreen({ navigation }) {
                             renderItem={({item}) => <Text style={styles.item}>{item.key}</Text>}
                         />
                     </View>)}
-            </View>
+            
+            {renderIf(markerclicked)(
+                <View style={styles.bottom}>
+                    <Text style={styles.title}>{item.name}</Text>
+                    <Text style={{fontSize: 10}}>{item.location}</Text>
+                    <View style={styles.stars}>
+                        <StarRating
+                            maxStars={5}
+                            disabled={true}
+                            rating={item.stars} 
+                            selectedStar={(rating) => {}}
+                            fullStarColor={"gold"}
+                            starSize={20}
+                        />
+                    </View>
+
+                    <Text style={styles.item}>{item.description}</Text>
+                </View>)}
         </View>
     )
-}
-const styles = StyleSheet.create({  
-    container: {
-        position: 'absolute',
-        alignItems: 'center',
-        justifyContent: 'center',
-        flex: 0.1,
-    },
- 
-    map:{
-     position: 'absolute',
-     flex:1,
-     height: "100%",
-     width: "100%",
-    },
-
-    toiletsAround: {
-        width: 30,
-        height: 30,
-        
-    },
-
-    itemStyle: {
-        fontSize: 10,
-        color: "#007aff"
-      },
-
-      textStyle: {
-        fontSize: 14,
-      },
-      top: {
-        position: 'absolute',
-        backgroundColor: "#fff",
-        //paddingBottom: 150,
-        //paddingTop: 220,
-        //paddingHorizontal: 30
-        flex: 0.2,
-        width: "100%",
-        top: "0%",
-        borderBottomLeftRadius: 30,
-        borderBottomRightRadius: 30,
-        alignItems: "center",
-        alignContent: "center",
-        
-     },
-
-    });
+    }
+    const styles = StyleSheet.create({  
+        container: {
+            position: 'absolute',
+            alignItems: 'center',
+            justifyContent: 'center',
+            flex: 0.1,
+        },
+     
+        map:{
+         position: 'absolute',
+         flex:1,
+         height: "100%",
+         width: "100%",
+        },
+    
+        toiletsAround: {
+            width: 30,
+            height: 30,
+            
+        },
+    
+        itemStyle: {
+            fontSize: 10,
+            color: "#007aff"
+          },
+    
+          textStyle: {
+            fontSize: 16,
+          },
+          top: {
+            position: 'absolute',
+            backgroundColor: "#fff",
+            //paddingBottom: 150,
+            //paddingTop: 220,
+            //paddingHorizontal: 30
+            width: "70%",
+            top: "0%",
+            height: "5%",
+            borderBottomLeftRadius: 30,
+            borderBottomRightRadius: 30,
+            alignItems: "center",
+            alignContent: "center",
+            
+         },
+         tophidden: {
+            backgroundColor: "#fff",
+            //paddingBottom: 150,
+            //paddingTop: 220,
+            //paddingHorizontal: 30
+            position: 'absolute',
+            paddingBottom: 10,
+            paddingTop: 30,
+            paddingLeft: 10,
+            paddingRight: 10,
+            width: "70%",
+            height: "20%",
+            borderBottomLeftRadius: 30,
+            borderBottomRightRadius: 30,
+            alignItems: "center",
+            alignContent: "center",
+            
+         },
+         bottom: {
+            position: 'absolute',
+            backgroundColor: "#fff",
+            paddingBottom: 10,
+            paddingTop: 10,
+            paddingLeft: 25,
+            paddingRight: 10,
+            flex: 0.2,
+            bottom: "0%",
+            width: "80%",
+            left: "1%",
+            borderRadius: 30,
+            alignItems: "flex-start",
+            alignContent: "center",
+            
+         },
+         title:{
+            fontSize:22,
+            
+        },
+         stars:{
+            flexDirection:'row',
+            alignItems:'center',
+            
+    
+        },
+    
+    
+        });
+    
