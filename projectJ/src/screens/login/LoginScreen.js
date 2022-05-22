@@ -6,6 +6,9 @@ import Feather from "react-native-vector-icons/Feather";
 
 import axios from "axios";
 
+// change url backend login api (on heroku)
+const BACKEND_ENDPOINT = 'http://localhost:3000/api/users/login';
+
 const LoginScreen = ({ navigation }) => {
 
     const [data, setData] = React.useState({
@@ -15,22 +18,30 @@ const LoginScreen = ({ navigation }) => {
         secureTextEntry: true
     });
 
-    const [message, setMessage] = useState('test');
+    const [message, setMessage] = useState('');
     const [messageType, setMessageType] = useState('red');
 
-    const handleLoginClick = (credentials) => {
+    const handleLoginClick = (event) => {
+        event.preventDefault();
         // do some backend logic here
-        const url = 'url for backend login api (on heroku)';
+        let email = data.email;
+        let password = data.password;
         axios
-            .post(url, credentials)
+            .post(BACKEND_ENDPOINT, { email, password })
             .then((response) => {
-                result = response.data;
-                const { message, status, data } = result;
-                if (status !== 'SUCCESS') {
-                    handleMessage(message, status);
-                } else {
+                const { status, data } = response;
+                if (status == '200') {
+                    console.log(data.JWTtoken);
+                    localStorage.setItem('token', data.JWTtoken);
+                    // to access it in pages requiring token use locaStorage.getItem(key) with key = 'token' in this case
+                    handleMessage(data.message, 'green');
                     // once that is finished navigate to next route
-                    navigation.navigate('Home');
+                    clearTimeout();
+                    setTimeout(() => {
+                        navigation.navigate('Home') 
+                    }, 3000);
+                } else {
+                    handleMessage(data.message, 'red');
                 }
             })
             .catch((error) => {
@@ -38,7 +49,7 @@ const LoginScreen = ({ navigation }) => {
             });
     }
 
-    const handleMessage = (message, type = 'FAILED') => {
+    const handleMessage = (message, type) => {
         setMessage(message);
         setMessageType(type);
     }
@@ -134,7 +145,12 @@ const LoginScreen = ({ navigation }) => {
                     </View>
                 </View>
                 <View style={styles.container}>
-                    <Text style={{ color: messageType }}> {message} </Text>
+                    {
+                        message !== '' ?
+                        <Text style={{ color: messageType }}> {message} </Text>
+                        :
+                        <></>
+                    }
                 </View>
                 <View style={styles.buttons}>
                     <TouchableOpacity style={styles.login} onPress={handleLoginClick} >

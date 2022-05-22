@@ -1,6 +1,8 @@
+//require('dotenv').config();
+
 const express = require("express");
 const mongoose = require('mongoose');
-const usersRoutes = require('./api/routes/users');
+const apiRoutes = require('./api/api');
 
 const app = new express();
 const port = 3000;
@@ -19,10 +21,10 @@ db.once("open", function () {
     console.log("Connected successfully");
 });
 
-app.use('/users', usersRoutes);
+app.use('/api', apiRoutes);
 
-app.get('/', (req, res) => {
-    res.status(500).send('Hello World');
+app.get('/', async (req, res) => {
+    res.status(200).send('Hello World');
 });
 
 app.listen(port, () => {
