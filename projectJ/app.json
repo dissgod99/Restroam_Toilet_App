@@ -28,9 +28,11 @@
       "config":{
         "googleMaps":{
           "apiKey":"AIzaSyCFbwdnUJoJA5FD6NiAwFevhUnU5jHWycA"
-        },
-        "permissions":["ACCESS_COARSE_LOACTION","ACCESS_FINE_LOACTION","FOREGROUND_SERVICE"]
-      }
+        }
+      },
+
+        "permissions":["ACCESS_COARSE_LOCATION","ACCESS_FINE_LOCATION","FOREGROUND_SERVICE"]
+
     },
     "web": {
       "favicon": "./assets/favicon.png"

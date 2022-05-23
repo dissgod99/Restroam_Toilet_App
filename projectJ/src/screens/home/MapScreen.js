@@ -104,13 +104,13 @@ export default function MapScreen({ navigation }) {
             />
             </MapView>
             
-                <View style={styles.top}>
+                {/* <View style={styles.top}>
                     <TouchableOpacity 
                         onPress={handleSubmit}
                         >
                         <Text style={styles.textStyle}>Nearby</Text>
                     </TouchableOpacity>
-                </View>
+                </View> */}
                 {renderIf(clicked)(
                     <View style={styles.tophidden}>
                         <FlatList

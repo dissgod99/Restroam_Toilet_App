@@ -5,12 +5,12 @@ import {View, Text, StyleSheet,TouchableOpacity} from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 
-const logout = () => {
-  
-}
-
 
 const Profile = ({navigation}) => {
+  const logout = () => {
+    console.log("Transition WORKS")
+    navigation.navigate("Login");
+  }
   return(
     <View style={styles.container}>
       <View style={styles.person}>
@@ -28,7 +28,7 @@ const Profile = ({navigation}) => {
         <Text style={styles.data}>
           Toilets reviewed: 111 
         </Text>
-        <TouchableOpacity onPress={logout()}>
+        <TouchableOpacity onPress={logout}>
         <Icon name="logout" size={35} color="#900">
           <Text style={styles.logoutbtn}>
             Logout

@@ -12,7 +12,7 @@ import OwnedToiletsScreen from './src/screens/account/OwnedToiletsScreen';
 import ReviewsScreen from './src/screens/account/ReviewsScreen';
 import ReportsScreen from './src/screens/account/ReportsScreen';
 import WriteReportScreen from './src/screens/account/WriteReportScreen';
-import AddInfoPage from './src/screens/addPage/addInfoPage';
+import AddInfoPage from './src/screens/addPage/AddInfoPage';
 
 const Stack = createNativeStackNavigator();
 
@@ -20,7 +20,16 @@ export default function App() {
 
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName='Home' >
+      <Stack.Navigator initialRouteName='Splash' >
+      <Stack.Screen 
+          name="Splash"
+          component={SplashScreen}
+          options={{
+            headerStyle: {
+              backgroundColor: "#f28d82"
+            },
+            headerShown: false,
+          }} />
         <Stack.Screen
             name='Home'
             component={CustomButtonNavigationBar}
@@ -54,14 +63,14 @@ export default function App() {
               backgroundColor: "#f28d82"
             }
           }} />
-        <Stack.Screen
+        {/* <Stack.Screen
           name='Home'
           component={CustomButtonNavigationBar}
           options={{
             headerStyle: {
               backgroundColor: "#f28d82"
             }
-          }} />
+          }} /> */}
         <Stack.Screen 
           name='Rate Toilet'
           component={RatingToiletScreen}
@@ -77,7 +86,7 @@ export default function App() {
           }}
          />
 
-        <Stack.Screen 
+        {/* <Stack.Screen 
               name="Rating"
               component={RatingToiletScreen}
               options={{
@@ -86,7 +95,7 @@ export default function App() {
                   }
                 }
               }
-            />
+            /> */}
 
           {/* <Stack.Screen 
             name="ThankYou"
