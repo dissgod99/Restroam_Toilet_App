@@ -7,6 +7,11 @@ import LoginScreen from './src/screens/login/LoginScreen';
 import CustomButtonNavigationBar from './src/navigation/CustomBottomNavigationBar';
 import RatingToiletScreen from './src/screens/RateToilet/RatingToiletScreen';
 import ThankYou from './src/screens/RateToilet/ThankYou';
+import AccountScreen from './src/screens/home/AccountScreen';
+import OwnedToiletsScreen from './src/screens/account/OwnedToiletsScreen';
+import ReviewsScreen from './src/screens/account/ReviewsScreen';
+import ReportsScreen from './src/screens/account/ReportsScreen';
+import WriteReportScreen from './src/screens/account/WriteReportScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -58,7 +63,7 @@ export default function App() {
 
 
     <NavigationContainer>
-      <Stack.Navigator initialRouteName='Home'>
+      <Stack.Navigator initialRouteName='Home' >
         <Stack.Screen
             name='Home'
             component={CustomButtonNavigationBar}
@@ -89,17 +94,54 @@ export default function App() {
             }
           }
         />
-        {/* <Stack.Screen
-          name="Profile"
-          component={ProfileNavigationScreen}
-          options={{
-            headerStyle:{
-              backgroundColor: "#f28d82"
-            },
-            headerShown: false,
-          }
-        }
-      /> */}
+        <Stack.Screen
+            name='Profile'
+            component={AccountScreen}
+            options={
+              {headerStyle: {
+                backgroundColor: "#f28d82"
+              }}
+            }
+
+          />
+          <Stack.Screen
+            name='Owned Toilets'
+            component={OwnedToiletsScreen}
+            options={
+              {headerStyle: {
+                backgroundColor: "#f28d82"
+              }}
+            }
+
+          />
+          <Stack.Screen
+            name='Reviews'
+            component={ReviewsScreen}
+            options={
+              {headerStyle: {
+                backgroundColor: "#f28d82"
+              }}
+            }
+
+          />
+          <Stack.Screen
+            name='Reports'
+            component={ReportsScreen}
+            options={
+              {headerStyle: {
+                backgroundColor: "#f28d82"
+              }}
+            }
+          />
+          <Stack.Screen
+            name='WriteReport'
+            component={WriteReportScreen}
+            options={
+              {headerStyle: {
+                backgroundColor: "#f28d82"
+              }}
+            }
+          />
       </Stack.Navigator>
 
     </NavigationContainer>
