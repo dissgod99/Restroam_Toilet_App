@@ -4,6 +4,9 @@ import MapView,{PROVIDER_GOOGLE} from 'react-native-maps';
 import { mapStyle } from '../../global/mapStyle';
 import * as Location from 'expo-location'
 import renderIf from './renderIf'
+import MapViewDirections from 'react-native-maps-directions';
+import StarRating from 'react-native-star-rating';
+
 
 export default function MapScreen({ navigation }) {
     const [latlng,setLatLng]=useState({});
@@ -86,7 +89,7 @@ export default function MapScreen({ navigation }) {
                     //title={marker.title}
                     //description={marker.description}
                     onPress={() => markerClick(item)}>
-                        <Image source={require('../../assets/restroomMarker.png')}
+                        <Image source={require('../../../assets/toiletMarker.png')}
                         style={styles.toiletsAround}
                         resizeMode="cover"/>
                     </MapView.Marker>

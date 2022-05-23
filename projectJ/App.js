@@ -8,7 +8,6 @@ import CustomButtonNavigationBar from './src/navigation/CustomBottomNavigationBa
 import RatingToiletScreen from './src/screens/RateToilet/RatingToiletScreen';
 import ThankYou from './src/screens/RateToilet/ThankYou';
 
-
 const Stack = createNativeStackNavigator();
 
 export default function App() {
@@ -59,7 +58,15 @@ export default function App() {
 
 
     <NavigationContainer>
-      <Stack.Navigator initialRouteName='Rating'>
+      <Stack.Navigator initialRouteName='Home'>
+        <Stack.Screen
+            name='Home'
+            component={CustomButtonNavigationBar}
+            options={{
+            headerStyle: {
+              backgroundColor: "#f28d82"
+            }
+          }} />
         <Stack.Screen 
           name="Rating"
           component={RatingToiletScreen}
@@ -82,7 +89,17 @@ export default function App() {
             }
           }
         />
-
+        {/* <Stack.Screen
+          name="Profile"
+          component={ProfileNavigationScreen}
+          options={{
+            headerStyle:{
+              backgroundColor: "#f28d82"
+            },
+            headerShown: false,
+          }
+        }
+      /> */}
       </Stack.Navigator>
 
     </NavigationContainer>
@@ -90,6 +107,7 @@ export default function App() {
 
 
 }
+
 
 const styles = StyleSheet.create({
   container: {

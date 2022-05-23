@@ -1,15 +1,15 @@
 import React from 'react';
 import {StyleSheet} from 'react-native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import ProfileScreen from '../account/ProfileScreen';
-import OwnedToiletsScreen from '../account/OwnedToiletsScreen';
-import ReviewsScreen from '../account/ReviewsScreen';
-import ReportsScreen from '../account/ReportsScreen';
-import WriteReportScreen from '../account/WriteReportScreen';
+import ProfileScreen from './ProfileScreen';
+import OwnedToiletsScreen from './OwnedToiletsScreen';
+import ReviewsScreen from './ReviewsScreen';
+import ReportsScreen from './ReportsScreen';
+import WriteReportScreen from './WriteReportScreen';
 
 const Stack = createNativeStackNavigator();
 
-const AccountScreen = ({navigation}) => {
+const ProfileNavigationScreen = ({navigation}) => {
   return(
     
 
@@ -84,4 +84,4 @@ const styles = StyleSheet.create({
 
 }
 )
-export default AccountScreen;
+export default ProfileNavigationScreen;
