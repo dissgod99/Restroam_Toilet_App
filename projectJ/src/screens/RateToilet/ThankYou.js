@@ -7,7 +7,7 @@ const ThankYou = ({ navigation }) => {
 
     const handleGoBack = () => {
         // Should go back to Map in Home
-        navigation.navigate("Rating")
+        navigation.navigate("Home")
     }
 
     return (
@@ -16,7 +16,7 @@ const ThankYou = ({ navigation }) => {
                 source= {require("../../../assets/green-check.png")}
             />
             <Text style={styles.txt}>
-                Thank you for your feedback !
+                Thank you for your Submission !
             </Text>
             <TouchableOpacity style={styles.back} onPress={handleGoBack}>
                 <Text style={styles.backTxt}>
@@ -32,7 +32,6 @@ export default ThankYou;
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        //backgroundColor: "#f28d82",
         alignItems: 'center',
         justifyContent: 'center',
     },
@@ -46,7 +45,6 @@ const styles = StyleSheet.create({
         marginVertical: 10
     },
     backTxt: {
-        //color: "#5a80ae",
         color: "#038dca",
         fontWeight: "bold"
     },

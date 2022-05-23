@@ -28,9 +28,6 @@ const RatingToiletScreen = ({ navigation }) => {
     }
 
     const handleSubmit = () =>{
-        // setStarCount1(defaultRating);
-        // setStarCount2(defaultRating);
-        // setStarCount3(defaultRating);
         navigation.navigate("ThankYou");
     }
     // Average of all ratings
@@ -152,9 +149,7 @@ const styles = StyleSheet.create({
         fontWeight: "bold"
     },
     box:{
-        //backgroundColor: "#ded8d9",
         width: 250,
-        //marginVertical: 10,
         paddingLeft: 8,
         fontWeight: "bold"
     },

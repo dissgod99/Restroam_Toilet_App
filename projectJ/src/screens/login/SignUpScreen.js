@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, Button, StyleSheet, Platform, Image, TextInput, TouchableOpacity } from "react-native";
+import { View, Text, Button, StyleSheet, Platform, Image, TextInput, TouchableOpacity, ScrollView } from "react-native";
 import * as Animatable from 'react-native-animatable';
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import Feather from "react-native-vector-icons/Feather";
@@ -9,8 +9,10 @@ const LoginScreen = ({ navigation }) => {
 
     const [data, setData] = React.useState({
         email: "",
+        username: "",
         password: "",
         check_textInputChange: false,
+        check_username_change: false,
         secureTextEntry: true,
         secureTextEntry_Reenter: true
     });
@@ -23,7 +25,27 @@ const LoginScreen = ({ navigation }) => {
     }
 
     const textInputChange = (value) => {
-        if (value.length != 0) {
+        /**
+         * Strict Validation: 
+         * 1) local-part:
+         * uppercase and lowercase Latin letters A to Z and a to z
+            digits 0 to 9
+            Allow dot (.), underscore (_) and hyphen (-)
+            dot (.) is not the first or last character
+            dot (.) does not appear consecutively, e.g. mkyong..yong@example.com is not allowed
+            Max 64 characters 
+         * 
+         * 2) Domain:
+         * uppercase and lowercase Latin letters A to Z and a to z
+            digits 0 to 9
+            hyphen (-) is not the first or last character
+            dot (.) is not the first or last character
+            dot (.) does not appear consecutively
+            tld min 2 characters
+         * 
+         */
+        let regex_email = new RegExp("^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$");
+        if (value.length != 0 && regex_email.test(value)) {
             setData({
                 ...data,
                 email: value,
@@ -40,6 +62,24 @@ const LoginScreen = ({ navigation }) => {
         }
 
     };
+
+    const usernameChange = (usr) =>{
+        let regex_usr = new RegExp("[A-Za-z0-9]{6,}")
+        if(usr.length != 0 && regex_usr.test(usr)){
+            setData({
+                ...data,
+                username: usr,
+                check_username_change: true
+            });
+        }else{
+            setData({
+                ...data,
+                username: usr,
+                check_username_change: false
+            });
+        }
+    }
+    
 
     const handleEye = () => {
         setData({
@@ -82,6 +122,7 @@ const LoginScreen = ({ navigation }) => {
 
             <Animatable.View style={styles.footer}
                 animation="fadeInUpBig">
+                    <ScrollView>
                 <View style={styles.box}>
                     <Text style={styles.entry}> Email Address</Text>
                     <View style={styles.alignBox}>
@@ -105,6 +146,31 @@ const LoginScreen = ({ navigation }) => {
 
 
                 </View>
+
+                <View style={styles.box}>
+                    <Text style={styles.entry}> Username</Text>
+                    <View style={styles.alignBox}>
+                        <FontAwesome name="user" size={23} />
+                        <TextInput style={styles.enterInputField}
+                            placeholder="Enter your username"
+                            autoCapitalize="none"
+                            onChangeText={(usr) => usernameChange(usr)}
+                        />
+                        {data.check_username_change ?
+                            <Animatable.View animation="bounceIn">
+
+                                <Feather
+                                    name="check-circle"
+                                    color={"green"}
+                                    size={20} />
+                            </Animatable.View>
+                            : null}
+
+                    </View>
+
+
+                </View>
+
 
                 <View style={styles.box}>
                     <Text style={styles.entry}> Password</Text>
@@ -163,6 +229,7 @@ const LoginScreen = ({ navigation }) => {
 
                     </TouchableOpacity>
                 </View>
+                </ScrollView>
             </Animatable.View>
         </View>
     )
@@ -178,14 +245,14 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     header: {
-        flex: 2,
+        flex: 1,
         justifyContent: "center",
         alignItems: "center"
     },
     footer: {
-        flex: 1,
+        flex: 2,
         backgroundColor: "#fff",
-        paddingBottom: 180,
+        //paddingBottom: 180,
         width: "100%",
         borderTopLeftRadius: 30,
         borderTopRightRadius: 30,

@@ -1,5 +1,5 @@
 import React from "react";
-import { View, Text, Button, StyleSheet, Platform, Image, TextInput, TouchableOpacity } from "react-native";
+import { View, Text, Button, StyleSheet, Platform, Image, TextInput, TouchableOpacity, ScrollView } from "react-native";
 import * as Animatable from 'react-native-animatable';
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import Feather from "react-native-vector-icons/Feather";
@@ -21,7 +21,29 @@ const LoginScreen = ({ navigation }) => {
     }
 
     const textInputChange = (value) => {
-        if (value.length != 0) {
+        //let regex_email = new RegExp("[a-zA-Z]+[a-z0-9]+@[a-z]+\.[a-z]{2,5}");
+        //let regex_email = new RegExp("[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}");
+        /**
+         * Strict Validation: 
+         * 1) local-part:
+         * uppercase and lowercase Latin letters A to Z and a to z
+            digits 0 to 9
+            Allow dot (.), underscore (_) and hyphen (-)
+            dot (.) is not the first or last character
+            dot (.) does not appear consecutively, e.g. mkyong..yong@example.com is not allowed
+            Max 64 characters 
+         * 
+         * 2) Domain:
+         * uppercase and lowercase Latin letters A to Z and a to z
+            digits 0 to 9
+            hyphen (-) is not the first or last character
+            dot (.) is not the first or last character
+            dot (.) does not appear consecutively
+            tld min 2 characters
+         * 
+         */
+        let regex_email = new RegExp("^(?=.{1,64}@)[A-Za-z0-9_-]+(\\.[A-Za-z0-9_-]+)*@[^-][A-Za-z0-9-]+(\\.[A-Za-z0-9-]+)*(\\.[A-Za-z]{2,})$");
+        if (value.length != 0 && regex_email.test(value)) {
             setData({
                 ...data,
                 email: value,
@@ -57,7 +79,6 @@ const LoginScreen = ({ navigation }) => {
 
     };
 
-
     return (
 
         <View style={styles.container}>
@@ -73,6 +94,7 @@ const LoginScreen = ({ navigation }) => {
 
             <Animatable.View style={styles.footer}
                 animation="fadeInUpBig">
+                <ScrollView>
                 <View style={styles.box}>
                     <Text style={styles.entry}> Email Address</Text>
                     <View style={styles.alignBox}>
@@ -134,6 +156,7 @@ const LoginScreen = ({ navigation }) => {
 
                     </TouchableOpacity>
                 </View>
+                </ScrollView>
             </Animatable.View>
         </View>
     )
@@ -153,15 +176,16 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
     },
     header: {
-        flex: 2,
+        flex: 1,
         justifyContent: "center",
-        alignItems: "center"
+        alignItems: "center",
+        marginBottom: 50
     },
     footer: {
-        flex: 1,
+        flex: 2,
         backgroundColor: "#fff",
         //paddingBottom: 150,
-        paddingBottom: 220,
+        //paddingBottom: 50,
         //paddingHorizontal: 30
         width: "100%",
         borderTopLeftRadius: 30,
@@ -184,7 +208,7 @@ const styles = StyleSheet.create({
     },
     box: {
         marginLeft: 25,
-        marginTop: 32
+        marginTop: 25
     },
     enterInputField: {
         marginLeft: 20,
