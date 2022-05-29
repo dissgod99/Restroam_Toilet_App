@@ -45,7 +45,10 @@ const LoginScreen = ({ navigation }) => {
                 }
             })
             .catch((error) => {
-                console.log(error);
+                if (error.response) {
+                    let serverRes = error.response;
+                    handleMessage(serverRes.data.message, 'red');
+                }
             });
     }
 
