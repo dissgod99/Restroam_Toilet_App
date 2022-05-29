@@ -1,8 +1,14 @@
-import React from "react";
-import { View, Text, Button, StyleSheet, Platform, Image, TextInput, TouchableOpacity, ScrollView } from "react-native";
+import React, { useState } from "react";
+import { View, Text, Button, StyleSheet, TextInput, TouchableOpacity, ScrollView } from "react-native";
 import * as Animatable from 'react-native-animatable';
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import Feather from "react-native-vector-icons/Feather";
+
+import axios from "axios";
+
+// change url backend login api (on heroku)
+// for now it is set to the IP address of my machine (192.168.1.100) to test it on yours replace it with your IP
+const BACKEND_ENDPOINT = 'http://192.168.1.100:3000/api/users/login';
 
 
 const LoginScreen = ({ navigation }) => {
@@ -17,11 +23,40 @@ const LoginScreen = ({ navigation }) => {
         secureTextEntry_Reenter: true
     });
 
-    const handleSignUpClick = () => {
-        // do some backend logic here
+    const [message, setMessage] = useState('');
+    const [messageType, setMessageType] = useState('red');
 
-        // once that is finished navigate to next route
-        navigation.navigate('Home');
+    const handleSignUpClick = (event) => {
+        event.preventDefault();
+        // do some backend logic here
+        let email = data.email;
+        let password = data.password;
+        axios
+            .post(BACKEND_ENDPOINT, { email, password })
+            .then((response) => {
+                const { status, data } = response;
+                if (status == '201') {
+                    handleMessage(data.message, 'green');
+                    // once that is finished navigate to next route
+                    clearTimeout();
+                    setTimeout(() => {
+                        navigation.navigate('Home')
+                    }, 3000);
+                } else {
+                    handleMessage(data.message, 'red');
+                }
+            })
+            .catch((error) => {
+                if (error.response) {
+                    let serverRes = error.response;
+                    handleMessage(serverRes.data.message, 'red');
+                }
+            });
+    }
+
+    const handleMessage = (message, type) => {
+        setMessage(message);
+        setMessageType(type);
     }
 
     const textInputChange = (value) => {
@@ -134,17 +169,13 @@ const LoginScreen = ({ navigation }) => {
                         />
                         {data.check_textInputChange ?
                             <Animatable.View animation="bounceIn">
-
                                 <Feather
                                     name="check-circle"
                                     color={"green"}
                                     size={20} />
                             </Animatable.View>
                             : null}
-
                     </View>
-
-
                 </View>
 
                 <View style={styles.box}>
@@ -225,8 +256,8 @@ const LoginScreen = ({ navigation }) => {
                 </View>
                 <View style={styles.buttons}>
                     <TouchableOpacity style={styles.login} onPress={handleSignUpClick} >
+                        <Text style={{ color: messageType }}> {message} </Text>
                         <Text style={{ fontWeight: "bold" }}>Sign up</Text>
-
                     </TouchableOpacity>
                 </View>
                 </ScrollView>

@@ -21,7 +21,7 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator initialRouteName='Splash' >
-      <Stack.Screen 
+        <Stack.Screen
           name="Splash"
           component={SplashScreen}
           options={{
@@ -31,14 +31,14 @@ export default function App() {
             headerShown: false,
           }} />
         <Stack.Screen
-            name='Home'
-            component={CustomButtonNavigationBar}
-            options={{
+          name='Home'
+          component={CustomButtonNavigationBar}
+          options={{
             headerStyle: {
               backgroundColor: "#f28d82"
             }
           }} />
-        <Stack.Screen 
+        <Stack.Screen
           name="Rating"
           component={RatingToiletScreen}
           options={{
@@ -71,12 +71,12 @@ export default function App() {
               backgroundColor: "#f28d82"
             }
           }} /> */}
-        <Stack.Screen 
+        <Stack.Screen
           name='Rate Toilet'
           component={RatingToiletScreen}
-          
-         />
-         <Stack.Screen 
+
+        />
+        <Stack.Screen
           name='More Toilet Infomation'
           component={AddInfoPage}
           options={{
@@ -84,7 +84,7 @@ export default function App() {
               backgroundColor: "#f28d82"
             }
           }}
-         />
+        />
 
         {/* <Stack.Screen 
               name="Rating"
@@ -97,7 +97,7 @@ export default function App() {
               }
             /> */}
 
-          {/* <Stack.Screen 
+        {/* <Stack.Screen 
             name="ThankYou"
             component={ThankYou}
             options={{
@@ -110,65 +110,75 @@ export default function App() {
           }
         /> */}
 
-        <Stack.Screen 
+        <Stack.Screen
           name="ThankYou"
           component={ThankYou}
           options={{
-              headerStyle:{
+            headerStyle: {
+              backgroundColor: "#f28d82"
+            },
+            headerShown: false,
+          }
+          }
+        />
+        <Stack.Screen
+          name='Profile'
+          component={AccountScreen}
+          options={
+            {
+              headerStyle: {
                 backgroundColor: "#f28d82"
-              },
-              headerShown: false,
+              }
+            }
+          }
+
+        />
+        <Stack.Screen
+          name='Owned Toilets'
+          component={OwnedToiletsScreen}
+          options={
+            {
+              headerStyle: {
+                backgroundColor: "#f28d82"
+              }
+            }
+          }
+
+        />
+        <Stack.Screen
+          name='Reviews'
+          component={ReviewsScreen}
+          options={
+            {
+              headerStyle: {
+                backgroundColor: "#f28d82"
+              }
+            }
+          }
+
+        />
+        <Stack.Screen
+          name='Reports'
+          component={ReportsScreen}
+          options={
+            {
+              headerStyle: {
+                backgroundColor: "#f28d82"
+              }
             }
           }
         />
         <Stack.Screen
-            name='Profile'
-            component={AccountScreen}
-            options={
-              {headerStyle: {
+          name='WriteReport'
+          component={WriteReportScreen}
+          options={
+            {
+              headerStyle: {
                 backgroundColor: "#f28d82"
-              }}
+              }
             }
-
-          />
-          <Stack.Screen
-            name='Owned Toilets'
-            component={OwnedToiletsScreen}
-            options={
-              {headerStyle: {
-                backgroundColor: "#f28d82"
-              }}
-            }
-
-          />
-          <Stack.Screen
-            name='Reviews'
-            component={ReviewsScreen}
-            options={
-              {headerStyle: {
-                backgroundColor: "#f28d82"
-              }}
-            }
-
-          />
-          <Stack.Screen
-            name='Reports'
-            component={ReportsScreen}
-            options={
-              {headerStyle: {
-                backgroundColor: "#f28d82"
-              }}
-            }
-          />
-          <Stack.Screen
-            name='WriteReport'
-            component={WriteReportScreen}
-            options={
-              {headerStyle: {
-                backgroundColor: "#f28d82"
-              }}
-            }
-          />
+          }
+        />
       </Stack.Navigator>
     </NavigationContainer>
 

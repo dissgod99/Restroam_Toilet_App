@@ -17,7 +17,7 @@ const SplashScreen = ({ navigation }) => {
                 <Text style={styles.title}>Welcome to RestRoam</Text>
                 <Text style={styles.text}>Locate all the toilet facilities around you in a quick glance!</Text>
                 <View style={styles.adjustBtn}>
-                    <TouchableOpacity style={styles.getStarted} onPress={() => navigation.navigate("Home")}>
+                    <TouchableOpacity style={styles.getStarted} onPress={() => navigation.navigate("Login")}>
                         <Text>Get started </Text>
                     </TouchableOpacity>
                 </View>
