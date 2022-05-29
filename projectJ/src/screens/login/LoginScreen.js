@@ -7,7 +7,8 @@ import Feather from "react-native-vector-icons/Feather";
 import axios from "axios";
 
 // change url backend login api (on heroku)
-const BACKEND_ENDPOINT = 'http://localhost:3000/api/users/login';
+// for now it is set to the IP address of my machine (192.168.1.100) to test it on yours replace it with your IP
+const BACKEND_ENDPOINT = 'http://192.168.1.100:3000/api/users/login';
 
 const LoginScreen = ({ navigation }) => {
 
@@ -31,9 +32,11 @@ const LoginScreen = ({ navigation }) => {
             .then((response) => {
                 const { status, data } = response;
                 if (status == '200') {
-                    console.log(data.JWTtoken);
-                    localStorage.setItem('token', data.JWTtoken);
                     // to access it in pages requiring token use locaStorage.getItem(key) with key = 'token' in this case
+                    
+                    // localStorage is causing problems in emulator (maybe phone too?)
+                    //localStorage.setItem('token', data.JWTtoken);
+
                     handleMessage(data.message, 'green');
                     // once that is finished navigate to next route
                     clearTimeout();
@@ -147,18 +150,11 @@ const LoginScreen = ({ navigation }) => {
                         </TouchableOpacity>
                     </View>
                 </View>
-                <View style={styles.container}>
-                    {
-                        message !== '' ?
-                        <Text style={{ color: messageType }}> {message} </Text>
-                        :
-                        <></>
-                    }
-                </View>
                 <View style={styles.buttons}>
                     <TouchableOpacity style={styles.login} onPress={handleLoginClick} >
                         <Text style={{ fontWeight: "bold" }}>Login</Text>
                     </TouchableOpacity>
+                    <Text style={{ color: messageType }}> {message} </Text>
                     <Text>You don't have an Account ? Sign up now</Text>
                     <TouchableOpacity style={styles.reg}
                         onPress={() => navigation.navigate("SignUp")}>

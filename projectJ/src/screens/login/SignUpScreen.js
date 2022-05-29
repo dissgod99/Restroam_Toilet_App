@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, { useState } from "react";
 import { View, Text, Button, StyleSheet, TextInput, TouchableOpacity } from "react-native";
 import * as Animatable from 'react-native-animatable';
 import FontAwesome from "react-native-vector-icons/FontAwesome";
@@ -6,7 +6,9 @@ import Feather from "react-native-vector-icons/Feather";
 
 import axios from "axios";
 
-const BACKEND_ENDPOINT = 'http://localhost:3000/api/users/signup';
+// change url backend login api (on heroku)
+// for now it is set to the IP address of my machine (192.168.1.100) to test it on yours replace it with your IP
+const BACKEND_ENDPOINT = 'http://192.168.1.100:3000/api/users/login';
 
 
 const LoginScreen = ({ navigation }) => {
@@ -36,7 +38,7 @@ const LoginScreen = ({ navigation }) => {
                     // once that is finished navigate to next route
                     clearTimeout();
                     setTimeout(() => {
-                        navigation.navigate('Home') 
+                        navigation.navigate('Home')
                     }, 3000);
                 } else {
                     handleMessage(data.message, 'red');
@@ -126,17 +128,13 @@ const LoginScreen = ({ navigation }) => {
                         />
                         {data.check_textInputChange ?
                             <Animatable.View animation="bounceIn">
-
                                 <Feather
                                     name="check-circle"
                                     color={"green"}
                                     size={20} />
                             </Animatable.View>
                             : null}
-
                     </View>
-
-
                 </View>
 
                 <View style={styles.box}>
@@ -190,18 +188,10 @@ const LoginScreen = ({ navigation }) => {
                         </TouchableOpacity>
                     </View>
                 </View>
-                <View style={styles.container}>
-                    {
-                        message !== '' ?
-                        <Text style={{ color: messageType }}> {message} </Text>
-                        :
-                        <></>
-                    }
-                </View>
                 <View style={styles.buttons}>
                     <TouchableOpacity style={styles.login} onPress={handleSignUpClick} >
+                        <Text style={{ color: messageType }}> {message} </Text>
                         <Text style={{ fontWeight: "bold" }}>Sign up</Text>
-
                     </TouchableOpacity>
                 </View>
             </Animatable.View>
