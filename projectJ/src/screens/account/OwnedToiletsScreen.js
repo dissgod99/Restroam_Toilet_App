@@ -1,13 +1,17 @@
-import React from "react";
+import React, {useContext} from "react";
 import {View, Text, StyleSheet, ScrollView} from 'react-native';
+import ThemeContext from "../../darkMode/ThemeContext";
 import Toilet from './ownedToilets/Toilet';
 
 const OwnedToiletsScreen = () => {
+
+    const theme = useContext(ThemeContext)
+
     return (
         <ScrollView>
-            <View style={styles.container}>
+            <View style={[styles.container, {backgroundColor: theme.background}]}>
                 <View style={styles.toiletsWrapper}>
-                    <Text style={styles.headerText}>
+                    <Text style={[styles.headerText, {color: theme.color}]}>
                         Your Owned Toilets:
                     </Text>
                     <View style={styles.items}>
@@ -51,7 +55,7 @@ const OwnedToiletsScreen = () => {
 const styles = StyleSheet.create({
     container:{
         flex: 1,
-        backgroundColor: '#FFF'
+        //backgroundColor: '#FFF'
     },
     toiletsWrapper:{
         paddingTop: 40,

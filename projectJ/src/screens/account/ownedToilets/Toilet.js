@@ -1,10 +1,14 @@
-import React from "react";
+import React, { useContext } from "react";
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import FontAwesome from "react-native-vector-icons/FontAwesome";
+import ThemeContext from "../../../darkMode/ThemeContext";
 
 const Toilet = (props) => {
+
+    const theme = useContext(ThemeContext);
+
     return(
-        <View style={styles.item}>
+        <View style={[styles.item, {backgroundColor: theme.backgroundToilet}]}>
             <View style={styles.itemLeft}>
                 <Text style={styles.itemHeader}>{props.title}</Text>
                 <View style={styles.content}>
@@ -26,7 +30,7 @@ const Toilet = (props) => {
 
 const styles = StyleSheet.create({
     item:{
-        backgroundColor: '#FFF',
+        //backgroundColor: '#FFF',
         padding: 15,
         borderRadius: 7,
         borderWidth: 4,

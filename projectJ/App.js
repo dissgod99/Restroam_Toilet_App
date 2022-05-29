@@ -14,7 +14,7 @@ import ReportsScreen from './src/screens/account/ReportsScreen';
 import WriteReportScreen from './src/screens/account/WriteReportScreen';
 import AddInfoPage from './src/screens/addPage/AddInfoPage';
 import { Provider as PaperProvider, DarkTheme as PaperDarkTheme } from 'react-native-paper';
-import React, {useState, useEffect} from 'react';
+import React, {useState, useEffect, useContext} from 'react';
 import {EventRegister} from "react-native-event-listeners"
 
 import ThemeContext from './src/darkMode/ThemeContext';
@@ -23,11 +23,14 @@ import Theme from './src/darkMode/Theme';
 
 
 
+
 const Stack = createNativeStackNavigator();
 
 export default function App() {
 
+
   const [mode, setMode] = useState(false);
+  const theme = useContext(ThemeContext);
   useEffect(() => {
     let eventListener = EventRegister.addEventListener("changeTheme", (data) =>{
       setMode(data);
@@ -43,7 +46,7 @@ export default function App() {
   return (
 
     <ThemeContext.Provider value={mode == true ? Theme.dark : Theme.light}>
-    <NavigationContainer>
+    <NavigationContainer >
       <Stack.Navigator initialRouteName='Splash' >
       <Stack.Screen 
           name="Splash"
@@ -149,9 +152,11 @@ export default function App() {
             name='Profile'
             component={AccountScreen}
             options={
-              {headerStyle: {
-                backgroundColor: "#f28d82"
+                {headerStyle: {
+                backgroundColor: theme.head
               }}
+              
+            
             }
 
           />
