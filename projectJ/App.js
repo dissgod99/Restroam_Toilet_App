@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, DarkTheme, DefaultTheme } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import SplashScreen from './src/screens/login/SplashScreen';
 import SignUpScreen from './src/screens/login/SignUpScreen';
@@ -13,12 +13,36 @@ import ReviewsScreen from './src/screens/account/ReviewsScreen';
 import ReportsScreen from './src/screens/account/ReportsScreen';
 import WriteReportScreen from './src/screens/account/WriteReportScreen';
 import AddInfoPage from './src/screens/addPage/AddInfoPage';
+import { Provider as PaperProvider, DarkTheme as PaperDarkTheme } from 'react-native-paper';
+import React, {useState, useEffect} from 'react';
+import {EventRegister} from "react-native-event-listeners"
+
+import ThemeContext from './src/darkMode/ThemeContext';
+import Theme from './src/darkMode/Theme';
+
+
+
 
 const Stack = createNativeStackNavigator();
 
 export default function App() {
 
+  const [mode, setMode] = useState(false);
+  useEffect(() => {
+    let eventListener = EventRegister.addEventListener("changeTheme", (data) =>{
+      setMode(data);
+      console.log(data);
+      //console.log("Data is accessible from App.js")
+    });
+    return () => {
+      EventRegister.removeAllListeners(eventListener);
+    }
+  }
+  )
+
   return (
+
+    <ThemeContext.Provider value={mode == true ? Theme.dark : Theme.light}>
     <NavigationContainer>
       <Stack.Navigator initialRouteName='Splash' >
       <Stack.Screen 
@@ -171,6 +195,8 @@ export default function App() {
           />
       </Stack.Navigator>
     </NavigationContainer>
+    </ThemeContext.Provider>
+    
 
 
     // <NavigationContainer>

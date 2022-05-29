@@ -1,5 +1,6 @@
 import React from 'react';
 import {View, Text, StyleSheet,TouchableOpacity} from 'react-native';
+import { Switch } from 'react-native-paper';
 
 
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -23,7 +24,7 @@ const Profile = ({navigation}) => {
           E-Mail: max.mustermann@gmx.de
         </Text>
         <Text style={styles.data}>
-          Toilets visited: 333 
+          Toilets visited: 555 
         </Text>
         <Text style={styles.data}>
           Toilets reviewed: 111 
@@ -35,6 +36,7 @@ const Profile = ({navigation}) => {
           </Text>
         </Icon>
         </TouchableOpacity>
+        <Switch color='red'/>
       </View>
 
     
