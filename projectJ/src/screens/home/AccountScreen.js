@@ -36,14 +36,14 @@ const AccountScreen = ({navigation}) => {
           Toilets reviewed: 111 
         </Text>
         <TouchableOpacity onPress={logout}>
-        <Icon name="logout" size={35} color="#900">
-          <Text style={styles.logoutbtn}>
+        <Icon name="logout" size={35} color={theme.logoutColor}>
+          <Text style={[styles.logoutbtn, {color: theme.logoutColor}]}>
             Logout
           </Text>
         </Icon>
         </TouchableOpacity>
         <Switch 
-        color='red'
+        color="#ae8647"
         value={mode}
         onValueChange={(value) => {
           setMode(value);
@@ -94,6 +94,7 @@ const styles = StyleSheet.create({
   container:{
     flex:1,
     flexDirection:'column',
+    
   },
   person:{
     margin:30,
@@ -101,6 +102,7 @@ const styles = StyleSheet.create({
     borderColor:'lightgrey',
     borderWidth:5,
     borderRadius: 20,
+    opacity: .9
   },
   name:{
     fontSize:20,
@@ -112,17 +114,20 @@ const styles = StyleSheet.create({
   },
   logoutbtn:{
     textAlign:'center',
-    color:'#900',
+    //color:'#900',
     fontSize:20,
     justifyContent:'center',
   },
   menu:{
     //backgroundColor: '#fae8e0', 
     borderWidth:1,
-    fontSize:25,
-    padding:20,
+    fontSize:22,
+    padding:15,
     justifyContent:'center',
     textAlign:'left',
+    marginHorizontal: 23,
+    marginVertical: 5,
+    borderRadius: 5
   }
 }
 )

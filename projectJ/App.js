@@ -42,6 +42,7 @@ export default function App() {
     }
   }
   )
+  const headColor = mode == true ? "#ae8647" : "#f28d82";
 
   return (
 
@@ -62,7 +63,8 @@ export default function App() {
             component={CustomButtonNavigationBar}
             options={{
             headerStyle: {
-              backgroundColor: "#f28d82"
+              //backgroundColor: "#ae8647"
+              backgroundColor: headColor
             }
           }} />
         <Stack.Screen 
@@ -153,7 +155,7 @@ export default function App() {
             component={AccountScreen}
             options={
                 {headerStyle: {
-                backgroundColor: theme.head
+                backgroundColor: headColor
               }}
               
             
@@ -165,7 +167,7 @@ export default function App() {
             component={OwnedToiletsScreen}
             options={
               {headerStyle: {
-                backgroundColor: "#f28d82"
+                backgroundColor: headColor
               }}
             }
 
@@ -175,7 +177,7 @@ export default function App() {
             component={ReviewsScreen}
             options={
               {headerStyle: {
-                backgroundColor: "#f28d82"
+                backgroundColor: headColor
               }}
             }
 
@@ -185,7 +187,7 @@ export default function App() {
             component={ReportsScreen}
             options={
               {headerStyle: {
-                backgroundColor: "#f28d82"
+                backgroundColor: headColor
               }}
             }
           />
@@ -194,7 +196,7 @@ export default function App() {
             component={WriteReportScreen}
             options={
               {headerStyle: {
-                backgroundColor: "#f28d82"
+                backgroundColor: headColor
               }}
             }
           />
