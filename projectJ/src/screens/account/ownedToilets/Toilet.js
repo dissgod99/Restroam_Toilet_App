@@ -12,14 +12,14 @@ const Toilet = (props) => {
                     <Text style={styles.price}>Price: {props.price}</Text>
                 </View>
             </View>
-            <View style={styles.itemRight}>
+            {/* <View style={styles.itemRight}>
                 <TouchableOpacity>
                     <FontAwesome name="edit" size={25}/>
                 </TouchableOpacity>
                 <TouchableOpacity>
                     <FontAwesome name="trash-o" size={25}/>
                 </TouchableOpacity>
-            </View>
+            </View> */}
         </View>
     );
 }

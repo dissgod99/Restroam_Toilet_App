@@ -1,8 +1,22 @@
-import React from "react";
-import {View, Text, StyleSheet, ScrollView} from 'react-native';
+import React, { useState } from "react";
+import {View, Text, StyleSheet, ScrollView, TouchableOpacity} from 'react-native';
 import Toilet from './ownedToilets/Toilet';
+import FontAwesome from "react-native-vector-icons/FontAwesome";
 
-const OwnedToiletsScreen = () => {
+const OwnedToiletsScreen = (navigation) => {
+
+    const [toiletItems, setToiletItems] = useState([]);
+
+    const deleteToilet = (index) => {
+        let toiletsCopy = [...toiletItems];
+        toiletsCopy.splice(index, 1);
+        setToiletItems(toiletsCopy);
+    }
+
+    const updateToilets = () => {
+        setToiletItems([...toiletItems, ('Hauptbahnhof', 'Hauptbahnhof', '1.00€')])
+    }
+
     return (
         <ScrollView>
             <View style={styles.container}>
@@ -11,7 +25,28 @@ const OwnedToiletsScreen = () => {
                         Your Owned Toilets:
                     </Text>
                     <View style={styles.items}>
-                        <Toilet 
+
+                        {
+                            toiletItems.map((title, location, price, index) => {
+                                return(
+                                    <View key={index}>
+                                        <Toilet
+                                            title={title}
+                                            location={location}
+                                            price={price}
+                                        />
+                                        <TouchableOpacity>
+                                            <FontAwesome name="edit" size={25}/>
+                                        </TouchableOpacity>
+                                        <TouchableOpacity onPress={() => deleteToilet(index)}>
+                                            <FontAwesome name="trash-o" size={25}/>
+                                        </TouchableOpacity>
+                                    </View>
+                                )
+                            })
+                        }
+
+                        {/* <Toilet 
                             title={'Hauptbahnhof'} 
                             location={'Hauptbahnhof'}
                             price={'1,00 €'}
@@ -40,8 +75,11 @@ const OwnedToiletsScreen = () => {
                             title={'Universität'}
                             location={'Lichtwiese'}
                             price={'0,00 €'}
-                        />
+                        /> */}
                     </View>
+                    <TouchableOpacity onPress={() => updateToilets()}>
+                        <Text>Update</Text>
+                    </TouchableOpacity>
                 </View>
             </View>
         </ScrollView>
