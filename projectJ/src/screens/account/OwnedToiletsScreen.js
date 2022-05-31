@@ -14,7 +14,8 @@ const OwnedToiletsScreen = (navigation) => {
     }
 
     const updateToilets = () => {
-        setToiletItems([...toiletItems, ('Hauptbahnhof', 'Hauptbahnhof', '1.00€')])
+        setToiletItems([...toiletItems, ['Hauptbahnhof', 'Hauptbahnhof', '1.00€']])
+        console.log(toiletItems);
     }
 
     return (
@@ -27,20 +28,22 @@ const OwnedToiletsScreen = (navigation) => {
                     <View style={styles.items}>
 
                         {
-                            toiletItems.map((title, location, price, index) => {
+                            toiletItems.map(([title, location, price], index) => {
                                 return(
-                                    <View key={index}>
+                                    <View key={index} style={styles.item}>
                                         <Toilet
                                             title={title}
                                             location={location}
                                             price={price}
                                         />
-                                        <TouchableOpacity>
-                                            <FontAwesome name="edit" size={25}/>
-                                        </TouchableOpacity>
-                                        <TouchableOpacity onPress={() => deleteToilet(index)}>
-                                            <FontAwesome name="trash-o" size={25}/>
-                                        </TouchableOpacity>
+                                        <View style={styles.itemRight}>
+                                            <TouchableOpacity>
+                                                <FontAwesome name="edit" size={25}/>
+                                            </TouchableOpacity>
+                                            <TouchableOpacity onPress={() => deleteToilet(index)}>
+                                                <FontAwesome name="trash-o" size={25}/>
+                                            </TouchableOpacity>
+                                        </View>
                                     </View>
                                 )
                             })
@@ -101,6 +104,17 @@ const styles = StyleSheet.create({
     },
     items:{
         marginTop: 30
+    },
+    item:{
+        backgroundColor: '#FFF',
+        padding: 15,
+        borderRadius: 7,
+        borderWidth: 4,
+        borderColor: '#C0C0C0',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        marginBottom: 20
     }
 });
 
