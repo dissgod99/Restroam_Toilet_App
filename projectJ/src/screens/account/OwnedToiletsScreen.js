@@ -3,7 +3,7 @@ import {View, Text, StyleSheet, ScrollView, TouchableOpacity} from 'react-native
 import Toilet from './ownedToilets/Toilet';
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 
-const OwnedToiletsScreen = (navigation) => {
+const OwnedToiletsScreen = ({navigation}) => {
 
     const [toiletItems, setToiletItems] = useState([]);
 
@@ -11,6 +11,10 @@ const OwnedToiletsScreen = (navigation) => {
         let toiletsCopy = [...toiletItems];
         toiletsCopy.splice(index, 1);
         setToiletItems(toiletsCopy);
+    }
+
+    const editToilet = (index) => {
+        navigation.navigate('More Toilet Infomation');
     }
 
     const updateToilets = () => {
@@ -37,7 +41,7 @@ const OwnedToiletsScreen = (navigation) => {
                                             price={price}
                                         />
                                         <View style={styles.itemRight}>
-                                            <TouchableOpacity>
+                                            <TouchableOpacity onPress={() => editToilet(index)}>
                                                 <FontAwesome name="edit" size={25}/>
                                             </TouchableOpacity>
                                             <TouchableOpacity onPress={() => deleteToilet(index)}>
