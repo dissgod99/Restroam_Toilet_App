@@ -4,7 +4,6 @@ import FontAwesome from "react-native-vector-icons/FontAwesome";
 
 const Toilet = (props) => {
     return(
-        // <View style={styles.item}>
             <View style={styles.itemLeft}>
                 <Text style={styles.itemHeader}>{props.title}</Text>
                 <View style={styles.content}>
@@ -17,17 +16,6 @@ const Toilet = (props) => {
 }
 
 const styles = StyleSheet.create({
-    // item:{
-    //     backgroundColor: '#FFF',
-    //     padding: 15,
-    //     borderRadius: 7,
-    //     borderWidth: 4,
-    //     borderColor: '#C0C0C0',
-    //     flexDirection: 'row',
-    //     alignItems: 'center',
-    //     justifyContent: 'space-between',
-    //     marginBottom: 20
-    // },
     itemLeft:{
         alignItems: 'flex-start',
         flexWrap: 'wrap'
