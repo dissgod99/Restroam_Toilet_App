@@ -6,7 +6,11 @@ const Theme = {
          menuBackground: '#fae8e0',
          head: "#f28d82",
          backgroundToilet: "white",
-         logoutColor: "red"
+         logoutColor: "red",
+         goBack: "#038dca",
+         tabColor: "white",
+         submitBtn: "#e6697e",
+         activeOutColor: "#e6697e",
      },
     dark:{
         theme: "dark",
@@ -22,7 +26,11 @@ const Theme = {
         head: "#0d1b2a",
         backgroundToilet: "#a29a9a",
         //backgroundToilet: "#ae8647",
-        logoutColor: "#ae8647"
+        logoutColor: "#ae8647",
+        goBack: "#ae8647",
+        tabColor: "black",
+        submitBtn: "#ae8647",
+        activeOutColor: "#ae8647",
     },
 };
 export default Theme;

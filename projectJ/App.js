@@ -110,7 +110,7 @@ export default function App() {
           component={AddInfoPage}
           options={{
             headerStyle: {
-              backgroundColor: "#f28d82"
+              backgroundColor: headColor
             }
           }}
          />
