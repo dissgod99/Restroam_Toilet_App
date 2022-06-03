@@ -18,8 +18,8 @@ const AccountScreen = ({navigation}) => {
   const theme = useContext(ThemeContext);
 
   return(
-    <ScrollView>
-    <View style={[styles.container, {backgroundColor: theme.background}]}>
+    <ScrollView style= {{backgroundColor: theme.background}}>
+    <View style={[styles.container]}>
       <View style={styles.person}>
         <Text style={[styles.name, {color: theme.color}]}>
           Max Mustermann  
