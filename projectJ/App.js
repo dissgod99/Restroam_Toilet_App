@@ -72,9 +72,9 @@ export default function App() {
           component={RatingToiletScreen}
           options={{
             headerStyle: {
-              backgroundColor: "#f28d82"
+              backgroundColor: headColor
             },
-            headerShown: false,
+            //headerShown: false,
           }} />
         <Stack.Screen
           name='Login'
@@ -100,11 +100,11 @@ export default function App() {
               backgroundColor: "#f28d82"
             }
           }} /> */}
-        <Stack.Screen 
+        {/* <Stack.Screen 
           name='Rate Toilet'
           component={RatingToiletScreen}
           
-         />
+         /> */}
          <Stack.Screen 
           name='More Toilet Infomation'
           component={AddInfoPage}
@@ -120,7 +120,7 @@ export default function App() {
               component={RatingToiletScreen}
               options={{
                   headerStyle:{
-                    backgroundColor: "#f28d82"
+                    backgroundColor: headColor
                   }
                 }
               }

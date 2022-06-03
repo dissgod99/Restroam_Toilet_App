@@ -11,7 +11,7 @@ import ThemeContext from '../../darkMode/ThemeContext';
 const AccountScreen = ({navigation}) => {
   const logout = () => {
     console.log("Transition WORKS");
-    navigation.navigate("Login");
+    navigation.navigate("Rating");
   }
 
   const [mode, setMode] = useState(false);
@@ -55,10 +55,6 @@ const AccountScreen = ({navigation}) => {
         />
       </View>
       
-
-    
-
-
      <TouchableOpacity onPress={() => navigation.navigate('Owned Toilets')}>
         <Text style={[styles.menu, {color: theme.color, backgroundColor: theme.menuBackground}]}>
         <Icon name="toilet" size={35} color={theme.color} />

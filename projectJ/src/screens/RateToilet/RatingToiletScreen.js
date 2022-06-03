@@ -1,9 +1,10 @@
-import React, {useState, Component} from "react";
+import React, {useState, useContext} from "react";
 import { View, Text, Button, StyleSheet, TouchableOpacity, ScrollView, SafeAreaView } from "react-native";
 import * as Animatable from 'react-native-animatable';
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import StarRating from 'react-native-star-rating';
 import { TextInput } from 'react-native-paper';
+import ThemeContext from "../../darkMode/ThemeContext";
 
 const RatingToiletScreen = ({ navigation }) => {
 
@@ -33,13 +34,16 @@ const RatingToiletScreen = ({ navigation }) => {
     // Average of all ratings
     const total = parseFloat(((starCount1 + starCount2 + starCount3)/3).toFixed(2));
 
+    // Themes (Dark Mode / Default Mode)
+    const theme = useContext(ThemeContext);
+
     return (
-        <SafeAreaView >
+        <SafeAreaView style= {{backgroundColor: theme.background, height: "100%"}}>
         <ScrollView >
             <View style={styles.container}>
-                <Text style={styles.rateToilet}>Rate Toilet : </Text> 
+                <Text style={[styles.rateToilet, {color: theme.color}]}>Rate Toilet : </Text> 
                 <View style={styles.center}>
-                    <Text style={styles.smallMargin}>
+                    <Text style={[styles.smallMargin, {color: theme.color}]}>
                         Cleaness {starCount1} / {maxRating}
                     </Text>
                     <StarRating 
@@ -52,7 +56,7 @@ const RatingToiletScreen = ({ navigation }) => {
                 </View>
 
                 <View style={styles.center}>
-                    <Text style={styles.smallMargin}>
+                    <Text style={[styles.smallMargin, {color: theme.color}]}>
                         Waiting time {starCount2} / {maxRating}
                     </Text>
                     <StarRating 
@@ -64,7 +68,7 @@ const RatingToiletScreen = ({ navigation }) => {
                     />
                 </View>
                 <View style={styles.center}>
-                    <Text style={styles.smallMargin}>
+                    <Text style={[styles.smallMargin, {color: theme.color}]}>
                         Security {starCount3} / {maxRating}
                     </Text>
                     <StarRating 
@@ -77,7 +81,7 @@ const RatingToiletScreen = ({ navigation }) => {
                 </View>
 
                 <View style={styles.center}>
-                    <Text style={styles.smallMargin}>
+                    <Text style={[styles.smallMargin, {color: theme.color}]}>
                         Total {total} / {maxRating}
                     </Text>
                     <StarRating 
@@ -95,11 +99,11 @@ const RatingToiletScreen = ({ navigation }) => {
                     label="Description"
                     placeholder="Type something"
                     right={<TextInput.Affix text="/250" />}
-                    activeOutlineColor="#e6697e"
+                    activeOutlineColor={theme.activeOutColor}
                 />
                 </View>
                 <TouchableOpacity 
-                    style={styles.btn}
+                    style={[styles.btn, {backgroundColor: theme.submitBtn}]}
                     onPress={handleSubmit}
                     >
                     <Text style={styles.stOfSubmit}>
