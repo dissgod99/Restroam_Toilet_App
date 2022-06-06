@@ -3,9 +3,16 @@ import {Text, ScrollView, View, StyleSheet, TouchableOpacity} from "react-native
 import { TextInput, Switch } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 
+import axios from "axios";
+
+// change url backend login api (on heroku)
+// for now it is set to the IP address of my machine (192.168.1.100) to test it on yours replace it with your IP
+const BACKEND_ENDPOINT = 'http://192.168.1.100:3000/api/toilets/addToilet';
+
 const AddInfoPage = ({navigation}) =>{
     var numberi = 0;
     const [price, setPrice] = useState('0,00€');
+    const [address, setAddress] = useState('');
     const [isEnabled, setIsEnabled] = useState(false);
 
     function toggleSwitch() {
@@ -16,6 +23,9 @@ const AddInfoPage = ({navigation}) =>{
     setPrice(v + '€');
     v = v + '€';
     console.log(price)
+  }
+  function changeAddress(v) {
+    setAddress(v);
   }
 
     return (
@@ -37,6 +47,7 @@ const AddInfoPage = ({navigation}) =>{
                             placeholder="Type place"
                             right={<TextInput.Affix text="/100" />}
                             activeOutlineColor="#e6697e"
+                            onChangeText={(value) => changeAddress(value)}
                         />
                     </View>
                     <Text style={styles.details}>
