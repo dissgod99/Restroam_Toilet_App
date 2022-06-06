@@ -4,6 +4,8 @@ import * as Animatable from 'react-native-animatable';
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import Feather from "react-native-vector-icons/Feather";
 
+import AsyncStorage from '@react-native-async-storage/async-storage';
+
 import axios from "axios";
 
 // change url backend login api (on heroku)
@@ -22,14 +24,14 @@ const LoginScreen = ({ navigation }) => {
     const [message, setMessage] = useState('');
     const [messageType, setMessageType] = useState('red');
 
-    const handleLoginClick = (event) => {
+    const handleLoginClick = async (event) => {
         event.preventDefault();
         // do some backend logic here
         let email = data.email;
         let password = data.password;
         axios
             .post(BACKEND_ENDPOINT, { email, password })
-            .then((response) => {
+            .then(async (response) => {
                 const { status, data } = response;
                 if (status == '200') {
                     // to access it in pages requiring token use locaStorage.getItem(key) with key = 'token' in this case
@@ -37,11 +39,14 @@ const LoginScreen = ({ navigation }) => {
                     // localStorage is causing problems in emulator (maybe phone too?)
                     //localStorage.setItem('token', data.JWTtoken);
 
+                    // use AsyncStorage instead
+                    await storeData('token', data.JWTtoken);
+
                     handleMessage(data.message, 'green');
                     // once that is finished navigate to next route
                     clearTimeout();
-                    setTimeout(() => {
-                        navigation.navigate('Home') 
+                    setTimeout(async () => {
+                        navigation.navigate('Home');
                     }, 3000);
                 } else {
                     handleMessage(data.message, 'red');
@@ -53,6 +58,24 @@ const LoginScreen = ({ navigation }) => {
                     handleMessage(serverRes.data.message, 'red');
                 }
             });
+    }
+
+    const storeData = async (key, value) => {
+        try {
+            let stringifiedValue = JSON.stringify(value);
+            await AsyncStorage.setItem(key, stringifiedValue);
+        } catch (e) {
+            console.log('storing (' + key + ',' + value + ') in Async Storage failed with error: ' + e);
+        }
+    }
+
+    const getData = async (key) => {
+        try {
+            const jsonString = await AsyncStorage.getItem(key);
+            return jsonString == null ? null : JSON.parse(jsonString);
+        } catch (e) {
+            console.log('reading (' + key + ') from Async Storage failed with error: ' + e);
+        }
     }
 
     const handleMessage = (message, type) => {

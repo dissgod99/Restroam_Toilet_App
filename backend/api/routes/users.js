@@ -26,21 +26,33 @@ const JWT_SECRET = 'qslmnvtuievDVGfzevdsbGDberbDF?dblKN@$^[{^[~#}?LEKMKmv,ruvNXW
 const CORS = require('cors');
 router.use(CORS());
 
+const checkPassword = async (plainText, storedHash) => {
+    if (! await bcrypt.compare(plainText, storedHash))
+        throw new Error('Password is incorrect');
+};
+
+const checkIfUserIsDeleted = async (user) => {
+
+    if (!user)
+        throw new Error('Fatal: user Id extracted from JWT Token doesn\'t match any in Database');
+}
+
 router.post('/login', jsonParser, async (req, res, next) => {
-    let { email, password } = req.body;
-    const user = await User.findOne({
-        email
-    }).lean();
+    try {
+        const { email, password } = req.body;
+        if (!email || !password)
+            throw new Error('Missing arugments in request body. Please pass in the email, and the password');
+        const user = await User.findOne({
+            email
+        }).lean();
 
-    if (! user) {
-        // no user matching the email
-        return res.status(401).json({
-            message: 'Invalid email/password'
-        });
-    }
+        if (!user) {
+            // no user matching the email
+            throw new Error('No Account');
+        }
 
-    // the thing with bcrypt is: it uses a different random number with the original each time it is executed. Therefore the compare method
-    if (await bcrypt.compare(password, user.password)) {
+        // the thing with bcrypt is: it uses a different random number with the original each time it is executed. Therefore the compare method
+        await checkPassword(password, user.password);
         // email password combination is correct
 
         const token = jwt.sign({
@@ -52,16 +64,17 @@ router.post('/login', jsonParser, async (req, res, next) => {
             JWTtoken: token,
             message: 'Successfully logged in'
         });
+
+    } catch (e) {
+        res.status(400).json({ message: e.message })
     }
 
-    return res.status(401).json({
-        message: 'Invalid email/password'
-    });
+
 });
 
 router.post('/signup', jsonParser, async (req, res, next) => {
     if (req.body.password.length < 5) return res.status(400).json({
-        message: 'Password too short. Minimum length of 5' 
+        message: 'Password too short. Minimum length of 5'
     });
     User.find({ email: req.body.email })
         .exec()
@@ -108,13 +121,64 @@ router.post('/signup', jsonParser, async (req, res, next) => {
 
 });
 
-router.delete('/:userId', async (req, res, next) => {
+router.post('/delete-account', jsonParser, async (req, res, next) => {
+    try {
+        const { token, password } = req.body;
+        if (!token)
+            throw new Error('Missing arugments in request body. Please pass in the token');
+        const decryptedSignature = jwt.verify(token, JWT_SECRET);
+        // from this point we know that the request is not malformed. JWT has not been tampered with
 
-})
+        let userId = decryptedSignature.id;
+        let user = await User.findById(userId);
 
-router.post('/change-password', jsonParser, (req, res, next) => {
-    const {token} = req.body;
-    const user = jwt.verify(token, JWT_SECRET);
-})
+        await checkIfUserIsDeleted(user);
+
+        await checkPassword(password, user.password);
+
+        await User.deleteOne({
+            _id: userId
+        });
+
+        res.status(200).json({
+            message: 'User account deleted successfully'
+        })
+    } catch (e) {
+        res.status(400).json({ message: e.message })
+    }
+});
+
+router.post('/change-password', jsonParser, async (req, res, next) => {
+
+    try {
+        const { token, oldPassword, newPassword } = req.body;
+        if (!token || !oldPassword || !newPassword)
+            throw new Error('Missing arugments in request body. Please pass in the token, the old password, and the new one');
+        const decryptedSignature = jwt.verify(token, JWT_SECRET);
+        // from this point we know that the request is not malformed. JWT has not been tampered with
+
+        let userId = decryptedSignature.id;
+        let user = await User.findById(userId);
+
+        await checkIfUserIsDeleted(user);
+
+        await checkPassword(oldPassword, user.password);
+
+        let hashedPassword = await bcrypt.hash(newPassword, 10);
+        await User.updateOne(
+            { _id: userId },
+            {
+                $set: { password: hashedPassword }
+            }
+        );
+        res.status(200).json({
+            message: 'changed password to: ' + newPassword + ', hashed value is: ' + hashedPassword
+        });
+
+
+    } catch (e) {
+        res.status(400).json({ message: e.message });
+    }
+});
 
 module.exports = router;
