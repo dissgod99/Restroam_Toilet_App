@@ -20,7 +20,7 @@ export default function App() {
 
   return (
     <NavigationContainer>
-      <Stack.Navigator initialRouteName='Splash' >
+      <Stack.Navigator initialRouteName='Home' >
         <Stack.Screen
           name="Splash"
           component={SplashScreen}
