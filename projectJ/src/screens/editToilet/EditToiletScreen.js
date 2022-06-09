@@ -5,21 +5,29 @@ import TimeSelectArray from "../addPage/TimeSelectArray";
 const EditToiletScreen = ({navigation}) => {
 
     return(
-        <ScrollView>
-            <View style={styles.container}>
+        <View style={styles.container}>
+            <ScrollView>
+                <View style={styles.header}>
+                    <Text style={styles.title}>
+                        Edit Toilet
+                    </Text>
+                </View>
                 <View style={styles.timeSelect}>
                     <Text style={styles.timeSelectHeader}>
-                        Edit Opening Hours
+                        Opening Hours
                     </Text>
                     <TimeSelectArray></TimeSelectArray>
                 </View>
-                <TouchableOpacity style={styles.buttonWrapper}>
+                <TouchableOpacity 
+                    style={styles.buttonWrapper} 
+                    onPress={() => navigation.navigate('Edit More Information')}
+                >
                     <Text style={styles.button}>
                         Next
                     </Text>
                 </TouchableOpacity>
-            </View>
-        </ScrollView>
+            </ScrollView>
+        </View>
     )
 }
 
@@ -48,6 +56,14 @@ const styles = StyleSheet.create({
         alignItems: "center"
     },
     button:{
+        fontWeight: "bold"
+    },
+    header:{
+        alignItems: "center",
+        marginVertical: 20
+    },
+    title:{
+        fontSize: 20,
         fontWeight: "bold"
     }
 });

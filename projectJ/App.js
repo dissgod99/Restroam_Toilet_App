@@ -14,6 +14,7 @@ import ReportsScreen from './src/screens/account/ReportsScreen';
 import WriteReportScreen from './src/screens/account/WriteReportScreen';
 import AddInfoPage from './src/screens/addPage/AddInfoPage';
 import EditToiletScreen from './src/screens/editToilet/EditToiletScreen';
+import EditInfoScreen from './src/screens/editToilet/EditInfoScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -173,6 +174,15 @@ export default function App() {
           <Stack.Screen
             name='Edit Toilet'
             component={EditToiletScreen}
+            options={
+              {headerStyle: {
+                backgroundColor: "#f28d82"
+              }}
+            }
+          />
+          <Stack.Screen
+            name='Edit More Information'
+            component={EditInfoScreen}
             options={
               {headerStyle: {
                 backgroundColor: "#f28d82"
