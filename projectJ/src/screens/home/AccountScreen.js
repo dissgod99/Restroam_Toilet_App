@@ -32,27 +32,33 @@ const AccountScreen = ({navigation}) => {
         <Text style={[styles.data, {color: theme.color}]}>
           Toilets visited: 333 
         </Text>
-        <Text style={[styles.data, {color: theme.color}]}>
+        <Text style={[styles.data, styles.dataMargin, {color: theme.color}]}>
           Toilets reviewed: 111 
         </Text>
-        <TouchableOpacity onPress={logout}>
+
+        <View style={[styles.alignItems]}>
+        <TouchableOpacity onPress={logout} style={styles.marginIcon}>
         <Icon name="logout" size={35} color={theme.logoutColor}>
           <Text style={[styles.logoutbtn, {color: theme.logoutColor}]}>
             Logout
           </Text>
         </Icon>
         </TouchableOpacity>
-        <Switch 
-        color="#ae8647"
-        value={mode}
-        onValueChange={(value) => {
-          setMode(value);
-          EventRegister.emit("changeTheme", value);
+        <View style={[styles.alignItems]}>
+            <Icon name='white-balance-sunny' size={45} color={theme.day}/>
+            <Switch 
+            color="#ae8647"
+            value={mode}
+            onValueChange={(value) => {
+              setMode(value);
+              EventRegister.emit("changeTheme", value);
+            }}
+            
+            />
+            <Icon name='power-sleep' size={45} color={theme.night}/>
+        </View>
+        </View>
 
-        }}
-        
-        
-        />
       </View>
       
      <TouchableOpacity onPress={() => navigation.navigate('Owned Toilets')}>
@@ -78,6 +84,21 @@ const AccountScreen = ({navigation}) => {
           <Icon name="flag-outline" size={35} color={theme.color}/>
         </Text>
       </TouchableOpacity>
+
+      {/* <TouchableOpacity onPress={() => navigation.navigate('Reviews')} style={[styles.alignItems, styles.menu, {backgroundColor: theme.menuBackground}]}>
+      <Icon name="cog-outline" size={35} color={theme.color} style={styles.paddingIcon} />
+        <Text style={{color: theme.color, fontSize: 25}}>
+          Settings 
+        </Text>
+        
+      </TouchableOpacity>  */}
+      <TouchableOpacity onPress={() => navigation.navigate('Settings')}>
+        <Text style={[styles.menu, {color: theme.color, backgroundColor: theme.menuBackground}]}>
+        <Icon name="cog-outline" size={35} color={theme.color} />
+          Settings 
+        </Text>
+      </TouchableOpacity> 
+      
 
 
 
@@ -108,6 +129,10 @@ const styles = StyleSheet.create({
     fontSize:15,
     textAlign:'left',
   },
+  dataMargin:{
+    marginBottom: 20
+
+  },
   logoutbtn:{
     textAlign:'center',
     //color:'#900',
@@ -124,7 +149,15 @@ const styles = StyleSheet.create({
     marginHorizontal: 23,
     marginVertical: 5,
     borderRadius: 5
-  }
+  },
+  marginIcon:{
+    marginRight: 65
+
+  },
+  alignItems:{
+    flexDirection: "row"
+  },
+
 }
 )
 export default AccountScreen;

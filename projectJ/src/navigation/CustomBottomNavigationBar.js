@@ -58,7 +58,7 @@ const screenOpts = ({ route }) => ({
 });
 
 // new tab options
-const materialScreenOpts = ({ route }) => ({
+const materialScreenOpts = ({ route}) => ({
   tabBarColor: '#FFFFFF',
   tabBarIcon: ({ focused, color, size }) => {
     let iconName; let rn = route.name;

@@ -11,6 +11,8 @@ const Theme = {
          tabColor: "white",
          submitBtn: "#e6697e",
          activeOutColor: "#e6697e",
+         day: "gold",
+         night: "grey"
      },
     dark:{
         theme: "dark",
@@ -31,6 +33,8 @@ const Theme = {
         tabColor: "black",
         submitBtn: "#ae8647",
         activeOutColor: "#ae8647",
+        day: "grey",
+        night: "gold"
     },
 };
 export default Theme;
