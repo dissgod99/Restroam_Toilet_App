@@ -1,6 +1,6 @@
 import React,{ useState, useEffect } from "react";
-import {View, Text, TouchableOpacity,StyleSheet} from 'react-native';
-import DropDownPicker from 'react-native-dropdown-picker';
+import {View, Text, TouchableOpacity,StyleSheet, KeyboardAvoidingView} from 'react-native';
+import { CheckBox } from "@rneui/base";
 import { TextInput } from 'react-native-paper';
 
 
@@ -10,32 +10,51 @@ const handleSubmit = ()=>{
 }
 
 const ReportsScreen = ({navigation}) => {
-    const [open, setOpen] = useState(false);
-    const [value, setValue] = useState(null);
-    const [items, setItems] = useState([
-        {label: 'Toilet paper is empty', value: 'paper'},
-        {label: 'Toilet clogged', value: 'clogged'},
-        {label: 'Toilet dirty', value: 'dirty'},
-        {label: 'Toilet damaged', value: 'damaged'},
-        {label: 'Other', value: 'other'}
-    ]);
+    const [notFound, setNotFound]=React.useState(false);
+    const [clogged, setClogged]=React.useState(false);
+    const [damaged, setDamaged]=React.useState(false);
+    const [dirty, setDirty]=React.useState(false);
+
+
     const [text, onChangeText] = React.useState("");
     return (
-            <View style={styles.container}>
-                <Text style={styles.text}>
-                    Please select the reason for your report
+            <KeyboardAvoidingView style={styles.container}>
+                <Text style={styles.headline}>
+                    Report a toilet
                 </Text>
-                <DropDownPicker 
-                    style={styles.dropdown}
-                    open={open}
-                    value={value}
-                    items={items}
-                    setOpen={setOpen}
-                    setValue={setValue}
-                    setItems={setItems}
-                    />
-
-            {value === 'other'&&(
+                <Text style={styles.text}>
+                    Please select the reason for your report as precisely as possible. If you want to provide additional information, please use the text field.
+                </Text>
+                <View style={styles.checkboxes}>
+                    <CheckBox
+                        title='The toilet can no longer be found in its specified position.'
+                        checked={notFound}
+                        onPress={()=> setNotFound(!notFound)}
+                        checkedColor="#e6697e"
+                        textStyle={styles.checkbox}
+                        />
+                    <CheckBox
+                        title='The toilet is clogged so that it is no longer usable.'
+                        checked={clogged}
+                        onPress={()=> setClogged(!clogged)}
+                        checkedColor="#e6697e"
+                        textStyle={styles.checkbox}
+                        />
+                    <CheckBox
+                        title='There are serious damages on the toilet that need to be repaired.'
+                        checked={damaged}
+                        onPress={()=> setDamaged(!damaged)}
+                        checkedColor="#e6697e"
+                        textStyle={styles.checkbox}
+                        />
+                    <CheckBox
+                        title='The toilet is dirty that it requires substantial cleaning.'
+                        checked={dirty}
+                        onPress={()=> setDirty(!dirty)}
+                        checkedColor="#e6697e"
+                        textStyle={styles.checkbox}
+                        />
+                </View>
                 <TextInput
                     style={styles.input}
                     onChangeText={onChangeText}
@@ -43,9 +62,7 @@ const ReportsScreen = ({navigation}) => {
                     placeholder="Your report"
                     multiline={true}
                     activeOutlineColor="#e6697e"
-
-
-                />)}
+                    />
                 <View style={styles.buttonFlex}>
                 <TouchableOpacity 
                             style={styles.btn}
@@ -57,7 +74,7 @@ const ReportsScreen = ({navigation}) => {
                             </Text>
                     </TouchableOpacity>
                 </View>
-            </View>
+            </KeyboardAvoidingView>
     )
 }
 const styles = StyleSheet.create({
@@ -68,22 +85,27 @@ const styles = StyleSheet.create({
         flexDirection:'column',
 
     },
-    text:{
-        marginTop:50,
-        flex:1,
-        margin:10,
-        fontSize:20,
+    headline:{
+        flex: 1,
+        fontSize:25,
         fontWeight:'bold',
-        justifyContent:'center',
-        textAlign:'center'
+        marginTop:10,
     },
-    dropdown:{
-        flex:1,
+    checkboxes:{
+        flex:5,
+        marginHorizontal:5,
+    },
+    checkbox:{
+        fontWeight:'normal',
+        },
+    text:{
+        flex:2,
+        margin:10,
+        fontSize:14,
         justifyContent:'center',
-        marginBottom:60,
     },
     input:{
-        flex:1,
+        flex:2,
         borderWidth: 1,
         padding:10,
         width:300,
