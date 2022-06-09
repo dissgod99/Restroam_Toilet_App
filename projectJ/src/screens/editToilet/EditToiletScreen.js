@@ -2,7 +2,9 @@ import React from "react";
 import { ScrollView, StyleSheet, View, Text, TouchableOpacity } from "react-native";
 import TimeSelectArray from "../addPage/TimeSelectArray";
 
-const EditToiletScreen = ({navigation}) => {
+const EditToiletScreen = ({route, navigation}) => {
+
+    const { editTitle, editLocation, editPrice }  = route.params;
 
     return(
         <View style={styles.container}>
@@ -20,7 +22,11 @@ const EditToiletScreen = ({navigation}) => {
                 </View>
                 <TouchableOpacity 
                     style={styles.buttonWrapper} 
-                    onPress={() => navigation.navigate('Edit More Information')}
+                    onPress={() => navigation.navigate('Edit More Information',{
+                        editTitle: editTitle,
+                        editLocation: editLocation,
+                        editPrice: editPrice
+                    })}
                 >
                     <Text style={styles.button}>
                         Next

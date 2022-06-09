@@ -40,7 +40,11 @@ const OwnedToiletsScreen = ({navigation}) => {
                                             price={price}
                                         />
                                         <View style={styles.itemRight}>
-                                            <TouchableOpacity onPress={() => editToilet(index)}>
+                                            <TouchableOpacity onPress={() => navigation.navigate('Edit Toilet', {
+                                                editTitle: title,
+                                                editLocation: location,
+                                                editPrice: price
+                                            })}>
                                                 <FontAwesome name="edit" size={25}/>
                                             </TouchableOpacity>
                                             <TouchableOpacity onPress={() => deleteToilet(index)}>

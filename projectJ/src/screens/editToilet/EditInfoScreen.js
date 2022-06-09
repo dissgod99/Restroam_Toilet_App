@@ -2,9 +2,10 @@ import React, { useState } from "react";
 import { ScrollView, StyleSheet, View, Text, TouchableOpacity } from "react-native";
 import { TextInput, Switch } from "react-native-paper";
 
-const EditInfoScreen = ({navigation}) => {
+const EditInfoScreen = ({route, navigation}) => {
 
     const [isEnabled, setIsEnabled] = useState(false);
+    const { editTitle, editLocation, editPrice }  = route.params;
 
     function toggleSwitch() {
         setIsEnabled(!isEnabled);
@@ -17,22 +18,22 @@ const EditInfoScreen = ({navigation}) => {
                     <Text style={styles.title}>
                         Edit More Information
                     </Text>
-                </View>
+                
 
-                <View>
-                    <Text style={styles.locationHeader}>
-                        Specify its location
-                    </Text>
-                    <TextInput
-                        style={styles.location}
-                        mode="outlined"
-                        label="Address"
-                        placeholder="Type Place"
-                        activeOutlineColor="#e6697e"
-                        right={<TextInput.Affix text="/100" />}
-                    />
-                </View>
-                <View>
+                    <View>
+                        <Text style={styles.locationHeader}>
+                            Specify its location
+                        </Text>
+                        <TextInput
+                            style={styles.location}
+                            defaultValue={editLocation}
+                            mode="outlined"
+                            // label="Address"
+                            // placeholder="Type Place"
+                            activeOutlineColor="#e6697e"
+                            right={<TextInput.Affix text="/100" />}
+                        />
+                    </View>
                     <Text style={styles.details}>
                         Indicate Details
                     </Text>
@@ -42,9 +43,9 @@ const EditInfoScreen = ({navigation}) => {
                                 Specify Price
                             </Text>
                             <TextInput style={styles.boxPrice}
-                                defaultValue= "0,00 €"
+                                defaultValue={editPrice}
                                 mode="outlined"
-                                placeholder="Type place"
+                                // placeholder="Type place"
                                 activeOutlineColor="#e6697e"
                             />
                         </View>
@@ -64,9 +65,10 @@ const EditInfoScreen = ({navigation}) => {
                             More Details
                         </Text>
                         <TextInput style={styles.location}
+                            defaultValue={editTitle}
                             mode="outlined"
-                            label="Other details"
-                            placeholder="Type details"
+                            // label="Other details"
+                            // placeholder="Type details"
                             right={<TextInput.Affix text="/250" />}
                             activeOutlineColor="#e6697e"
                         />
