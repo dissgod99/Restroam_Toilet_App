@@ -14,6 +14,7 @@ import ReportsScreen from './src/screens/account/ReportsScreen';
 import WriteReportScreen from './src/screens/account/WriteReportScreen';
 import AddInfoPage from './src/screens/addPage/AddInfoPage';
 import SettingsScreen from './src/screens/account/SettingsScreen';
+import ChangePasswordScreen from './src/screens/account/ChangePasswordScreen';
 import { Provider as PaperProvider, DarkTheme as PaperDarkTheme } from 'react-native-paper';
 import React, {useState, useEffect, useContext} from 'react';
 import {EventRegister} from "react-native-event-listeners"
@@ -205,6 +206,16 @@ export default function App() {
             <Stack.Screen 
               name='Settings'
               component={SettingsScreen}
+              options={
+                {headerStyle: {
+                  backgroundColor: headColor
+                }}
+              }
+            
+            />
+            <Stack.Screen 
+              name='Change Password'
+              component={ChangePasswordScreen}
               options={
                 {headerStyle: {
                   backgroundColor: headColor
