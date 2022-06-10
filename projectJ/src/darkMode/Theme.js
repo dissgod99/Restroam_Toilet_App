@@ -12,29 +12,24 @@ const Theme = {
          submitBtn: "#e6697e",
          activeOutColor: "#e6697e",
          day: "gold",
-         night: "grey"
+         night: "grey",
+         show: "#f28d82"
      },
     dark:{
         theme: "dark",
         color: "white",
-        //background: "#494747",
-        //background: "#232B32",
-        //background: `${"#121212"}90`,
-        //background: "#121212",
         background: "#2b2b2b",
-        //menuBackground: "grey",
-        //menuBackground: "#a29a9a",
         menuBackground: "#ae8647",
         head: "#0d1b2a",
         backgroundToilet: "#a29a9a",
-        //backgroundToilet: "#ae8647",
         logoutColor: "#ae8647",
         goBack: "#ae8647",
         tabColor: "black",
         submitBtn: "#ae8647",
         activeOutColor: "#ae8647",
         day: "grey",
-        night: "gold"
+        night: "gold",
+        show: "grey"
     },
 };
 export default Theme;

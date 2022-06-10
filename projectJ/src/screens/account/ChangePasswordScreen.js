@@ -11,7 +11,8 @@ const ChangePasswordScreen = () =>{
         newPassword: "",
         reenterNewPassword: "",
         secureTextEntryOldPassword: true,
-        secureTextEntryNewPassword: true
+        secureTextEntryNewPassword: true,
+        secureTextEntryNewPasswordAgain: true
     })
     const enterOldPassword = (value) =>{
         setData({
@@ -38,7 +39,18 @@ const ChangePasswordScreen = () =>{
         setData({
             ...data,
             secureTextEntryOldPassword: !data.secureTextEntryOldPassword
-
+        })
+    }
+    const showNewPassword = () =>{
+        setData({
+            ...data,
+            secureTextEntryNewPassword: !data.secureTextEntryNewPassword
+        })
+    }
+    const showNewPasswordAgain = () =>{
+        setData({
+            ...data,
+            secureTextEntryNewPasswordAgain: !data.secureTextEntryNewPasswordAgain
         })
     }
 
@@ -63,20 +75,20 @@ const ChangePasswordScreen = () =>{
                     //mode="outlined"
                     activeOutlineColor= {theme.activeOutlineColor}
                     onChangeText={(value) => enterOldPassword(value)}
-                />{data.secureTextEntryOldPassword ?
-                        <TouchableOpacity onPress={()=> showPassword}>
-                            <Text>
+                />
+                        <TouchableOpacity onPress={showPassword}>
+                        {data.secureTextEntryOldPassword ?
+                            <Text style={[styles.confirmStyle, {color:theme.show}]}>
                                 Show password
                             </Text>
-                        </TouchableOpacity>
-                        :
-                        <TouchableOpacity>
-                            <Text>
+                            :
+                            <Text style={[styles.confirmStyle, {color:theme.show}]}>
                                 Hide password
                             </Text>
+                        }
                         </TouchableOpacity>
                     
-                    }
+                    
             </View>
 
             <View style={styles.viewPassword}>
@@ -87,27 +99,52 @@ const ChangePasswordScreen = () =>{
                     style={styles.enterInputField}
                     label="New Password" 
                     placeholder="Enter new password"
-                    secureTextEntry={data.secureTextEntryOldPassword}
+                    secureTextEntry={data.secureTextEntryNewPassword}
                     //mode="outlined"
                     activeOutlineColor= {theme.activeOutlineColor}
                     onChangeText={(value) => enterNewPassword(value)}
                 />
+                <TouchableOpacity onPress={showNewPassword}>
+                    {data.secureTextEntryNewPassword? 
+                        <Text style={[styles.confirmStyle, {color:theme.show}]}>
+                            Show password        
+                        </Text>
+                        :
+                        <Text style={[styles.confirmStyle, {color:theme.show}]}>
+                            Hide password        
+                        </Text>
+                    }
+                    
+                </TouchableOpacity>
+
             </View>
 
 
             <View style={styles.viewPassword}>
                 <Text style={[styles.txt, {color:theme.color}]}>
-                    Re-enter your new password again:
+                    Re-enter your new password:
                 </Text>
                 <TextInput
                     style={styles.enterInputField}
                     label="New Password Again" 
                     placeholder="Re-enter new password"
-                    secureTextEntry={data.secureTextEntryOldPassword}
+                    secureTextEntry={data.secureTextEntryNewPasswordAgain}
                     //mode="outlined"
-                    activeOutlineColor= {theme.activeOutlineColor}
+                    activeOutlineColor= {theme.activeOutColor}
                     onChangeText={(value) => renterNewPassword(value)}
                 />
+                <TouchableOpacity onPress={showNewPasswordAgain}>
+                {data.secureTextEntryNewPasswordAgain?
+                <Text style={[styles.confirmStyle, {color:theme.show}]}>
+                    Show password
+                </Text>
+                :
+                <Text style={[styles.confirmStyle, {color:theme.show}]}>
+                    Hide password
+                </Text>
+                }
+                </TouchableOpacity>   
+
             </View>
 
             <TouchableOpacity style={[styles.btn, {backgroundColor: theme.submitBtn}]}>
