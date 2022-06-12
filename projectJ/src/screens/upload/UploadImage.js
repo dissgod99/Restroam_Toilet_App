@@ -4,8 +4,6 @@ import { Button, Text, View, StyleSheet, Image, Platform, TouchableOpacity, Acti
 import * as ImagePicker from 'expo-image-picker';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import * as tf from '@tensorflow/tfjs';
-import { bundleResourceIO } from "@tensorflow/tfjs-react-native";
-import { fetch } from '@tensorflow/tfjs-react-native';
 import * as jpeg from 'jpeg-js';
 import { Buffer } from 'buffer';
 import * as mobilenet from '@tensorflow-models/mobilenet';

@@ -25,7 +25,8 @@ const LoginScreen = ({ navigation }) => {
     const [messageType, setMessageType] = useState('red');
 
     const handleLoginClick = async (event) => {
-        event.preventDefault();
+        navigation.navigate('Home');
+        /*/event.preventDefault();
         // do some backend logic here
         let email = data.email;
         let password = data.password;
@@ -57,7 +58,7 @@ const LoginScreen = ({ navigation }) => {
                     let serverRes = error.response;
                     handleMessage(serverRes.data.message, 'red');
                 }
-            });
+            });*/
     }
 
     const storeData = async (key, value) => {
