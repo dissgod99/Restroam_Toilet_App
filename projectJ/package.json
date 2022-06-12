@@ -16,6 +16,8 @@
     "@react-navigation/material-bottom-tabs": "^6.2.1",
     "@react-navigation/native": "^6.0.10",
     "@react-navigation/native-stack": "^6.6.2",
+    "@rneui/base": "^4.0.0-rc.4",
+    "@rneui/themed": "^4.0.0-rc.4",
     "axios": "^0.27.2",
     "expo": "~44.0.0",
     "expo-location": "~14.0.1",
