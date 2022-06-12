@@ -1,5 +1,5 @@
 import { StyleSheet, Text, View } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, DarkTheme, DefaultTheme } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import SplashScreen from './src/screens/login/SplashScreen';
 import SignUpScreen from './src/screens/login/SignUpScreen';
@@ -13,13 +13,43 @@ import ReviewsScreen from './src/screens/account/ReviewsScreen';
 import ReportsScreen from './src/screens/account/ReportsScreen';
 import WriteReportScreen from './src/screens/account/WriteReportScreen';
 import AddInfoPage from './src/screens/addPage/AddInfoPage';
+import SettingsScreen from './src/screens/account/SettingsScreen';
+import ChangePasswordScreen from './src/screens/account/ChangePasswordScreen';
+import { Provider as PaperProvider, DarkTheme as PaperDarkTheme } from 'react-native-paper';
+import React, {useState, useEffect, useContext} from 'react';
+import {EventRegister} from "react-native-event-listeners"
+
+import ThemeContext from './src/darkMode/ThemeContext';
+import Theme from './src/darkMode/Theme';
+
+
+
+
 
 const Stack = createNativeStackNavigator();
 
 export default function App() {
 
+
+  const [mode, setMode] = useState(false);
+  const theme = useContext(ThemeContext);
+  useEffect(() => {
+    let eventListener = EventRegister.addEventListener("changeTheme", (data) =>{
+      setMode(data);
+      console.log(data);
+      //console.log("Data is accessible from App.js")
+    });
+    return () => {
+      EventRegister.removeAllListeners(eventListener);
+    }
+  }
+  )
+  const headColor = mode == true ? "#ae8647" : "#f28d82";
+
   return (
-    <NavigationContainer>
+
+    <ThemeContext.Provider value={mode == true ? Theme.dark : Theme.light}>
+    <NavigationContainer >
       <Stack.Navigator initialRouteName='Splash' >
         <Stack.Screen
           name="Splash"
@@ -35,7 +65,8 @@ export default function App() {
           component={CustomButtonNavigationBar}
           options={{
             headerStyle: {
-              backgroundColor: "#f28d82"
+              //backgroundColor: "#ae8647"
+              backgroundColor: headColor
             }
           }} />
         <Stack.Screen
@@ -43,9 +74,9 @@ export default function App() {
           component={RatingToiletScreen}
           options={{
             headerStyle: {
-              backgroundColor: "#f28d82"
+              backgroundColor: headColor
             },
-            headerShown: false,
+            //headerShown: false,
           }} />
         <Stack.Screen
           name='Login'
@@ -71,17 +102,17 @@ export default function App() {
               backgroundColor: "#f28d82"
             }
           }} /> */}
-        <Stack.Screen
+        {/* <Stack.Screen 
           name='Rate Toilet'
           component={RatingToiletScreen}
-
-        />
-        <Stack.Screen
+          
+         /> */}
+         <Stack.Screen 
           name='More Toilet Infomation'
           component={AddInfoPage}
           options={{
             headerStyle: {
-              backgroundColor: "#f28d82"
+              backgroundColor: headColor
             }
           }}
         />
@@ -91,7 +122,7 @@ export default function App() {
               component={RatingToiletScreen}
               options={{
                   headerStyle:{
-                    backgroundColor: "#f28d82"
+                    backgroundColor: headColor
                   }
                 }
               }
@@ -121,66 +152,83 @@ export default function App() {
           }
           }
         />
-        <Stack.Screen
-          name='Profile'
-          component={AccountScreen}
-          options={
-            {
-              headerStyle: {
-                backgroundColor: "#f28d82"
-              }
-            }
-          }
 
-        />
         <Stack.Screen
-          name='Owned Toilets'
-          component={OwnedToiletsScreen}
-          options={
-            {
-              headerStyle: {
-                backgroundColor: "#f28d82"
-              }
+            name='Profile'
+            component={AccountScreen}
+            options={
+                {headerStyle: {
+                backgroundColor: headColor
+              }}
+              
+            
             }
-          }
 
-        />
-        <Stack.Screen
-          name='Reviews'
-          component={ReviewsScreen}
-          options={
-            {
-              headerStyle: {
-                backgroundColor: "#f28d82"
-              }
+          />
+          <Stack.Screen
+            name='Owned Toilets'
+            component={OwnedToiletsScreen}
+            options={
+              {headerStyle: {
+                backgroundColor: headColor
+              }}
             }
-          }
 
-        />
-        <Stack.Screen
-          name='Reports'
-          component={ReportsScreen}
-          options={
-            {
-              headerStyle: {
-                backgroundColor: "#f28d82"
-              }
+          />
+          <Stack.Screen
+            name='Reviews'
+            component={ReviewsScreen}
+            options={
+              {headerStyle: {
+                backgroundColor: headColor
+              }}
             }
-          }
-        />
-        <Stack.Screen
-          name='WriteReport'
-          component={WriteReportScreen}
-          options={
-            {
-              headerStyle: {
-                backgroundColor: "#f28d82"
-              }
+
+          />
+          <Stack.Screen
+            name='Reports'
+            component={ReportsScreen}
+            options={
+              {headerStyle: {
+                backgroundColor: headColor
+              }}
             }
-          }
-        />
+          />
+          <Stack.Screen
+            name='WriteReport'
+            component={WriteReportScreen}
+            options={
+              {headerStyle: {
+                backgroundColor: headColor
+              }}
+            }
+          />
+
+            <Stack.Screen 
+              name='Settings'
+              component={SettingsScreen}
+              options={
+                {headerStyle: {
+                  backgroundColor: headColor
+                }}
+              }
+            
+            />
+            <Stack.Screen 
+              name='Change Password'
+              component={ChangePasswordScreen}
+              options={
+                {headerStyle: {
+                  backgroundColor: headColor
+                }}
+              }
+            
+            />
+
       </Stack.Navigator>
     </NavigationContainer>
+    </ThemeContext.Provider>
+    
 
 
     // <NavigationContainer>

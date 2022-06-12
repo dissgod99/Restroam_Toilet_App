@@ -1,7 +1,8 @@
-import React, {useState} from "react";
+import React, {useState, useContext} from "react";
 import {Text, ScrollView, View, StyleSheet, TouchableOpacity} from "react-native"
 import { TextInput, Switch } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
+import ThemeContext from "../../darkMode/ThemeContext";
 
 import axios from "axios";
 
@@ -28,17 +29,18 @@ const AddInfoPage = ({navigation}) =>{
     setAddress(v);
   }
 
+  const theme = useContext(ThemeContext);
     return (
-            <View style={styles.container}>
+            <View style={[styles.container, {backgroundColor: theme.background}]}>
                 <ScrollView>
                 <View style={styles.containerElements}>
-                    <Text style={styles.title}>
+                    <Text style={[styles.title, {color: theme.color}]}>
                         Add more information
                     </Text>
 
                     
                     <View>
-                        <Text style={styles.txt}>
+                        <Text style={[styles.txt, {color: theme.color}]}>
                             Specify its location
                         </Text>
                         <TextInput style={styles.box}
@@ -46,34 +48,33 @@ const AddInfoPage = ({navigation}) =>{
                             label="Address"
                             placeholder="Type place"
                             right={<TextInput.Affix text="/100" />}
-                            activeOutlineColor="#e6697e"
-                            onChangeText={(value) => changeAddress(value)}
+                            activeOutlineColor={theme.activeOutColor}
                         />
                     </View>
-                    <Text style={styles.details}>
+                    <Text style={[styles.details, {color: theme.color}]}>
                             Indicate details
                         </Text>
                     <View style={styles.detailsContainer}>
                     <View style={styles.position}>
-                        <Text style={styles.txt}>
+                        <Text style={[styles.txt, {color: theme.color}]}>
                             Specify Price
                         </Text>
                         <TextInput style={styles.boxPrice}
                             defaultValue= "0,00 €"
                             mode="outlined"
                             placeholder="Type place"
-                            activeOutlineColor="#e6697e"
+                            activeOutlineColor={theme.activeOutColor}
                             onChangeText={(value) => changePrice(value)}
                         />
                     </View>
                     <View>
-                        <Text style={styles.txt}>
+                        <Text style={[styles.txt, {color: theme.color}]}>
                             Handicap Access
                         </Text>
                         <Switch 
                             value={isEnabled} 
                             onValueChange={toggleSwitch}
-                            color= {"red"}
+                            color= {theme.activeOutColor}
                             />
                         
                     </View>
@@ -83,7 +84,7 @@ const AddInfoPage = ({navigation}) =>{
                     </View>
 
                     <View>
-                        <Text style={styles.txt}>
+                        <Text style={[styles.txt, {color: theme.color}]}>
                             More details
                         </Text>
                         <TextInput style={styles.box}
@@ -91,12 +92,12 @@ const AddInfoPage = ({navigation}) =>{
                             label="Other details"
                             placeholder="Type details"
                             right={<TextInput.Affix text="/250" />}
-                            activeOutlineColor="#e6697e"
+                            activeOutlineColor={theme.activeOutColor}
                         />
                     </View>
                         
                     <TouchableOpacity 
-                        style={styles.btn}
+                        style={[styles.btn, {backgroundColor: theme.submitBtn}]}
                         onPress={() => navigation.navigate("ThankYou")}
                         >
                         <Text style={styles.stOfSubmit}>
@@ -117,7 +118,7 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: "flex-start",
         alignItems: "center",
-        backgroundColor: "white"
+        //backgroundColor: "white"
     },
     containerElements:{
         justifyContent: "center",
@@ -134,7 +135,7 @@ const styles = StyleSheet.create({
         fontWeight: "bold"
     },
     btn: {
-        backgroundColor: "#e6697e",
+        //backgroundColor: "#e6697e",
         paddingHorizontal: 80,
         paddingVertical: 10,
         borderRadius: 5,

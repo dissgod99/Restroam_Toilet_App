@@ -1,8 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import StarRating from 'react-native-star-rating';
-
+import ThemeContext from "../../darkMode/ThemeContext";
 
 const edit =()=>{
 
@@ -17,9 +17,10 @@ const nothing =()=>{
 
 const Review = (props) => {
     const [text, setText] = useState(props.text);
+    const theme = useContext(ThemeContext);
 
     return (
-        <View style={styles.container}>
+        <View style={[styles.container, {backgroundColor: theme.backgroundToilet}]}>
             <View>
                 <Text style={styles.title} >
                     {props.title}
@@ -59,8 +60,13 @@ const Review = (props) => {
 }
 const styles = StyleSheet.create({
     container: {
-        margin:20,
+        //margin:20,
+        marginHorizontal: 20,
+        marginVertical: 10,
         borderTopWidth:3,
+        borderRadius: 3,
+        padding: 10
+        
 
     },
     title:{

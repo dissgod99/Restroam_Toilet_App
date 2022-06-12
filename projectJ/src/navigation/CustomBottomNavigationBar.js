@@ -1,13 +1,15 @@
-import React from 'react';
+import React, {useContext} from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-
+import ThemeContext from '../darkMode/ThemeContext';
 // Screens
 import AddScreen from '../screens/home/AddScreen';
 import MapScreen from '../screens/home/MapScreen';
 import AccountScreen from '../screens/home/AccountScreen';
+
+
 
 
 // Screen Names
@@ -56,7 +58,7 @@ const screenOpts = ({ route }) => ({
 });
 
 // new tab options
-const materialScreenOpts = ({ route }) => ({
+const materialScreenOpts = ({ route}) => ({
   tabBarColor: '#FFFFFF',
   tabBarIcon: ({ focused, color, size }) => {
     let iconName; let rn = route.name;
@@ -77,7 +79,7 @@ export default function CustomButtonNavigationBar() {
       screenOptions={materialScreenOpts}
       backBehavior='none'
       shifting={true}
-      barStyle={{ backgroundColor: '#FFFFFF', }}
+      barStyle={{ backgroundColor: "#FFFFFF", }}
       inactiveColor='grey'
       activeColor='#F28D82'
     >
