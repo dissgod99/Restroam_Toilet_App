@@ -97,11 +97,11 @@ const AddInfoPage = ({navigation}) =>{
                     </View>
                         
                     <TouchableOpacity 
-                        style={[styles.btn, {backgroundColor: theme.submitBtn}]}
-                        onPress={() => navigation.navigate("ThankYou")}
+                        style={styles.btn}
+                        onPress={() => navigation.navigate("Upload Image")}
                         >
                         <Text style={styles.stOfSubmit}>
-                                Submit
+                                Next
                         </Text>
                     </TouchableOpacity>
                 </View>
