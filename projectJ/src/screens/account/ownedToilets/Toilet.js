@@ -1,5 +1,5 @@
 import React, { useContext } from "react";
-import {View, Text, StyleSheet, TouchableOpacity} from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import ThemeContext from "../../../darkMode/ThemeContext";
 
@@ -7,29 +7,20 @@ const Toilet = (props) => {
 
     const theme = useContext(ThemeContext);
 
-    return(
-        <View style={[styles.item, {backgroundColor: theme.backgroundToilet}]}>
-            <View style={styles.itemLeft}>
-                <Text style={styles.itemHeader}>{props.title}</Text>
-                <View style={styles.content}>
-                    <Text style={styles.location}>Location: {props.location}</Text>
-                    <Text style={styles.price}>Price: {props.price}</Text>
-                </View>
-            </View>
-            <View style={styles.itemRight}>
-                <TouchableOpacity>
-                    <FontAwesome name="edit" size={25}/>
-                </TouchableOpacity>
-                <TouchableOpacity>
-                    <FontAwesome name="trash-o" size={25}/>
-                </TouchableOpacity>
+    return (
+        <View style={[styles.item, { backgroundColor: theme.backgroundToilet }]}>
+            <Text style={styles.itemHeader}>{props.title}</Text>
+            <View style={styles.content}>
+                <Text style={styles.location}>Location: {props.location}</Text>
+                <Text style={styles.price}>Price: {props.price}</Text>
             </View>
         </View>
+
     );
 }
 
 const styles = StyleSheet.create({
-    item:{
+    item: {
         //backgroundColor: '#FFF',
         padding: 15,
         borderRadius: 7,
@@ -40,21 +31,21 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         marginBottom: 20
     },
-    itemLeft:{
+    itemLeft: {
         alignItems: 'flex-start',
         flexWrap: 'wrap'
     },
-    itemHeader:{
+    itemHeader: {
         fontSize: 20,
         fontWeight: 'bold'
     },
-    content:{
-        
+    content: {
+
     },
-    location:{
+    location: {
         fontSize: 13
     },
-    price:{
+    price: {
         fontSize: 18
     }
 })

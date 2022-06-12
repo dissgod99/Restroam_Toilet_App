@@ -1,10 +1,28 @@
-import React, {useContext} from "react";
-import {View, Text, StyleSheet, ScrollView} from 'react-native';
+import React, {useContext, useState} from "react";
+import {View, Text, StyleSheet, ScrollView, TouchableOpacity} from 'react-native';
 import ThemeContext from "../../darkMode/ThemeContext";
 import Toilet from './ownedToilets/Toilet';
+import FontAwesome from "react-native-vector-icons/FontAwesome";
 
-const OwnedToiletsScreen = () => {
+const OwnedToiletsScreen = ({navigation}) => {
 
+    const [toiletItems, setToiletItems] = useState([]);
+
+    const deleteToilet = (index) => {
+        let toiletsCopy = [...toiletItems];
+        toiletsCopy.splice(index, 1);
+        setToiletItems(toiletsCopy);
+    }
+
+    const editToilet = (index) => {
+        navigation.navigate('Edit Toilet');
+    }
+
+    const updateToilets = () => {
+        setToiletItems([...toiletItems, ['Hauptbahnhof', 'Hauptbahnhof', '1.00€']])
+        console.log(toiletItems);
+    }
+    
     const theme = useContext(ThemeContext)
 
     return (
@@ -15,37 +33,35 @@ const OwnedToiletsScreen = () => {
                         Your Owned Toilets:
                     </Text>
                     <View style={styles.items}>
-                        <Toilet 
-                            title={'Hauptbahnhof'} 
-                            location={'Hauptbahnhof'}
-                            price={'1,00 €'}
-                        />
-                        <Toilet 
-                            title={'Luisencenter'}
-                            location={'Luisencenter'}
-                            price={'0,50 €'}    
-                        />
-                        <Toilet
-                            title={'Universität'}
-                            location={'Audimax'}
-                            price={'0,00 €'}
-                        />
-                        <Toilet
-                            title={'Universität'}
-                            location={'Lichtwiese'}
-                            price={'0,00 €'}
-                        />
-                        <Toilet
-                            title={'Universität'}
-                            location={'Lichtwiese'}
-                            price={'0,00 €'}
-                        />
-                        <Toilet
-                            title={'Universität'}
-                            location={'Lichtwiese'}
-                            price={'0,00 €'}
-                        />
+                        {
+                            toiletItems.map(([title, location, price], index) => {
+                                return(
+                                    <View key={index} style={styles.item}>
+                                        <Toilet
+                                            title={title}
+                                            location={location}
+                                            price={price}
+                                        />
+                                        <View style={styles.itemRight}>
+                                            <TouchableOpacity onPress={() => navigation.navigate('Edit Toilet', {
+                                                editTitle: title,
+                                                editLocation: location,
+                                                editPrice: price
+                                            })}>
+                                                <FontAwesome name="edit" size={25}/>
+                                            </TouchableOpacity>
+                                            <TouchableOpacity onPress={() => deleteToilet(index)}>
+                                                <FontAwesome name="trash-o" size={25}/>
+                                            </TouchableOpacity>
+                                        </View>
+                                    </View>
+                                )
+                            })
+                        }
                     </View>
+                    <TouchableOpacity onPress={() => updateToilets()}>
+                        <Text>Update</Text>
+                    </TouchableOpacity>
                 </View>
             </View>
         </ScrollView>
@@ -67,6 +83,17 @@ const styles = StyleSheet.create({
     },
     items:{
         marginTop: 30
+    },
+    item:{
+        backgroundColor: '#FFF',
+        padding: 15,
+        borderRadius: 7,
+        borderWidth: 4,
+        borderColor: '#C0C0C0',
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        marginBottom: 20
     }
 });
 
