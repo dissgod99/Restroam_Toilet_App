@@ -13,6 +13,7 @@ import ReviewsScreen from './src/screens/account/ReviewsScreen';
 import ReportsScreen from './src/screens/account/ReportsScreen';
 import WriteReportScreen from './src/screens/account/WriteReportScreen';
 import AddInfoPage from './src/screens/addPage/AddInfoPage';
+import UploadImage from './src/screens/upload/UploadImage';
 
 const Stack = createNativeStackNavigator();
 
@@ -148,6 +149,18 @@ export default function App() {
         <Stack.Screen
           name='Reviews'
           component={ReviewsScreen}
+          options={
+            {
+              headerStyle: {
+                backgroundColor: "#f28d82"
+              }
+            }
+          }
+
+        />
+        <Stack.Screen
+          name='Upload Image'
+          component={UploadImage}
           options={
             {
               headerStyle: {
