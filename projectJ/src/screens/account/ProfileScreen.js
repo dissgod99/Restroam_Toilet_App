@@ -1,3 +1,4 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import React from 'react';
 import {View, Text, StyleSheet,TouchableOpacity} from 'react-native';
 
@@ -8,7 +9,8 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const Profile = ({navigation}) => {
   const logout = () => {
-    console.log("Transition WORKS")
+    console.log("Transition WORKS");
+    // AsyncStorage.get('token') ...
     navigation.navigate("Login");
   }
   return(

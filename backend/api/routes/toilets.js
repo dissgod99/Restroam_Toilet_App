@@ -21,6 +21,8 @@ router.post('/addToilet', jsonParser, async (req, res, next) => {
         .exec()
         .then(toilet => {
             if (toilet.length > 0) {
+                // here we should be able to add more toilets? Imagine a restaurant with more than one toilet
+                // one for male/female and one with handicap access for example
                 return res.status(409).json({
                     message: 'toilet at this location already exists'
                 });

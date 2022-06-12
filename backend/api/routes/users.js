@@ -2,29 +2,69 @@ const express = require('express');
 
 const bodyParser = require('body-parser');
 
-
 const router = express.Router();
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const nodemailer = require('nodemailer');
+const { v4: uuidv4 } = require('uuid');
+require('dotenv').config();
 
+// mongoDB User Model
 const User = require('../models/user');
+// mongoDB UserVerification Model
+const UserVerification = require('../models/userVerification');
+
+
+// nodemailer stuff
+const nodeMailerTestASync = async () => {
+    const mail = process.env.AUTH_MAIL;
+    const passw = process.env.AUTH_PASS;
+
+    let testAcc = await nodemailer.createTestAccount();
+    let transporter = nodemailer.createTransport({
+        service: "outlook",
+        auth: {
+            user: mail,
+            pass: passw,
+        },
+    });
+
+
+    // testting success
+    transporter.verify((error, success) => {
+        if (error) {
+            console.log(error);
+        } else {
+            console.log('Ready for messages');
+            console.log(success);
+        }
+    });
+
+    let info = await transporter.sendMail({
+        to: 'itpktest@gmail.com',
+        subject: 'testing NodeJS Application',
+        text: 'testing NodeJS Application',
+    });
+
+    console.log('Message Sent: %s', info.messageId);
+    console.log('Preview Url: %s', nodemailer.getTestMessageUrl(info));
+};
+
+nodeMailerTestASync().catch(console.error);
 
 const jsonParser = bodyParser.json();
 
 
 const JWT_SECRET = 'qslmnvtuievDVGfzevdsbGDberbDF?dblKN@$^[{^[~#}?LEKMKmv,ruvNXWmntruiskv';
 
-
 // process variable is not defined when accessed from client (maybe use webpack?)
 
-// if (process.env.MODE === 'DEVELOPMENT') {
-//     const CORS = require('cors');
-//     router.use(CORS());
-// }
-
-const CORS = require('cors');
-router.use(CORS());
+if (process.env.MODE === 'DEVELOPMENT') {
+    console.log('its dev mode!');
+    const CORS = require('cors');
+    router.use(CORS());
+}
 
 const checkPassword = async (plainText, storedHash) => {
     if (! await bcrypt.compare(plainText, storedHash))
