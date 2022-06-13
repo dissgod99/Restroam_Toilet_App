@@ -36,7 +36,7 @@ const OwnedToiletsScreen = ({navigation}) => {
                         {
                             toiletItems.map(([title, location, price], index) => {
                                 return(
-                                    <View key={index} style={styles.item}>
+                                    <View key={index} style={[styles.item, {backgroundColor: theme.backgroundToilet}]}>
                                         <Toilet
                                             title={title}
                                             location={location}
@@ -85,7 +85,7 @@ const styles = StyleSheet.create({
         marginTop: 30
     },
     item:{
-        backgroundColor: '#FFF',
+        //backgroundColor: '#FFF',
         padding: 15,
         borderRadius: 7,
         borderWidth: 4,

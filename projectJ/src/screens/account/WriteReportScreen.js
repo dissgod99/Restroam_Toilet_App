@@ -1,7 +1,8 @@
-import React,{ useState, useEffect } from "react";
+import React,{ useState, useEffect, useContext } from "react";
 import {View, Text, TouchableOpacity,StyleSheet, KeyboardAvoidingView} from 'react-native';
 import { CheckBox } from "@rneui/base";
 import { TextInput } from 'react-native-paper';
+import ThemeContext from "../../darkMode/ThemeContext";
 
 
 
@@ -17,6 +18,7 @@ const ReportsScreen = ({navigation}) => {
 
 
     const [text, onChangeText] = React.useState("");
+    const theme = useContext(ThemeContext)
     return (
             <KeyboardAvoidingView style={styles.container}>
                 <Text style={styles.headline}>
@@ -65,7 +67,7 @@ const ReportsScreen = ({navigation}) => {
                     />
                 <View style={styles.buttonFlex}>
                 <TouchableOpacity 
-                            style={styles.btn}
+                            style={[styles.btn, {backgroundColor: theme.submitBtn}]}
                             onPress={handleSubmit}
                             >
                             <Text style={styles.submit}>
@@ -115,7 +117,7 @@ const styles = StyleSheet.create({
         flex:2,
     },
     btn: {
-        backgroundColor: "#e6697e",
+        //backgroundColor: "#e6697e",
         paddingHorizontal:100,
         paddingVertical: 10,
         borderRadius: 5,

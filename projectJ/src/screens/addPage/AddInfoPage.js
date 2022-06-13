@@ -97,7 +97,7 @@ const AddInfoPage = ({navigation}) =>{
                     </View>
                         
                     <TouchableOpacity 
-                        style={styles.btn}
+                        style={[styles.btn, {backgroundColor: theme.submitBtn}]}
                         onPress={() => navigation.navigate("Upload Image")}
                         >
                         <Text style={styles.stOfSubmit}>
@@ -135,7 +135,7 @@ const styles = StyleSheet.create({
         fontWeight: "bold"
     },
     btn: {
-        backgroundColor: "#e6697e",
+        //backgroundColor: "#e6697e",
         paddingHorizontal: 80,
         paddingVertical: 10,
         borderRadius: 5,
