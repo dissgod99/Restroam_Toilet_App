@@ -8,7 +8,7 @@ const Toilet = (props) => {
     const theme = useContext(ThemeContext);
 
     return (
-        <View style={[styles.item, { backgroundColor: theme.backgroundToilet }]}>
+        <View style={[styles.itemLeft, { backgroundColor: theme.backgroundToilet }]}>
             <Text style={styles.itemHeader}>{props.title}</Text>
             <View style={styles.content}>
                 <Text style={styles.location}>Location: {props.location}</Text>
