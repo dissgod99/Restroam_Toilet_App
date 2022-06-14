@@ -2,7 +2,14 @@ import React, { useState } from "react";
 import { ScrollView, StyleSheet, View, Text, TouchableOpacity } from "react-native";
 import { TextInput, Switch } from "react-native-paper";
 
+const BACKEND_ENDPOINT= 'http://192.168.1.100:3000/api/users/login';
+
 const EditInfoScreen = ({route, navigation}) => {
+
+    const [data, getData] = useState({
+        name: "",
+        address: ""
+    });
 
     const [isEnabled, setIsEnabled] = useState(false);
     const { editTitle, editLocation, editPrice }  = route.params;
