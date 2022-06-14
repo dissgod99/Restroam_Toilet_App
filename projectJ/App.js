@@ -25,6 +25,7 @@ import Theme from './src/darkMode/Theme';
 import EditToiletScreen from './src/screens/editToilet/EditToiletScreen';
 import EditInfoScreen from './src/screens/editToilet/EditInfoScreen';
 import UploadImage from './src/screens/upload/UploadImage';
+import OutloggedScreen from './src/screens/login/OutloggedScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -265,6 +266,17 @@ export default function App() {
             options={
               {
                 headerStyle: {
+                  backgroundColor: "#f28d82"
+                }
+              }
+            }
+          />
+          <Stack.Screen
+            name='Outlogged'
+            component={OutloggedScreen}
+            options={
+              {
+                headerStyle:{
                   backgroundColor: "#f28d82"
                 }
               }

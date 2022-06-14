@@ -62,6 +62,9 @@ const OwnedToiletsScreen = ({navigation}) => {
                     <TouchableOpacity onPress={() => updateToilets()}>
                         <Text>Update</Text>
                     </TouchableOpacity>
+                    <TouchableOpacity onPress={() => navigation.navigate('Outlogged')}>
+                        <Text>Outlogged</Text>
+                    </TouchableOpacity>
                 </View>
             </View>
         </ScrollView>
