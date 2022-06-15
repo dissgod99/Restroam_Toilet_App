@@ -2,17 +2,35 @@ import React, { useState } from "react";
 import { ScrollView, StyleSheet, View, Text, TouchableOpacity } from "react-native";
 import { TextInput, Switch } from "react-native-paper";
 
-const BACKEND_ENDPOINT= 'http://192.168.1.100:3000/api/users/login';
+import axios from 'axios';
+
+const BACKEND_ENDPOINT= 'http://192.168.1.100:3000/api/toilets';
 
 const EditInfoScreen = ({route, navigation}) => {
 
-    const [data, getData] = useState({
+    const [data, setData] = useState({
         name: "",
         address: ""
     });
 
     const [isEnabled, setIsEnabled] = useState(false);
     const { editTitle, editLocation, editPrice }  = route.params;
+
+    const handleSubmit = () => {
+        axios
+            .post(BACKEND_ENDPOINT, data)
+            .then((response) => {
+                result = response.data;
+                const {message, status, data} = result;
+            })
+            .catch(error => {
+                console.log(error.JSON());
+            })
+
+        // Tutorial: 5:13
+
+        navigation.navigate("ThankYou")
+    }
 
     function toggleSwitch() {
         setIsEnabled(!isEnabled);
@@ -82,7 +100,7 @@ const EditInfoScreen = ({route, navigation}) => {
                     </View>
                     <TouchableOpacity 
                         style={styles.btn}
-                        onPress={() => navigation.navigate("ThankYou")}    
+                        onPress={() => handleSubmit()}    
                     >
                         <Text style={styles.submit}>
                             Submit
