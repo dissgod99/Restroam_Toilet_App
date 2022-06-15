@@ -29,7 +29,8 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: "flex-start",
         alignItems: "center",
-        backgroundColor: "white"
+        backgroundColor: "white",
+        // marginBottom: "75%"
     },
     header:{
         justifyContent: "center",
@@ -52,6 +53,7 @@ const styles = StyleSheet.create({
         marginTop: 30,
         borderColor: "black",
         borderWidth: 1,
+        marginBottom:"100%"
     }
 });
 
