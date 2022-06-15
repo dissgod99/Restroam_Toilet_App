@@ -1,26 +1,37 @@
 import React from "react";
 import { ScrollView, StyleSheet, TouchableOpacity, View, Text } from "react-native";
+import AntDesign from "react-native-vector-icons/AntDesign";
 
 const OutloggedScreen = ({navigation}) => {
 
     return(
-        <ScrollView>
-            <View style={styles.container}>
-                <View style={styles.header}>
-                    <Text style={styles.title}>
-                        Sorry, you have to be logged in for using this feature!
-                    </Text>
-                </View>
-                <TouchableOpacity 
-                    style={styles.login}
-                    onPress={() => navigation.navigate("Login")}    
-                >
-                    <Text style={{ fontWeight: "bold" }}>
-                        Login
-                    </Text>
-                </TouchableOpacity>
+        <View style={styles.container}>
+            <View style={styles.icon}>
+                <AntDesign name="login" size={100}/>
             </View>
-        </ScrollView>
+            <View style={styles.header}>
+                <Text style={styles.title}>
+                    Sorry, you have to be logged in for using this feature!
+                </Text>
+            </View>
+            
+            <TouchableOpacity 
+                style={styles.login}
+                onPress={() => navigation.navigate("Login")}    
+            >
+                <Text style={{ fontWeight: "bold" }}>
+                    Login
+                </Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+                style={styles.signup}
+                onPress={() => navigation.navigate("SignUp")}
+            >
+                <Text style={{ fontWeight: "bold" }}>
+                    Sign up
+                </Text>
+            </TouchableOpacity>
+        </View>
     )
 }
 
@@ -35,7 +46,7 @@ const styles = StyleSheet.create({
     header:{
         justifyContent: "center",
         alignItems: "center",
-        marginTop: "50%"
+        marginTop: "10%"
     },
     title:{
         fontWeight: "bold",
@@ -53,7 +64,21 @@ const styles = StyleSheet.create({
         marginTop: 30,
         borderColor: "black",
         borderWidth: 1,
-        marginBottom:"100%"
+        marginBottom:"15%"
+    },
+    signup:{
+        width: "80%",
+        alignItems: "center",
+        paddingVertical: 8,
+        borderRadius: 10,
+        justifyContent: "center",
+        marginTop: 30,
+        borderColor: "black",
+        borderWidth: 1,
+        marginBottom:"65%"
+    },
+    icon:{
+        marginTop: "30%"
     }
 });
 
