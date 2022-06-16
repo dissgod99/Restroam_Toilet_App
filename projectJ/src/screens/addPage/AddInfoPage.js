@@ -2,6 +2,7 @@ import React, {useState} from "react";
 import {Text, ScrollView, View, StyleSheet, TouchableOpacity} from "react-native"
 import { TextInput, Switch } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import axios from "axios";
 
@@ -97,7 +98,22 @@ const AddInfoPage = ({navigation}) =>{
                         
                     <TouchableOpacity 
                         style={styles.btn}
-                        onPress={() => navigation.navigate("ThankYou")}
+                        onPress={() => {
+                            const getAll = async () => {
+                            try {
+                              const result = {};
+                              const keys = await AsyncStorage.getAllKeys();
+                              for (const key of keys) {
+                                const val = await AsyncStorage.getItem(key);
+                                result[key] = val;
+                              }
+                              console.log("res"+result);
+                              return result;
+                            } catch (error) {
+                              alert(error);
+                            }
+                          };
+                          navigation.navigate("ThankYou")}}
                         >
                         <Text style={styles.stOfSubmit}>
                                 Submit

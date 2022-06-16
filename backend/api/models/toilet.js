@@ -5,8 +5,10 @@ const toiletSchema = new mongoose.Schema({
     name: {type: String, required: true, unique: true},
     address: {type: String, required: true},
     owner: {type: String, required: true},
-    lattitude: {type: Number, required: true},
-    longitude: {type: Number, required: true},
+    openingHours: {type: String, required: true},
+    price: {type: String, required: true},
+    handicapAccess: {type: String, required: true},
+
 });
 
 module.exports = mongoose.model('Toilet', toiletSchema);
