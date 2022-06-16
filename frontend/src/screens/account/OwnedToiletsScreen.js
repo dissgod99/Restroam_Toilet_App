@@ -1,12 +1,30 @@
-import React, {useContext, useState} from "react";
-import {View, Text, StyleSheet, ScrollView, TouchableOpacity} from 'react-native';
+import React, { useContext, useEffect, useState } from "react";
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
 import ThemeContext from "../../darkMode/ThemeContext";
 import Toilet from './ownedToilets/Toilet';
 import FontAwesome from "react-native-vector-icons/FontAwesome";
+import axios from "axios";
 
-const OwnedToiletsScreen = ({navigation}) => {
+import { BACKEND_ENDPOINT_TOILETS } from '../../constants';
+
+const OwnedToiletsScreen = ({ route, navigation }) => {
+
+    const { token } = route.params;
 
     const [toiletItems, setToiletItems] = useState([]);
+
+    useEffect(() => {
+        fetchToiletsBackend();
+    });
+
+    const fetchToiletsBackend = () => {
+        axios
+            .post(BACKEND_ENDPOINT_TOILETS + 'user-owned-toilets', { token })
+            .then((response) => {
+                const { data } = response;
+                setToiletItems(data.payload);
+            }).catch(err => console.log(err));
+    }
 
     const deleteToilet = (index) => {
         let toiletsCopy = [...toiletItems];
@@ -19,24 +37,24 @@ const OwnedToiletsScreen = ({navigation}) => {
     }
 
     const updateToilets = () => {
-        setToiletItems([...toiletItems, ['Hauptbahnhof', 'Hauptbahnhof', '1.00€']])
+        fetchToiletsBackend();
         console.log(toiletItems);
     }
-    
+
     const theme = useContext(ThemeContext)
 
     return (
         <ScrollView>
-            <View style={[styles.container, {backgroundColor: theme.background}]}>
+            <View style={[styles.container, { backgroundColor: theme.background }]}>
                 <View style={styles.toiletsWrapper}>
-                    <Text style={[styles.headerText, {color: theme.color}]}>
+                    <Text style={[styles.headerText, { color: theme.color }]}>
                         Your Owned Toilets:
                     </Text>
                     <View style={styles.items}>
                         {
                             toiletItems.map(([title, location, price], index) => {
-                                return(
-                                    <View key={index} style={[styles.item, {backgroundColor: theme.backgroundToilet}]}>
+                                return (
+                                    <View key={index} style={[styles.item, { backgroundColor: theme.backgroundToilet }]}>
                                         <Toilet
                                             title={title}
                                             location={location}
@@ -48,10 +66,10 @@ const OwnedToiletsScreen = ({navigation}) => {
                                                 editLocation: location,
                                                 editPrice: price
                                             })}>
-                                                <FontAwesome name="edit" size={25}/>
+                                                <FontAwesome name="edit" size={25} />
                                             </TouchableOpacity>
                                             <TouchableOpacity onPress={() => deleteToilet(index)}>
-                                                <FontAwesome name="trash-o" size={25}/>
+                                                <FontAwesome name="trash-o" size={25} />
                                             </TouchableOpacity>
                                         </View>
                                     </View>
@@ -69,22 +87,22 @@ const OwnedToiletsScreen = ({navigation}) => {
 }
 
 const styles = StyleSheet.create({
-    container:{
+    container: {
         flex: 1,
         //backgroundColor: '#FFF'
     },
-    toiletsWrapper:{
+    toiletsWrapper: {
         paddingTop: 40,
         paddingHorizontal: 20
     },
-    headerText:{
+    headerText: {
         fontSize: 24,
         fontWeight: 'bold'
     },
-    items:{
+    items: {
         marginTop: 30
     },
-    item:{
+    item: {
         //backgroundColor: '#FFF',
         padding: 15,
         borderRadius: 7,
