@@ -1,8 +1,9 @@
-import React, {useState, useContext} from "react";
-import {Text, ScrollView, View, StyleSheet, TouchableOpacity} from "react-native"
+import React, { useState, useContext } from "react";
+import { Text, ScrollView, View, StyleSheet, TouchableOpacity } from "react-native"
 import { TextInput, Switch } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import ThemeContext from "../../darkMode/ThemeContext";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import axios from "axios";
 
@@ -10,7 +11,7 @@ import axios from "axios";
 // for now it is set to the IP address of my machine (192.168.1.100) to test it on yours replace it with your IP
 const BACKEND_ENDPOINT = 'http://192.168.1.100:3000/api/toilets/addToilet';
 
-const AddInfoPage = ({navigation}) =>{
+const AddInfoPage = ({ navigation }) => {
     var numberi = 0;
     const [price, setPrice] = useState('0,00€');
     const [address, setAddress] = useState('');
@@ -20,27 +21,27 @@ const AddInfoPage = ({navigation}) =>{
         setIsEnabled(!isEnabled);
     }
 
-  function changePrice(v) {
-    setPrice(v + '€');
-    v = v + '€';
-    console.log(price)
-  }
-  function changeAddress(v) {
-    setAddress(v);
-  }
+    function changePrice(v) {
+        setPrice(v + '€');
+        v = v + '€';
+        console.log(price)
+    }
+    function changeAddress(v) {
+        setAddress(v);
+    }
 
-  const theme = useContext(ThemeContext);
+    const theme = useContext(ThemeContext);
     return (
-            <View style={[styles.container, {backgroundColor: theme.background}]}>
-                <ScrollView>
+        <View style={[styles.container, { backgroundColor: theme.background }]}>
+            <ScrollView>
                 <View style={styles.containerElements}>
-                    <Text style={[styles.title, {color: theme.color}]}>
+                    <Text style={[styles.title, { color: theme.color }]}>
                         Add more information
                     </Text>
 
-                    
+
                     <View>
-                        <Text style={[styles.txt, {color: theme.color}]}>
+                        <Text style={[styles.txt, { color: theme.color }]}>
                             Specify its location
                         </Text>
                         <TextInput style={styles.box}
@@ -51,40 +52,40 @@ const AddInfoPage = ({navigation}) =>{
                             activeOutlineColor={theme.activeOutColor}
                         />
                     </View>
-                    <Text style={[styles.details, {color: theme.color}]}>
-                            Indicate details
-                        </Text>
+                    <Text style={[styles.details, { color: theme.color }]}>
+                        Indicate details
+                    </Text>
                     <View style={styles.detailsContainer}>
-                    <View style={styles.position}>
-                        <Text style={[styles.txt, {color: theme.color}]}>
-                            Specify Price
-                        </Text>
-                        <TextInput style={styles.boxPrice}
-                            defaultValue= "0,00 €"
-                            mode="outlined"
-                            placeholder="Type place"
-                            activeOutlineColor={theme.activeOutColor}
-                            onChangeText={(value) => changePrice(value)}
-                        />
-                    </View>
-                    <View>
-                        <Text style={[styles.txt, {color: theme.color}]}>
-                            Handicap Access
-                        </Text>
-                        <Switch 
-                            value={isEnabled} 
-                            onValueChange={toggleSwitch}
-                            color= {theme.activeOutColor}
+                        <View style={styles.position}>
+                            <Text style={[styles.txt, { color: theme.color }]}>
+                                Specify Price
+                            </Text>
+                            <TextInput style={styles.boxPrice}
+                                defaultValue="0,00 €"
+                                mode="outlined"
+                                placeholder="Type place"
+                                activeOutlineColor={theme.activeOutColor}
+                                onChangeText={(value) => changePrice(value)}
                             />
-                        
-                    </View>
-                        
+                        </View>
+                        <View>
+                            <Text style={[styles.txt, { color: theme.color }]}>
+                                Handicap Access
+                            </Text>
+                            <Switch
+                                value={isEnabled}
+                                onValueChange={toggleSwitch}
+                                color={theme.activeOutColor}
+                            />
+
+                        </View>
+
 
 
                     </View>
 
                     <View>
-                        <Text style={[styles.txt, {color: theme.color}]}>
+                        <Text style={[styles.txt, { color: theme.color }]}>
                             More details
                         </Text>
                         <TextInput style={styles.box}
@@ -95,32 +96,59 @@ const AddInfoPage = ({navigation}) =>{
                             activeOutlineColor={theme.activeOutColor}
                         />
                     </View>
-                        
-                    <TouchableOpacity 
-                        style={[styles.btn, {backgroundColor: theme.submitBtn}]}
-                        onPress={() => navigation.navigate("Upload Image")}
-                        >
+
+                    <TouchableOpacity
+                        style={[styles.btn, { backgroundColor: theme.submitBtn }]}
+                        onPress={() => {
+                            const getAll = async () => {
+                                try {
+                                    const result = {};
+                                    const keys = await AsyncStorage.getAllKeys();
+                                    for (const key of keys) {
+                                        const val = await AsyncStorage.getItem(key);
+                                        result[key] = val;
+                                    }
+                                    console.log("res" + result);
+                                    return result;
+                                } catch (error) {
+                                    alert(error);
+                                }
+                            };
+                            axios.post(`${baseUrl}/toilets/addToilet`, {
+                                address: address,
+                                name: address,
+                                price: price,
+                                owner: result,
+                                openingHours: JSON.stringify({ a: 'aaa' }),
+                                handicapAccess: isEnabled
+                            }).then(
+                                () => navigation.navigate("ThankYou")
+
+                            ).catch(err => console.log("couldn't add toilet"))
+                            navigation.navigate("Upload Image")
+                        }}
+                    >
                         <Text style={styles.stOfSubmit}>
-                                Next
+                            Next
                         </Text>
                     </TouchableOpacity>
                 </View>
-                </ScrollView>
-            </View>
-            
+            </ScrollView>
+        </View>
+
     );
 }
 
 export default AddInfoPage;
 
 const styles = StyleSheet.create({
-    container:{
+    container: {
         flex: 1,
         justifyContent: "flex-start",
         alignItems: "center",
         //backgroundColor: "white"
     },
-    containerElements:{
+    containerElements: {
         justifyContent: "center",
         alignItems: "center",
     },
@@ -129,7 +157,7 @@ const styles = StyleSheet.create({
         fontSize: 20,
         marginVertical: 20
     },
-    box:{
+    box: {
         width: 250,
         paddingLeft: 8,
         fontWeight: "bold"
@@ -142,9 +170,9 @@ const styles = StyleSheet.create({
         marginVertical: 35,
         marginHorizontal: 75,
         alignItems: "center"
-    
+
     },
-    stOfSubmit:{
+    stOfSubmit: {
         fontWeight: "bold"
     },
     detailsContainer: {
@@ -165,7 +193,7 @@ const styles = StyleSheet.create({
         fontSize: 20,
         fontWeight: "bold"
     },
-    full:{
+    full: {
         height: "100%"
     },
     position: {
