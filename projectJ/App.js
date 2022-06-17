@@ -183,7 +183,7 @@ export default function App() {
             options={
               {
                 headerStyle: {
-                  backgroundColor: "#f28d82"
+                  backgroundColor: headColor
                 }
               }
             }
@@ -254,7 +254,7 @@ export default function App() {
             options={
               {
                 headerStyle: {
-                  backgroundColor: "#f28d82"
+                  backgroundColor: headColor
                 }
               }
             }
@@ -265,7 +265,7 @@ export default function App() {
             options={
               {
                 headerStyle: {
-                  backgroundColor: "#f28d82"
+                  backgroundColor: headColor
                 }
               }
             }

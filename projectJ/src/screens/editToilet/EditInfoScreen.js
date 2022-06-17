@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { ScrollView, StyleSheet, View, Text, TouchableOpacity } from "react-native";
 import { TextInput, Switch } from "react-native-paper";
+import ThemeContext from "../../darkMode/ThemeContext";
 
 import axios from 'axios';
 
@@ -36,17 +37,19 @@ const EditInfoScreen = ({route, navigation}) => {
         setIsEnabled(!isEnabled);
     }
 
+    const theme = useContext(ThemeContext)
     return(
-        <View style={styles.container}>
-            <ScrollView>
+        <ScrollView style={{backgroundColor: theme.background}}>
+            <View style={styles.container}>
+            
                 <View style={styles.header}>
-                    <Text style={styles.title}>
+                    <Text style={[styles.title, {color: theme.color}]}>
                         Edit More Information
                     </Text>
                 
 
                     <View>
-                        <Text style={styles.locationHeader}>
+                        <Text style={[styles.locationHeader, {color: theme.color}]}>
                             Specify its location
                         </Text>
                         <TextInput
@@ -55,38 +58,39 @@ const EditInfoScreen = ({route, navigation}) => {
                             mode="outlined"
                             // label="Address"
                             // placeholder="Type Place"
-                            activeOutlineColor="#e6697e"
+                            activeOutlineColor={theme.activeOutColor}
                             right={<TextInput.Affix text="/100" />}
                         />
+                        
                     </View>
-                    <Text style={styles.details}>
+                    <Text style={[styles.details, {color: theme.color}]}>
                         Indicate Details
                     </Text>
                     <View style={styles.detailsContainer}>
                         <View style={styles.position}>
-                            <Text style={styles.locationHeader}>
+                            <Text style={[styles.locationHeader, {color: theme.color}]}>
                                 Specify Price
                             </Text>
                             <TextInput style={styles.boxPrice}
                                 defaultValue={editPrice}
                                 mode="outlined"
                                 // placeholder="Type place"
-                                activeOutlineColor="#e6697e"
+                                activeOutlineColor={theme.activeOutColor}
                             />
                         </View>
                         <View>
-                            <Text style={styles.locationHeader}>
+                            <Text style={[styles.locationHeader, {color: theme.color}]}>
                                 Handicap Access
                             </Text>
                             <Switch
                                 value={isEnabled} 
                                 onValueChange={toggleSwitch}
-                                color= {"red"}
+                                color= {theme.activeOutColor}
                             />
                         </View>
                     </View>
                     <View>
-                        <Text style={styles.locationHeader}>
+                        <Text style={[styles.locationHeader, {color: theme.color}]}>
                             More Details
                         </Text>
                         <TextInput style={styles.location}
@@ -95,11 +99,11 @@ const EditInfoScreen = ({route, navigation}) => {
                             // label="Other details"
                             // placeholder="Type details"
                             right={<TextInput.Affix text="/250" />}
-                            activeOutlineColor="#e6697e"
+                            activeOutlineColor={theme.activeOutColor}
                         />
                     </View>
                     <TouchableOpacity 
-                        style={styles.btn}
+                        style={[styles.btn, {backgroundColor: theme.submitBtn}]}
                         onPress={() => handleSubmit()}    
                     >
                         <Text style={styles.submit}>
@@ -107,8 +111,9 @@ const EditInfoScreen = ({route, navigation}) => {
                         </Text>
                     </TouchableOpacity>
                 </View>
-            </ScrollView>
+            
         </View>
+        </ScrollView>
     );
 
 }
@@ -119,8 +124,7 @@ const styles = StyleSheet.create({
     container:{
         flex: 1,
         justifyContent: "flex-start",
-        alignItems: "center",
-        backgroundColor: "white"
+        alignItems: "center"
     },
     header:{
         justifyContent: "center",
@@ -156,7 +160,6 @@ const styles = StyleSheet.create({
         flexDirection: "row"
     },
     btn:{
-        backgroundColor: "#e6697e",
         paddingHorizontal: 80,
         paddingVertical: 10,
         borderRadius: 5,
