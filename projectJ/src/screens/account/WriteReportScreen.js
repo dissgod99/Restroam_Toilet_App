@@ -1,5 +1,5 @@
 import React,{ useState, useEffect, useContext } from "react";
-import {View, Text, TouchableOpacity,StyleSheet, KeyboardAvoidingView} from 'react-native';
+import {View, Text, TouchableOpacity,StyleSheet, KeyboardAvoidingView, ScrollView} from 'react-native';
 import { CheckBox } from "@rneui/base";
 import { TextInput } from 'react-native-paper';
 import ThemeContext from "../../darkMode/ThemeContext";
@@ -20,40 +20,45 @@ const ReportsScreen = ({navigation}) => {
     const [text, onChangeText] = React.useState("");
     const theme = useContext(ThemeContext)
     return (
-            <KeyboardAvoidingView style={styles.container}>
-                <Text style={styles.headline}>
+        <ScrollView style={{backgroundColor: theme.backgroundReports}}>
+            <View style={[styles.container]}>
+                <Text style={[styles.headline, {color: theme.color}]}>
                     Report a toilet
                 </Text>
-                <Text style={styles.text}>
+                <Text style={[styles.text, {color: theme.color}]}>
                     Please select the reason for your report as precisely as possible. If you want to provide additional information, please use the text field.
                 </Text>
-                <View style={styles.checkboxes}>
+                <View style={[styles.checkboxes]}>
                     <CheckBox
+                        containerStyle={{backgroundColor: theme.backgroundToilet}}
                         title='The toilet can no longer be found in its specified position.'
                         checked={notFound}
                         onPress={()=> setNotFound(!notFound)}
-                        checkedColor="#e6697e"
+                        checkedColor={theme.check}
                         textStyle={styles.checkbox}
                         />
                     <CheckBox
+                        containerStyle={{backgroundColor: theme.backgroundToilet}}
                         title='The toilet is clogged so that it is no longer usable.'
                         checked={clogged}
                         onPress={()=> setClogged(!clogged)}
-                        checkedColor="#e6697e"
+                        checkedColor={theme.check}
                         textStyle={styles.checkbox}
                         />
                     <CheckBox
+                        containerStyle={{backgroundColor: theme.backgroundToilet}}
                         title='There are serious damages on the toilet that need to be repaired.'
                         checked={damaged}
                         onPress={()=> setDamaged(!damaged)}
-                        checkedColor="#e6697e"
+                        checkedColor={theme.check}
                         textStyle={styles.checkbox}
                         />
                     <CheckBox
+                        containerStyle={{backgroundColor: theme.backgroundToilet}}
                         title='The toilet is dirty that it requires substantial cleaning.'
                         checked={dirty}
                         onPress={()=> setDirty(!dirty)}
-                        checkedColor="#e6697e"
+                        checkedColor={theme.check}
                         textStyle={styles.checkbox}
                         />
                 </View>
@@ -76,7 +81,8 @@ const ReportsScreen = ({navigation}) => {
                             </Text>
                     </TouchableOpacity>
                 </View>
-            </KeyboardAvoidingView>
+            </View>
+            </ScrollView>
     )
 }
 const styles = StyleSheet.create({
@@ -91,14 +97,15 @@ const styles = StyleSheet.create({
         flex: 1,
         fontSize:25,
         fontWeight:'bold',
-        marginTop:10,
+        marginVertical: 15,
     },
     checkboxes:{
         flex:5,
         marginHorizontal:5,
+        marginVertical: 20
     },
     checkbox:{
-        fontWeight:'normal',
+        fontWeight:'bold',
         },
     text:{
         flex:2,
@@ -117,7 +124,6 @@ const styles = StyleSheet.create({
         flex:2,
     },
     btn: {
-        //backgroundColor: "#e6697e",
         paddingHorizontal:100,
         paddingVertical: 10,
         borderRadius: 5,
