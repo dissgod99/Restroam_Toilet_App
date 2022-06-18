@@ -16,7 +16,8 @@ const Theme = {
          show: "#f28d82",
          backgroundReports: "#f5f5f5",
          reportsChoice: "white",
-         check: "#e6697e"
+         check: "#e6697e",
+         addMore: "black"
      },
     dark:{
         theme: "dark",
@@ -35,7 +36,8 @@ const Theme = {
         show: "grey",
         backgroundReports: "#2b2b2b",
         reportsChoice: "#bcbcbc",
-        check: "gold"
+        check: "gold",
+        addMore: "#d7b604"
     },
 };
 export default Theme;
