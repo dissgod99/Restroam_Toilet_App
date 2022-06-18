@@ -1,7 +1,9 @@
-import React,{useState, useRef, useEffect} from 'react';
+import React,{useState, useRef, useEffect, useContext} from 'react';
 import { Text,Image,ScrollView,Fragment,FlatList,TouchableOpacity, View, StyleSheet } from 'react-native';
 import MapView,{PROVIDER_GOOGLE} from 'react-native-maps';
 import { mapStyle } from '../../global/mapStyle';
+import { mapStyleDarkMode } from '../../global/mapStyleDarkMode';
+import ThemeContext from '../../darkMode/ThemeContext';
 import * as Location from 'expo-location'
 import renderIf from './renderIf'
 import MapViewDirections from 'react-native-maps-directions';
@@ -72,13 +74,15 @@ export default function MapScreen({ navigation }) {
     const markerClick = (item1) => {
         setMarkerlicked(!markerclicked);
     }
+
+    const theme = useContext(ThemeContext);
     return (
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
             <MapView 
             ref={_map}
             provider={PROVIDER_GOOGLE} 
             style={styles.map} 
-            customMapStyle={mapStyle}
+            customMapStyle={theme.theme == "light" ? mapStyle : mapStyleDarkMode}
             showsUserLocation={true}
             followsUserLocation={true}
             >
