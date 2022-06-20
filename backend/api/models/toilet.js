@@ -5,9 +5,10 @@ const toiletSchema = new mongoose.Schema({
     name: {type: String, required: true, unique: true},
     address: {type: String, required: true},
     owner: {type: String, required: true},
-    openingHours: {type: String, required: true},
+    openingHours: {type: Object, required: true},
     price: {type: String, required: true},
-    handicapAccess: {type: String, required: true},
+    handicapAccess: {type: Boolean, required: true},
+    details: {type: String, required: false},
 
 });
 

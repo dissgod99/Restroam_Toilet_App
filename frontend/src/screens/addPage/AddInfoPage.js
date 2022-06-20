@@ -3,18 +3,20 @@ import { Text, ScrollView, View, StyleSheet, TouchableOpacity } from "react-nati
 import { TextInput, Switch } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import ThemeContext from "../../darkMode/ThemeContext";
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import {getAsyncStorageItem} from "../../util";
+import {BACKEND_ENDPOINT_TOILETS} from "../../constants"
 
 import axios from "axios";
 
 // change url backend login api (on heroku)
 // for now it is set to the IP address of my machine (192.168.1.100) to test it on yours replace it with your IP
-const BACKEND_ENDPOINT = 'http://192.168.1.100:3000/api/toilets/addToilet';
+const baseUrl = BACKEND_ENDPOINT_TOILETS + "addToilet";
 
 const AddInfoPage = ({ navigation }) => {
     var numberi = 0;
     const [price, setPrice] = useState('0,00€');
     const [address, setAddress] = useState('');
+    const [details, setDetails] = useState('');
     const [isEnabled, setIsEnabled] = useState(false);
 
     function toggleSwitch() {
@@ -28,6 +30,10 @@ const AddInfoPage = ({ navigation }) => {
     }
     function changeAddress(v) {
         setAddress(v);
+    }
+
+    function changeDetails(v) {
+        setDetails(v);
     }
 
     const theme = useContext(ThemeContext);
@@ -50,6 +56,7 @@ const AddInfoPage = ({ navigation }) => {
                             placeholder="Type place"
                             right={<TextInput.Affix text="/100" />}
                             activeOutlineColor={theme.activeOutColor}
+                            onChangeText={(value) => changeAddress(value)}
                         />
                     </View>
                     <Text style={[styles.details, { color: theme.color }]}>
@@ -94,38 +101,33 @@ const AddInfoPage = ({ navigation }) => {
                             placeholder="Type details"
                             right={<TextInput.Affix text="/250" />}
                             activeOutlineColor={theme.activeOutColor}
+                            onChangeText={(value) => changeDetails(value)}
                         />
                     </View>
 
                     <TouchableOpacity
                         style={[styles.btn, { backgroundColor: theme.submitBtn }]}
                         onPress={() => {
-                            const getAll = async () => {
-                                try {
-                                    const result = {};
-                                    const keys = await AsyncStorage.getAllKeys();
-                                    for (const key of keys) {
-                                        const val = await AsyncStorage.getItem(key);
-                                        result[key] = val;
-                                    }
-                                    console.log("res" + result);
-                                    return result;
-                                } catch (error) {
-                                    alert(error);
-                                }
-                            };
-                            axios.post(`${baseUrl}/toilets/addToilet`, {
-                                address: address,
-                                name: address,
-                                price: price,
-                                owner: result,
-                                openingHours: JSON.stringify({ a: 'aaa' }),
-                                handicapAccess: isEnabled
-                            }).then(
-                                () => navigation.navigate("ThankYou")
-
-                            ).catch(err => console.log("couldn't add toilet"))
-                            navigation.navigate("Upload Image")
+                            console.log("inside add ");
+                            getAsyncStorageItem('token').then(
+                                (tokenFromStorage) => {
+                                //setToken(tokenFromStorage);
+                                axios.post(`${baseUrl}`, {
+                                    address: address,
+                                    name: address,
+                                    price: price,
+                                    token: tokenFromStorage,
+                                    openingHours: JSON.stringify({ a: 'aaa' }),
+                                    handicapAccess: isEnabled,
+                                    details: details
+                                }).then(
+                                    () => navigation.navigate("ThankYou")
+    
+                                ).catch(err => console.log("couldn't add toilet"))
+                                navigation.navigate("Upload Image")
+                              })
+                              .catch(err => console.log(err));
+                            
                         }}
                     >
                         <Text style={styles.stOfSubmit}>

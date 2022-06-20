@@ -8,7 +8,7 @@ import axios from "axios";
 
 // change url backend login api (on heroku)
 // for now it is set to the IP address of my machine (192.168.1.100) to test it on yours replace it with your IP
-const BACKEND_ENDPOINT = 'http://192.168.1.100:3000/api/users/signup';
+const BACKEND_ENDPOINT = 'http://192.168.178.61:3000/api/users/signup';
 
 
 const LoginScreen = ({ navigation }) => {
@@ -31,8 +31,9 @@ const LoginScreen = ({ navigation }) => {
         // do some backend logic here
         let email = data.email;
         let password = data.password;
+        let username = data.username;
         axios
-            .post(BACKEND_ENDPOINT, { email, password })
+            .post(BACKEND_ENDPOINT, { email, username, password })
             .then((response) => {
                 const { status, data } = response;
                 if (status == '201') {

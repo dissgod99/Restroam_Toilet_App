@@ -7,6 +7,7 @@ import renderIf from './renderIf'
 import MapViewDirections from 'react-native-maps-directions';
 import StarRating from 'react-native-star-rating';
 
+const _ = require('lodash');
 
 export default function MapScreen({ navigation }) {
     const [latlng,setLatLng]=useState({});
@@ -39,20 +40,36 @@ export default function MapScreen({ navigation }) {
         }
     }
 
+    const getToiletsAroundUser = async () => {
+        try{
+            const result = await axios.post(`${baseUrl}/toilets/nearestToilets`,{
+                latitude: latlng.latitude,
+                longitude: latlng.longitude
+            });
+            setToiletsAround(result);
+        }
+        catch(err){
+
+        }
+    }
+
     const _map=useRef(1);
 
-    useEffect(() => {
-        checkPermission();
-        getLocation()
-        ,[]})
-
-    const toiletsAround =[{latitude:49.895685,longitude:8.681163},
+    const [toiletsAround,setToiletsAround] = useState([{latitude:49.895685,longitude:8.681163},
         {latitude:49.895975,longitude:8.683416},
         {latitude:49.897620,longitude:8.681999},
         {latitude:49.897316,longitude:8.684767},
 
     
-    ]
+    ]);
+
+    useEffect(() => {
+        checkPermission();
+        getLocation();
+        getToiletsAroundUser()
+        ,[]})
+
+    
     const [clicked,setClicked]= useState(false);
     
     const handleSubmit = () =>{
@@ -68,10 +85,21 @@ export default function MapScreen({ navigation }) {
     }
 
     const [markerclicked,setMarkerlicked]= useState(false);
-    
+    const [itemclicked,setItemclicked]= useState({});
     const markerClick = (item1) => {
-        setMarkerlicked(!markerclicked);
+        if(_.isEqual(item,{})){
+            setMarkerlicked(!markerclicked); 
+
+        }
+        if(_.isEqual(item,item1)){
+            setMarkerlicked(!markerclicked); 
+
+        }
+        console.log(markerclicked);
+        setItemclicked(item1);
+        
     }
+
     return (
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
             <MapView 
@@ -95,8 +123,13 @@ export default function MapScreen({ navigation }) {
                     </MapView.Marker>
                 })}
             <MapViewDirections
-            origin={toiletsAround[1]}
-            destination={toiletsAround[0]}
+            origin={
+                //latlng
+                toiletsAround[0]
+            }
+            destination={
+                //item
+            toiletsAround[1]}
             
             apikey={"AIzaSyCFbwdnUJoJA5FD6NiAwFevhUnU5jHWycA"}
             strokeWidth={3}
