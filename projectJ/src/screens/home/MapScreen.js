@@ -6,6 +6,7 @@ import * as Location from 'expo-location'
 import renderIf from './renderIf'
 import MapViewDirections from 'react-native-maps-directions';
 import StarRating from 'react-native-star-rating';
+import DropDown from './DropDown';
 
 
 export default function MapScreen({ navigation }) {
@@ -74,6 +75,7 @@ export default function MapScreen({ navigation }) {
     }
     return (
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+            <DropDown></DropDown>
             <MapView 
             ref={_map}
             provider={PROVIDER_GOOGLE} 
