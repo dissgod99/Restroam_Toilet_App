@@ -37,7 +37,7 @@ const OwnedToiletsScreen = ({ route, navigation }) => {
     }
 
     const updateToilets = () => {
-        fetchToiletsBackend();
+        setToiletItems([]);
         console.log(toiletItems);
     }
 
@@ -52,12 +52,12 @@ const OwnedToiletsScreen = ({ route, navigation }) => {
                     </Text>
                     <View style={styles.items}>
                         {
-                            toiletItems.map(([title, location, price], index) => {
+                            toiletItems.map(({name, address, price}, index) => {
                                 return (
                                     <View key={index} style={[styles.item, { backgroundColor: theme.backgroundToilet }]}>
                                         <Toilet
-                                            title={title}
-                                            location={location}
+                                            title={name}
+                                            location={address}
                                             price={price}
                                         />
                                         <View style={styles.itemRight}>

@@ -200,9 +200,10 @@ router.post('/user-owned-toilets', jsonParser, async (req, res, next) => {
         let user = await User.findById(userId);
         await checkIfUserIsDeleted(user);
 
-        let toilets = await Toilet.find({ owner: user._id });
+        let toilets = await Toilet.find({ owner: user });
         if (!toilets)
             toilets = [];
+        
         res.status(200).json({
             message: 'Successfully retrieved toilets for current user.',
             payload: toilets
