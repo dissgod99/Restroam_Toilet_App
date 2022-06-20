@@ -1,170 +1,202 @@
-import React, {useContext, useState} from "react";
-import {View, StyleSheet, Text, ScrollView, TouchableOpacity} from "react-native"
+import axios from "axios";
+import React, { useContext, useState } from "react";
+import { View, StyleSheet, Text, ScrollView, TouchableOpacity } from "react-native"
 import { TextInput } from "react-native-paper";
 import ThemeContext from "../../darkMode/ThemeContext";
 
+import { BACKEND_ENDPOINT_USERS } from '../../constants';
 
-const ChangePasswordScreen = () =>{
+
+const ChangePasswordScreen = ({ route, navigation }) => {
+
+    const { token } = route.params;
+
     const theme = useContext(ThemeContext);
-    const[data, setData] = useState({
+
+    const [message, setMessage] = useState('');
+    const [messageType, setMessageType] = useState('red');
+
+    const [data, setData] = useState({
         oldPassword: "",
         newPassword: "",
         reenterNewPassword: "",
         secureTextEntryOldPassword: true,
         secureTextEntryNewPassword: true,
         secureTextEntryNewPasswordAgain: true
-    })
-    const enterOldPassword = (value) =>{
+    });
+
+    const handleConfirm = (evt) => {
+        evt.preventDefault();
+        axios
+            .post(BACKEND_ENDPOINT_USERS + 'change-password',
+                { token: token, oldPassword: data.oldPassword, newPassword: data.newPassword })
+            .then(({ status, data }) => {
+                handleMessage(data.message, 'green')
+                console.log(data.message);
+            })
+            .catch(err => {
+                handleMessage(err.response.data.message, 'red');
+                console.log(err.response.data.message);
+            });
+    }
+
+    const handleMessage = (message, type) => {
+        setMessage(message);
+        setMessageType(type);
+    }
+
+    const enterOldPassword = (value) => {
         setData({
             ...data,
             oldPassword: value
         })
-    }
+    };
 
-    const enterNewPassword = (value) =>{
+    const enterNewPassword = (value) => {
         setData({
             ...data,
             newPassword: value
         })
-    }
+    };
 
-    const renterNewPassword = (value) =>{
+    const renterNewPassword = (value) => {
         setData({
             ...data,
             reenterNewPassword: value
         })
-    }
+    };
 
-    const showPassword = () =>{
+    const showPassword = () => {
         setData({
             ...data,
             secureTextEntryOldPassword: !data.secureTextEntryOldPassword
         })
-    }
-    const showNewPassword = () =>{
+    };
+
+    const showNewPassword = () => {
         setData({
             ...data,
             secureTextEntryNewPassword: !data.secureTextEntryNewPassword
         })
-    }
-    const showNewPasswordAgain = () =>{
+    };
+
+    const showNewPasswordAgain = () => {
         setData({
             ...data,
             secureTextEntryNewPasswordAgain: !data.secureTextEntryNewPasswordAgain
         })
-    }
-
-
+    };
 
     return (
-        <ScrollView style={{backgroundColor: theme.background}}>
-        <View style={styles.container}>
-            <Text style={[styles.mainTxt, {color:theme.color}]}>
-                Change your password in few steps:
-            </Text>
-
-            <View style={styles.viewPassword}>
-                <Text style={[styles.txt, {color:theme.color}]}>
-                    Enter your current password:
+        <ScrollView style={{ backgroundColor: theme.background }}>
+            <View style={styles.container}>
+                <Text style={[styles.mainTxt, { color: theme.color }]}>
+                    Change your password in few steps:
                 </Text>
-                <TextInput
-                    style={styles.enterInputField}
-                    label="Old Password" 
-                    placeholder="Enter old password"
-                    secureTextEntry={data.secureTextEntryOldPassword}
-                    //mode="outlined"
-                    activeOutlineColor= {theme.activeOutlineColor}
-                    onChangeText={(value) => enterOldPassword(value)}
-                />
-                        <TouchableOpacity onPress={showPassword}>
+
+                <View style={styles.viewPassword}>
+                    <Text style={[styles.txt, { color: theme.color }]}>
+                        Enter your current password:
+                    </Text>
+                    <TextInput
+                        style={styles.enterInputField}
+                        label="Old Password"
+                        placeholder="Enter old password"
+                        secureTextEntry={data.secureTextEntryOldPassword}
+                        //mode="outlined"
+                        activeOutlineColor={theme.activeOutlineColor}
+                        onChangeText={(value) => enterOldPassword(value)}
+                    />
+                    <TouchableOpacity onPress={showPassword}>
                         {data.secureTextEntryOldPassword ?
-                            <Text style={[styles.confirmStyle, {color:theme.show}]}>
+                            <Text style={[styles.confirmStyle, { color: theme.show }]}>
                                 Show password
                             </Text>
                             :
-                            <Text style={[styles.confirmStyle, {color:theme.show}]}>
+                            <Text style={[styles.confirmStyle, { color: theme.show }]}>
                                 Hide password
                             </Text>
                         }
-                        </TouchableOpacity>
-                    
-                    
-            </View>
+                    </TouchableOpacity>
 
-            <View style={styles.viewPassword}>
-                <Text style={[styles.txt, {color:theme.color}]}>
-                    Enter your new password:
-                </Text>
-                <TextInput
-                    style={styles.enterInputField}
-                    label="New Password" 
-                    placeholder="Enter new password"
-                    secureTextEntry={data.secureTextEntryNewPassword}
-                    //mode="outlined"
-                    activeOutlineColor= {theme.activeOutlineColor}
-                    onChangeText={(value) => enterNewPassword(value)}
-                />
-                <TouchableOpacity onPress={showNewPassword}>
-                    {data.secureTextEntryNewPassword? 
-                        <Text style={[styles.confirmStyle, {color:theme.show}]}>
-                            Show password        
-                        </Text>
-                        :
-                        <Text style={[styles.confirmStyle, {color:theme.show}]}>
-                            Hide password        
-                        </Text>
-                    }
-                    
+
+                </View>
+
+                <View style={styles.viewPassword}>
+                    <Text style={[styles.txt, { color: theme.color }]}>
+                        Enter your new password:
+                    </Text>
+                    <TextInput
+                        style={styles.enterInputField}
+                        label="New Password"
+                        placeholder="Enter new password"
+                        secureTextEntry={data.secureTextEntryNewPassword}
+                        //mode="outlined"
+                        activeOutlineColor={theme.activeOutlineColor}
+                        onChangeText={(value) => enterNewPassword(value)}
+                    />
+                    <TouchableOpacity onPress={showNewPassword}>
+                        {data.secureTextEntryNewPassword ?
+                            <Text style={[styles.confirmStyle, { color: theme.show }]}>
+                                Show password
+                            </Text>
+                            :
+                            <Text style={[styles.confirmStyle, { color: theme.show }]}>
+                                Hide password
+                            </Text>
+                        }
+
+                    </TouchableOpacity>
+
+                </View>
+
+
+                <View style={styles.viewPassword}>
+                    <Text style={[styles.txt, { color: theme.color }]}>
+                        Re-enter your new password:
+                    </Text>
+                    <TextInput
+                        style={styles.enterInputField}
+                        label="New Password Again"
+                        placeholder="Re-enter new password"
+                        secureTextEntry={data.secureTextEntryNewPasswordAgain}
+                        //mode="outlined"
+                        activeOutlineColor={theme.activeOutColor}
+                        onChangeText={(value) => renterNewPassword(value)}
+                    />
+                    <TouchableOpacity onPress={showNewPasswordAgain}>
+                        {data.secureTextEntryNewPasswordAgain ?
+                            <Text style={[styles.confirmStyle, { color: theme.show }]}>
+                                Show password
+                            </Text>
+                            :
+                            <Text style={[styles.confirmStyle, { color: theme.show }]}>
+                                Hide password
+                            </Text>
+                        }
+                    </TouchableOpacity>
+
+                </View>
+
+                <TouchableOpacity onPress={handleConfirm} style={[styles.btn, { backgroundColor: theme.submitBtn }]}>
+                    <Text style={styles.confirmStyle}>
+                        Confirm
+                    </Text>
+
                 </TouchableOpacity>
-
+                <Text style={{ color: messageType }}> {message} </Text> 
             </View>
-
-
-            <View style={styles.viewPassword}>
-                <Text style={[styles.txt, {color:theme.color}]}>
-                    Re-enter your new password:
-                </Text>
-                <TextInput
-                    style={styles.enterInputField}
-                    label="New Password Again" 
-                    placeholder="Re-enter new password"
-                    secureTextEntry={data.secureTextEntryNewPasswordAgain}
-                    //mode="outlined"
-                    activeOutlineColor= {theme.activeOutColor}
-                    onChangeText={(value) => renterNewPassword(value)}
-                />
-                <TouchableOpacity onPress={showNewPasswordAgain}>
-                {data.secureTextEntryNewPasswordAgain?
-                <Text style={[styles.confirmStyle, {color:theme.show}]}>
-                    Show password
-                </Text>
-                :
-                <Text style={[styles.confirmStyle, {color:theme.show}]}>
-                    Hide password
-                </Text>
-                }
-                </TouchableOpacity>   
-
-            </View>
-
-            <TouchableOpacity style={[styles.btn, {backgroundColor: theme.submitBtn}]}>
-                <Text style={styles.confirmStyle}>
-                    Confirm
-                </Text>
-
-
-            </TouchableOpacity>
-        </View>
         </ScrollView>
-        )};
+    );
+};
 
 const styles = StyleSheet.create({
-    container:{
+    container: {
         flex: 3,
         justifyContent: "flex-start",
         alignItems: "center"
     },
-    mainTxt:{
+    mainTxt: {
         fontSize: 20,
         fontWeight: "bold",
         marginTop: 20
@@ -173,24 +205,24 @@ const styles = StyleSheet.create({
         marginHorizontal: 20,
         width: "80%"
     },
-    viewPassword:{
+    viewPassword: {
         width: "95%",
-        alignItems:"center",
+        alignItems: "center",
         marginVertical: 15
     },
-    txt:{
+    txt: {
         marginVertical: 10,
         fontSize: 15,
     },
-    btn:{
-        justifyContent:"center",
+    btn: {
+        justifyContent: "center",
         alignItems: "center",
         paddingHorizontal: 100,
         paddingVertical: 10,
         borderRadius: 5,
         marginVertical: 10
     },
-    confirmStyle:{
+    confirmStyle: {
         fontWeight: "bold"
     }
 

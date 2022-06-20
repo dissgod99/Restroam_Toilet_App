@@ -220,7 +220,7 @@ router.post('/change-password', jsonParser, async (req, res, next) => {
             }
         );
         res.status(200).json({
-            message: 'changed password to: ' + newPassword + ', hashed value is: ' + hashedPassword + '.'
+            message: 'Successfully changed your password to: ' + newPassword
         });
 
 

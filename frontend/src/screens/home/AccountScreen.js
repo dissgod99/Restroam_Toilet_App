@@ -117,7 +117,7 @@ const AccountScreen = ({ navigation }) => {
         </Text>
         
       </TouchableOpacity>  */}
-        <TouchableOpacity onPress={() => navigation.navigate('Settings')}>
+        <TouchableOpacity onPress={() => navigation.navigate('Settings', { token: token })}>
           <Text style={[styles.menu, { color: theme.color, backgroundColor: theme.menuBackground }]}>
             <Icon name="cog-outline" size={35} color={theme.color} />
             Settings

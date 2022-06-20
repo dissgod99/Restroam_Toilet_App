@@ -4,10 +4,10 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import ThemeContext from "../../darkMode/ThemeContext";
 
-const SettingsScreen = ({navigation}) => {
+const SettingsScreen = ({ route, navigation}) => {
     const theme = useContext(ThemeContext);
     const navigateToChangePassword = () => {
-        navigation.navigate("Change Password");
+        navigation.navigate("Change Password", { token: route.params.token });
     }
     return (
         <ScrollView style= {{backgroundColor: theme.background}}>
