@@ -28,7 +28,7 @@ export default function UploadImage(navigation) {
                     alert('Sorry, we need camera roll permissions to make this work!');
                 }
                 await tf.ready()
-               setModel(await mobilenet.load());
+                setModel(await mobilenet.load());
             }
         })();
     }, []);
@@ -148,7 +148,7 @@ export default function UploadImage(navigation) {
                             <TouchableOpacity key={idx} onPress={() => pickThisImage(idx)}>
                                 <TouchableOpacity key={idx} onPress={() => {
                                     imageArray[idx][1](null);
-                                }} style={{position:'absolute',top:5,left:100,zIndex:20}}>
+                                }} style={{ position: 'absolute', top: 5, left: 100, zIndex: 20 }}>
                                     <Icon name="close" size={30} color={"white"} />
                                 </TouchableOpacity>
                                 <Image source={{ uri: img[0] }} style={{ width: 125, height: 200, margin: 5 }} onPress={pickImage} />
