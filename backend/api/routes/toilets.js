@@ -200,9 +200,15 @@ router.post('/user-owned-toilets', jsonParser, async (req, res, next) => {
         let user = await User.findById(userId);
         await checkIfUserIsDeleted(user);
 
-        let toilets = await Toilet.find({ owner: user });
-        if (!toilets)
-            toilets = [];
+
+        // problem here is if we filter by owner the object can be changed because it includes the user's hashed password which can be changed anytime the user 
+        let toiletsTmp = await Toilet.find();
+
+        let toilets = []
+
+        toiletsTmp.forEach(toit => {
+            if (toit.owner._id == userId) toilets.push(toit);
+        });
         
         res.status(200).json({
             message: 'Successfully retrieved toilets for current user.',

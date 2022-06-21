@@ -14,13 +14,17 @@ const OwnedToiletsScreen = ({ route, navigation }) => {
     const [toiletItems, setToiletItems] = useState([]);
 
     useEffect(() => {
+        fetchToilets();
+    }, []);
+
+    const fetchToilets = () => {
         axios
             .post(BACKEND_ENDPOINT_TOILETS + 'user-owned-toilets', { token })
             .then(({ status, data }) => {
                 console.log(data.payload);
                 setToiletItems(data.payload);
             }).catch(err => console.log(err));
-    });
+    }
 
     const deleteToilet = (index) => {
         let toiletsCopy = [...toiletItems];
@@ -33,8 +37,7 @@ const OwnedToiletsScreen = ({ route, navigation }) => {
     }
 
     const updateToilets = () => {
-        setToiletItems([]);
-        console.log(toiletItems);
+        fetchToilets();
     }
 
     const theme = useContext(ThemeContext)

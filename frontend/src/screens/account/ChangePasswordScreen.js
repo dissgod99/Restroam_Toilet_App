@@ -31,12 +31,10 @@ const ChangePasswordScreen = ({ route, navigation }) => {
             .post(BACKEND_ENDPOINT_USERS + 'change-password',
                 { token: token, oldPassword: data.oldPassword, newPassword: data.newPassword })
             .then(({ status, data }) => {
-                handleMessage(data.message, 'green')
-                console.log(data.message);
+                handleMessage(data.message, 'green');
             })
             .catch(err => {
                 handleMessage(err.response.data.message, 'red');
-                console.log(err.response.data.message);
             });
     }
 
