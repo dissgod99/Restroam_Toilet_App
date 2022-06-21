@@ -13,7 +13,7 @@ export const mapStyleDarkMode = [
         "elementType": "geometry.stroke",
         "stylers": [
             {
-                "color": "#cfd4d5"
+                "color": "#9E9E9E"
             }
         ]
     },
@@ -22,7 +22,9 @@ export const mapStyleDarkMode = [
         "elementType": "labels.text.fill",
         "stylers": [
             {
-                "color": "#7492a8"
+                //"color": "#7492a8"
+                "color": "black"
+                //"color": "#C4C4C4"
             }
         ]
     },
@@ -35,12 +37,14 @@ export const mapStyleDarkMode = [
             }
         ]
     },
-    {
+    {   // city colors
         "featureType": "landscape.man_made",
         "elementType": "geometry.fill",
         "stylers": [
             {
-                "color": "#dde2e3"
+                //"color": "#dde2e3"
+                "color": "#444444"
+                //"color": "2c2c2b"
             }
         ]
     },
@@ -49,7 +53,8 @@ export const mapStyleDarkMode = [
         "elementType": "geometry.stroke",
         "stylers": [
             {
-                "color": "#cfd4d5"
+                //"color": "#cfd4d5"
+                "color" : "#919191"
             }
         ]
     },
@@ -58,7 +63,8 @@ export const mapStyleDarkMode = [
         "elementType": "geometry.fill",
         "stylers": [
             {
-                "color": "#dde2e3"
+                //"color": "#dde2e3"
+                "color": "#2C2C2B"
             }
         ]
     },
@@ -85,16 +91,19 @@ export const mapStyleDarkMode = [
         "elementType": "geometry.fill",
         "stylers": [
             {
-                "color": "#dde2e3"
+                //"color": "#dde2e3"
+                "color": "#919191"
             }
         ]
     },
-    {
+    {   // text of places like REWE, Herrngarten, King Darmstadt ...
         "featureType": "poi",
         "elementType": "labels.text.fill",
         "stylers": [
             {
-                "color": "#588ca4"
+                //"color": "#cc0000"
+                //"color": "#a9a9a9"
+                "color": "#741b47"
             }
         ]
     },
@@ -112,7 +121,9 @@ export const mapStyleDarkMode = [
         "elementType": "geometry.fill",
         "stylers": [
             {
-                "color": "#a9de83"
+                //"color": "#a9de83"
+                //"color": "#79876e"
+                "color": "#6e7766"
             }
         ]
     },
@@ -121,7 +132,8 @@ export const mapStyleDarkMode = [
         "elementType": "geometry.stroke",
         "stylers": [
             {
-                "color": "#bae6a1"
+                //"color": "#bae6a1"
+                "color": "#79876e"
             }
         ]
     },
@@ -130,7 +142,8 @@ export const mapStyleDarkMode = [
         "elementType": "geometry.fill",
         "stylers": [
             {
-                "color": "#c6e8b3"
+                //"color": "#c6e8b3"
+                "color": "#8a9683"
             }
         ]
     },
@@ -140,6 +153,7 @@ export const mapStyleDarkMode = [
         "stylers": [
             {
                 "color": "#bae6a1"
+                //"color": "#8a9683"
             }
         ]
     },
@@ -172,7 +186,7 @@ export const mapStyleDarkMode = [
         "elementType": "geometry.fill",
         "stylers": [
             {
-                "color": "#c1d1d6"
+                "color": "#919191"
             }
         ]
     },
@@ -181,7 +195,8 @@ export const mapStyleDarkMode = [
         "elementType": "geometry.stroke",
         "stylers": [
             {
-                "color": "#a6b5bb"
+                //"color": "#a6b5bb"
+                "color":"#919191"
             }
         ]
     },
@@ -199,25 +214,26 @@ export const mapStyleDarkMode = [
         "elementType": "geometry.fill",
         "stylers": [
             {
-                "color": "#9fb6bd"
+                //"color": "#9fb6bd"
+                "color": "#999999"
             }
         ]
     },
-    {
+    {   // big routes in neighborhood
         "featureType": "road.arterial",
         "elementType": "geometry.fill",
         "stylers": [
             {
-                "color": "#ffffff"
+                "color": "#919191"
             }
         ]
     },
-    {
+    {   // local roads (neighborhood)
         "featureType": "road.local",
         "elementType": "geometry.fill",
         "stylers": [
             {
-                "color": "#ffffff"
+                "color": "#b6b6b6"
             }
         ]
     },
@@ -235,7 +251,7 @@ export const mapStyleDarkMode = [
         "elementType": "geometry.fill",
         "stylers": [
             {
-                "color": "#b4cbd4"
+                "color": "#919191"
             }
         ]
     },
@@ -286,7 +302,8 @@ export const mapStyleDarkMode = [
         "elementType": "geometry.fill",
         "stylers": [
             {
-                "color": "#242726"
+                //"color": "#242726"
+                "color": "#191A1A"
             }
         ]
     }
