@@ -63,8 +63,8 @@ const materialScreenOpts = ({route}) => ({
   tabBarColor: '#FFFFFF',
   tabBarIcon: ({ focused, color, size }) => {
     let iconName; let rn = route.name;
-    console.log(rn);
-    console.log(route);
+    //console.log(rn);
+    //console.log(route);
     if (rn === mapName) iconName = focused ? iconsDict[mapName] : iconsOutlinedDict[mapName];
     else if (rn === addName) iconName = focused ? iconsDict[addName] : iconsOutlinedDict[addName];
     else if (rn === accountName) iconName = focused ? iconsDict[accountName] : iconsOutlinedDict[accountName];
