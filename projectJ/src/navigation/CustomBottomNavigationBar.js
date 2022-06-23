@@ -1,4 +1,4 @@
-import React, {useContext} from 'react';
+import React, {useContext, useState} from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 import { NavigationContainer } from '@react-navigation/native';
@@ -8,6 +8,7 @@ import ThemeContext from '../darkMode/ThemeContext';
 import AddScreen from '../screens/home/AddScreen';
 import MapScreen from '../screens/home/MapScreen';
 import AccountScreen from '../screens/home/AccountScreen';
+import Theme from '../darkMode/Theme';
 
 
 
@@ -30,6 +31,8 @@ iconsOutlinedDict[accountName] = 'person-outline';
 const Tab = createBottomTabNavigator();
 // new tab
 const MaterialTab = createMaterialBottomTabNavigator();
+
+
 
 // fotmer tab options
 const screenOpts = ({ route }) => ({
@@ -60,7 +63,24 @@ const screenOpts = ({ route }) => ({
 // new tab options
 const materialScreenOpts = ({route}) => ({
   // tabBarColor must be changed (Dark Mode)
-  tabBarColor: '#FFFFFF',
+  tabBarColor: Theme.light.bottomBar,
+  tabBarIcon: ({ focused, color, size }) => {
+    let iconName; let rn = route.name;
+    //console.log(rn);
+    //console.log(route);
+    if (rn === mapName) iconName = focused ? iconsDict[mapName] : iconsOutlinedDict[mapName];
+    else if (rn === addName) iconName = focused ? iconsDict[addName] : iconsOutlinedDict[addName];
+    else if (rn === accountName) iconName = focused ? iconsDict[accountName] : iconsOutlinedDict[accountName];
+
+    size = focused ? 21 : 17;
+
+    return <Ionicons name={iconName} color={color} size={size} />;
+  },
+});
+
+const materialScreenOptsDark = ({route}) => ({
+  // tabBarColor must be changed (Dark Mode)
+  tabBarColor: Theme.dark.bottomBar,
   tabBarIcon: ({ focused, color, size }) => {
     let iconName; let rn = route.name;
     //console.log(rn);
@@ -76,16 +96,19 @@ const materialScreenOpts = ({route}) => ({
 });
 
 export default function CustomButtonNavigationBar() {
+
+  const theme = useContext(ThemeContext);
+  
   return (
     <MaterialTab.Navigator
       initialRouteName={mapName}
-      screenOptions={materialScreenOpts}
+      screenOptions={theme.theme == "light" ? materialScreenOpts : materialScreenOptsDark}
       backBehavior='none'
       shifting={true}
       barStyle={{ backgroundColor: "#FFFFFF", }}
       inactiveColor='grey'
       //active Color must be changed (Dark Mode)
-      activeColor='#F28D82'
+      activeColor={theme.theme == "light" ? "#f28d82": "#ccaa55"}
     >
       <MaterialTab.Screen name={mapName} component={MapScreen} />
       <MaterialTab.Screen name={addName} component={AddScreen} />

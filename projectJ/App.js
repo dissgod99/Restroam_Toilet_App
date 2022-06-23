@@ -67,7 +67,8 @@ export default function App() {
               headerStyle: {
                 //backgroundColor: "#ae8647"
                 backgroundColor: headColor
-              }
+              },
+              headerShown: false,
             }} />
           <Stack.Screen
             name="Rating"
