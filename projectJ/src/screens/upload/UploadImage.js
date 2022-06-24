@@ -168,7 +168,7 @@ export default function UploadImage(navigation) {
                     if (load) {
                         return;
                     }
-                    navigation.navigate("Rating")
+                    navigation.navigate("ThankYou")
                 }
                 }
             >

@@ -216,7 +216,7 @@ export default function MapScreen({ navigation }) {
                                     padding: '2%',
                                     width: '32%'
                                 }} onPress={() => {
-                                    navigation.navigate("ThankYou")
+                                    navigation.navigate("Rating")
                                 }
                                 }>
                                     <Icon name="pencil-box-multiple" size={25} color={"black"} />
