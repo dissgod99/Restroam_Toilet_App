@@ -8,15 +8,19 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import axios from "axios";
 import { Image } from "react-native-animatable";
+import Geocoder from "react-native-geocoder"
+
 
 // change url backend login api (on heroku)
 // for now it is set to the IP address of my machine (192.168.1.100) to test it on yours replace it with your IP
 const BACKEND_ENDPOINT = 'http://192.168.1.100:3000/api/toilets/addToilet';
 
+//var NodeGeocoder = require('node-geocoder');
+
 const AddInfoPage = ({navigation}) =>{
     var numberi = 0;
     const [price, setPrice] = useState('0,00€');
-    const [address, setAddress] = useState('');
+    const [address, setAddress] = useState('adressss');
     const [isEnabled, setIsEnabled] = useState(false);
     const [description, setDescription] = useState("")
     const [currentLocation, setCurrentLocation] = useState("")
@@ -41,14 +45,39 @@ const AddInfoPage = ({navigation}) =>{
     setCurrentLocation(userLocation)
   }
 
+
+//   const getAddress = async ({lat, lng}) =>{
+//     Geocoder.fallbackToGoogle('AIzaSyCFbwdnUJoJA5FD6NiAwFevhUnU5jHWycA');
+//     let res = await Geocoder.geocodePosition({lat, lng})
+//     let addr = (res[0].formattedAddress)
+//   }
+
   const fillWithCurrentAddress = () =>{
-    const latitude = JSON.stringify(currentLocation["coords"]["latitude"])
-    const longitude = JSON.stringify(currentLocation["coords"]["longitude"])
+    Geocoder.fallbackToGoogle('AIzaSyCFbwdnUJoJA5FD6NiAwFevhUnU5jHWycA');
+    setAddress("")
+    const latitude = currentLocation["coords"]["latitude"]
+    const longitude =currentLocation["coords"]["longitude"]
+    //let res = Geocoder.geocodePosition({latitude, longitude})
+    //let addr = (res[0].formattedAddress)
     console.log("hello")
     setAddress(JSON.stringify(latitude + " | " + longitude))
+    //setAddress(addr)
+    console.log(address)
+    // Geocoder.fallbackToGoogle('AIzaSyCFbwdnUJoJA5FD6NiAwFevhUnU5jHWycA');
+    
+    // try{
+    // setAddress("")
+    // const userLocation = await Location.getCurrentPositionAsync();
+    // setCurrentLocation(userLocation)
+    // let res = await Geocoder.geocodePosition(currentLocation["coords"]["latitude"], currentLocation["coords"]["longitude"])
+    // let addr = (res[0].formattedAddress)
+    // setAddress(addr)
+    // console.log(addr)
+    // }
+    // catch(err){
+    //     alert(err)
+    // }
   }
-
-
   useEffect(() => {
     getLocation();
   })
@@ -69,12 +98,16 @@ const AddInfoPage = ({navigation}) =>{
                             Specify its location
                         </Text>
                         <TextInput style={styles.box}
+                            //defaultValue={address}
                             mode="outlined"
-                            label={address != "" ? address : "Address"}
-                            placeholder="Type place"
+                            editable={true}
+                            //label="Give address"
+                            placeholder="Enter address"
                             right={<TextInput.Affix text="/100" />}
                             activeOutlineColor={theme.activeOutColor}
-                            disabled={true}
+                            //disabled={true}
+                            onChangeText={(value) => {setAddress(value); console.log(address)}}
+                            value={address}
                             />
                             <TouchableOpacity onPress={async () => fillWithCurrentAddress()}
                                             style={[styles.getAddress, {backgroundColor: theme.submitBtn}]}>

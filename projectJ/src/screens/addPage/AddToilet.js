@@ -5,6 +5,7 @@ import { useContext, useState, useRef } from 'react';
 import Theme from '../../darkMode/Theme';
 import ThemeContext from '../../darkMode/ThemeContext';
 import { CheckBox } from "@rneui/base";
+import TimeSlot from './TimeSlot';
 
 export default function AddToilet({navigation}) {
   const [dayIsChecked, setDayIsChecked] = useState(
@@ -35,12 +36,25 @@ export default function AddToilet({navigation}) {
   const [textEnd, setTextEnd] = useState("<Closing Hour>");
 
 
+  const [hourSlots, setHourSlots] = useState([])
+
+  const[clicked, setClicked] = useState(false)
+
+  const addOneMoreTimeSlot = () =>{
+        setClicked(true)
+  }
+
+  
+  const padTo2Digits= (num)=> {
+    return String(num).padStart(2, '0');
+  }
+
   const onChange = (event, selectedDate) => {
     const currentDate = selectedDate || date;
     setDate(currentDate)
     let tempDate = new Date(currentDate);
     let fDate = tempDate.getDate();
-    let fTime = tempDate.getHours() + ":" + tempDate.getMinutes();
+    let fTime = padTo2Digits(tempDate.getHours()) + ":" + padTo2Digits(tempDate.getMinutes());
     setText(fTime); 
     setShow(!show)
   }
@@ -50,7 +64,10 @@ export default function AddToilet({navigation}) {
     setDateEnd(currentDate)
     let tempDate = new Date(currentDate);
     let fDate = tempDate.getDate();
-    let fTime = tempDate.getHours() + ":" + tempDate.getMinutes();
+
+    let hours = tempDate.getHours();
+    let fTime = padTo2Digits(tempDate.getHours()) + ":" + padTo2Digits(tempDate.getMinutes());
+    
     setTextEnd(fTime); 
     setShowEnd(!showEnd)
   }
@@ -87,14 +104,22 @@ export default function AddToilet({navigation}) {
         <Text style={[styles.cadre, {color: theme.color}]}>
           Add New Toilet
         </Text>
-        </View>
+      </View>
       
 
       <View style={[styles.hoursContainer, styles.centerTitle] }>
         <Text style={[styles.openingHoursTxt, {color: theme.color}]}>
           Select opening hours
         </Text>
-        
+
+
+        {/* <TimeSlot />
+        <TimeSlot />
+        <TimeSlot />
+        <TimeSlot />
+        <TimeSlot /> */}
+
+
         <View style={styles.alignCenter}>
           <View style={styles.alignButtons}>
 
@@ -131,6 +156,7 @@ export default function AddToilet({navigation}) {
                     is24Hour={true}
                     display="default"
                     onChange={onChangeEnd}
+                    background={"#cc0000 "}
                   
                   />
                 )}
@@ -142,6 +168,8 @@ export default function AddToilet({navigation}) {
             <View style={styles.checkboxes}>
                 <CheckBox  
                   title="Mon"
+                  textStyle={{color: theme.color}}
+                  containerStyle={{backgroundColor: theme.background}}  
                   checked={dayIsChecked.Mon}
                   checkedColor={theme.check}
                   onPress={() => setDayIsChecked({
@@ -152,6 +180,8 @@ export default function AddToilet({navigation}) {
                 />
                 <CheckBox  
                   title="Tue"
+                  textStyle={{color: theme.color}}
+                  containerStyle={{backgroundColor: theme.background}}  
                   checked={dayIsChecked.Tue}
                   checkedColor={theme.check}
                   onPress={() => setDayIsChecked({
@@ -163,6 +193,8 @@ export default function AddToilet({navigation}) {
                 />
                 <CheckBox  
                   title="Wed"
+                  textStyle={{color: theme.color}}
+                  containerStyle={{backgroundColor: theme.background}}  
                   checked={dayIsChecked.Wed}
                   checkedColor={theme.check}
                   onPress={() => setDayIsChecked({
@@ -172,8 +204,13 @@ export default function AddToilet({navigation}) {
                   
                   }
                 />
-                <CheckBox  
+                
+            </View>
+            <View style={styles.checkboxes}>
+            <CheckBox  
                   title="Thu"
+                  textStyle={{color: theme.color}}
+                  containerStyle={{backgroundColor: theme.background}}  
                   checked={dayIsChecked.Thu}
                   checkedColor={theme.check}
                   onPress={() => setDayIsChecked({
@@ -182,10 +219,10 @@ export default function AddToilet({navigation}) {
                   })
                   }
                 />
-            </View>
-            <View style={styles.checkboxes}>
               <CheckBox  
                 title="Fri"
+                textStyle={{color: theme.color}}
+                containerStyle={{backgroundColor: theme.background}}  
                 checked={dayIsChecked.Fri}
                   checkedColor={theme.check}
                   onPress={() => setDayIsChecked({
@@ -196,6 +233,8 @@ export default function AddToilet({navigation}) {
               />
               <CheckBox  
                 title="Sat"
+                textStyle={{color: theme.color}}
+                containerStyle={{backgroundColor: theme.background}}  
                 checked={dayIsChecked.Sat}
                   checkedColor={theme.check}
                   onPress={() => setDayIsChecked({
@@ -204,7 +243,9 @@ export default function AddToilet({navigation}) {
                   })
                   }
               />
-              <CheckBox  
+              <CheckBox
+                textStyle={{color: theme.color}}
+                containerStyle={{backgroundColor: theme.background}}  
                 title="Sun"
                 checked={dayIsChecked.Sun}
                   checkedColor={theme.check}
@@ -213,25 +254,160 @@ export default function AddToilet({navigation}) {
                     Sun: !dayIsChecked.Sun
                   })
                   }
+                  disabled={true}
               />
+              
             </View>
+            
             </View>
-          
+      
+      {/* <View style={styles.alignButtons}>
+
+      <View style={styles.startBox}>
+          <Text style={[styles.marginHours, {color: theme.color}]}>From {text}</Text>
+          <Button title="Pick Start Time" 
+                  onPress={displayTimepicker}
+                  color={theme.submitBtn}
+                  />
+          {show && (
+            <DateTimePicker 
+              testID='dateTimePicker'
+              value={date}
+              mode={mode}
+              is24Hour={true}
+              display="default"
+              onChange={onChange}
+            
+            />
+          )}
+      </View>
+
+      <View style={styles.startBox}>
+          <Text style={[styles.marginHours, {color: theme.color}]}>To {textEnd}</Text>
+          <Button title="Pick End Time" 
+                  onPress={displayEndTimepicker}
+                  color={theme.submitBtn}
+                  />
+          {showEnd && (
+            <DateTimePicker 
+              testID='dateTimePicker'
+              value={dateEnd}
+              mode={modeEnd}
+              is24Hour={true}
+              display="default"
+              onChange={onChangeEnd}
+              background={"#cc0000 "}
+            
+            />
+          )}
+      </View>
+
+      </View>
+
+      <View style={styles.entireCheckBox}>
+      <View style={styles.checkboxes}>
+          <CheckBox  
+            title="Mon"
+            checked={dayIsChecked.Mon}
+            checkedColor={theme.check}
+            onPress={() => setDayIsChecked({
+              ...dayIsChecked,
+              Mon: !dayIsChecked.Mon
+            })
+            }
+          />
+          <CheckBox  
+            title="Tue"
+            checked={dayIsChecked.Tue}
+            checkedColor={theme.check}
+            onPress={() => setDayIsChecked({
+              ...dayIsChecked,
+              Tue: !dayIsChecked.Tue
+            })
+            }
+            
+          />
+          <CheckBox  
+            title="Wed"
+            checked={dayIsChecked.Wed}
+            checkedColor={theme.check}
+            onPress={() => setDayIsChecked({
+              ...dayIsChecked,
+              Wed: !dayIsChecked.Wed
+            })
+            
+            }
+          />
+          <CheckBox  
+            title="Thu"
+            checked={dayIsChecked.Thu}
+            checkedColor={theme.check}
+            onPress={() => setDayIsChecked({
+              ...dayIsChecked,
+              Thu: !dayIsChecked.Thu
+            })
+            }
+          />
+      </View>
+      <View style={styles.checkboxes}>
+        <CheckBox  
+          title="Fri"
+          checked={dayIsChecked.Fri}
+            checkedColor={theme.check}
+            onPress={() => setDayIsChecked({
+              ...dayIsChecked,
+              Fri: !dayIsChecked.Fri
+            })
+            }
+        />
+        <CheckBox  
+          title="Sat"
+          checked={dayIsChecked.Sat}
+            checkedColor={theme.check}
+            onPress={() => setDayIsChecked({
+              ...dayIsChecked,
+              Sat: !dayIsChecked.Sat
+            })
+            }
+        />
+        <CheckBox  
+          title="Sun"
+          checked={dayIsChecked.Sun}
+            checkedColor={theme.check}
+            onPress={() => setDayIsChecked({
+              ...dayIsChecked,
+              Sun: !dayIsChecked.Sun
+            })
+            }
+        />
+      </View>
+      </View> */}
 
 
         </View>
 
+      
       </View>
 
-        <TouchableOpacity style={styles.addMore} onPress={() => {
-          <View>
-          <Text>Hello</Text>
-          </View>
-        }}>
+        <TouchableOpacity style={styles.addMore} onPress={() => addOneMoreTimeSlot}>
           <Text style={[styles.addMoreTxt, {color: theme.addMore}]}>
                 [+] Add more
           </Text>
       </TouchableOpacity>
+
+
+      {
+        clicked?
+        <View>
+          <Text>HELOOOOOOOOOOOOOOOOOOOOOOOODFJSHKGVHSDFJK</Text>
+        </View> 
+        :
+        <></>
+
+      }
+
+
+
         <TouchableOpacity 
                 style={[styles.btn, {backgroundColor: theme.submitBtn}]}
                 onPress={() => {
@@ -263,7 +439,7 @@ const styles = StyleSheet.create({
   },
   centerTitle: {
     alignItems: "center",
-    marginVertical: 20
+    marginTop: 45
   },
   btn: {
     paddingHorizontal: 100,
