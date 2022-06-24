@@ -191,16 +191,16 @@ export default function MapScreen({ navigation }) {
                                 display: 'flex',
                                 flexDirection: 'row',
                                 justifyContent: 'space-between',
-                                marginRight:'15%'
+                                marginRight: '15%'
                             }}>
                                 <TouchableOpacity style={{
                                     display: 'flex',
                                     marginTop: '10%',
-                                    alignItems:'center',
-                                    borderWidth:0.5,
-                                    borderRadius:10,
-                                    padding:'2%',
-                                    width:'32%'
+                                    alignItems: 'center',
+                                    borderWidth: 0.5,
+                                    borderRadius: 10,
+                                    padding: '2%',
+                                    width: '32%'
                                 }}>
                                     <Icon name="walk" size={25} color={"black"} />
                                     <Text style={{
@@ -210,12 +210,15 @@ export default function MapScreen({ navigation }) {
                                 <TouchableOpacity style={{
                                     display: 'flex',
                                     marginTop: '10%',
-                                    alignItems:'center',
-                                    borderWidth:0.5,
-                                    borderRadius:10,
-                                    padding:'2%',
-                                    width:'32%'
-                                }}>
+                                    alignItems: 'center',
+                                    borderWidth: 0.5,
+                                    borderRadius: 10,
+                                    padding: '2%',
+                                    width: '32%'
+                                }} onPress={() => {
+                                    navigation.navigate("ThankYou")
+                                }
+                                }>
                                     <Icon name="pencil-box-multiple" size={25} color={"black"} />
                                     <Text style={{
                                         fontSize: 7.5
@@ -224,11 +227,11 @@ export default function MapScreen({ navigation }) {
                                 <TouchableOpacity style={{
                                     display: 'flex',
                                     marginTop: '10%',
-                                    alignItems:'center',
-                                    borderWidth:0.5,
-                                    borderRadius:10,
-                                    padding:'2%',
-                                    width:'32%'
+                                    alignItems: 'center',
+                                    borderWidth: 0.5,
+                                    borderRadius: 10,
+                                    padding: '2%',
+                                    width: '32%'
                                 }}>
                                     <Icon name="alert" size={25} color={"black"} />
                                     <Text style={{
