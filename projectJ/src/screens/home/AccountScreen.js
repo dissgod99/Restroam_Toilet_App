@@ -30,10 +30,10 @@ const AccountScreen = ({navigation}) => {
           E-Mail: max.mustermann@gmx.de
         </Text>
         <Text style={[styles.data, {color: theme.color}]}>
-          Toilets visited: 333 
+          Number of Owned toilets: 333 
         </Text>
         <Text style={[styles.data, styles.dataMargin, {color: theme.color}]}>
-          Toilets reviewed: 111 
+          Number of reviewed Toilets: 111 
         </Text>
 
         <View style={[styles.alignItems]}>
@@ -99,9 +99,6 @@ const AccountScreen = ({navigation}) => {
         </Text>
       </TouchableOpacity> 
       
-
-
-
     </View>
     </ScrollView>
 

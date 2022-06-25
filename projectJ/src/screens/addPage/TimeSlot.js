@@ -32,9 +32,6 @@ const TimeSlot = () => {
       const [showEnd, setShowEnd] = useState(false);
       const [textEnd, setTextEnd] = useState("<Closing Hour>");
     
-
-      const [hourSlots, setHourSlots] = useState([])
-    
       const padTo2Digits= (num)=> {
         return String(num).padStart(2, '0');
       }
@@ -80,13 +77,6 @@ const TimeSlot = () => {
         setShowEnd(true);
         console.log("show === " + showEnd)
       };
-
-      const addOneMoreTimeSlot = () =>{
-        
-
-
-      }
-    
 
     return (
         <View style={styles.alignCenter}>
@@ -243,13 +233,6 @@ const styles = StyleSheet.create({
         alignItems: "center",
         justifyContent: "center"
     },
-    // container: {
-    //     flex: 1,
-    //     backgroundColor: '#ffffff',
-    //     justifyContent: 'flex-start',
-    //     height: "100%"
-    
-    //   },
       cadre: {
         fontSize: 20,
         fontWeight: "bold"
