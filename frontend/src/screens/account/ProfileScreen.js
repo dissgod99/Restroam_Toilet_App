@@ -2,7 +2,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import React from 'react';
 import {View, Text, StyleSheet,TouchableOpacity} from 'react-native';
 import { Switch } from 'react-native-paper';
-
+import {getAsyncStorageItem} from "../../util";
 
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
@@ -14,6 +14,7 @@ const Profile = ({navigation}) => {
     // AsyncStorage.get('token') ...
     navigation.navigate("Login");
   }
+  
   return(
     <View style={styles.container}>
       <View style={styles.person}>
@@ -50,7 +51,13 @@ const Profile = ({navigation}) => {
           Owned Toilets 
         </Text>
       </TouchableOpacity>
-      <TouchableOpacity onPress={() => navigation.navigate('Reviews')}>
+      <TouchableOpacity onPress={() => {
+        const token= await getAsyncStorageItem('token');
+        console.log("token",token);
+        navigation.navigate('Reviews', {
+            token: token, 
+          });}
+          }>
         <Text style={styles.menu}>
         <Icon name="account-star-outline" size={35} color="black" />
           Reviews 

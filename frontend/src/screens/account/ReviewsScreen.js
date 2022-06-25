@@ -1,54 +1,48 @@
-import React, {useContext, useState} from "react";
+import React, {useContext, useState,useEffect,} from "react";
 import {View, Text, ScrollView} from 'react-native';
 import Review from "./Review";
 import ThemeContext from "../../darkMode/ThemeContext";
+import {getAsyncStorageItem} from "../../util";
+import axios from "axios";
 
-const ReviewsScreen = ({navigation}) => {
+
+import { BACKEND_ENDPOINT_REVIEWS } from '../../constants';
+
+const ReviewsScreen = ({route, navigation}) => {
+        //console.log(route.params);
+        //const { token } = route.params;
+        
+        const [reviews, setReviews] = useState([]);
+        useEffect(() => {
+                fetchReviews();
+            }, []);
+        
+        const fetchReviews = async () => {
+        const token= await getAsyncStorageItem('token');
+        console.log("token",token);
+        axios
+        .post(BACKEND_ENDPOINT_REVIEWS + 'userReviews', { token })
+        .then(({ status, data }) => {
+        console.log(data.payload);
+        setReviews(data.payload);
+        })
+        .catch(err => console.log(err));
+        }
 
         const theme = useContext(ThemeContext);
     return (
         <ScrollView>
             <View style={{backgroundColor: theme.background}}>
-                    <Review  title='Am Hauptbahnhof'
-                            date='22.02.2022'
-                            stars={3.5}
-                            text='Die Toilette war Scheiße.'
+           { reviews.map(({address, rating, description ,date}) => {
+                return (
+                    <Review  title={address}
+                            date={date}
+                            stars={rating}
+                            text={description}
                             />
-                    <Review  title='Dixie'
-                            date='22.02.2022'
-                            stars={2}
-                            text='Die Toilette war Scheiße.'
-                            />
-                    <Review  title='Am Hauptbahnhof'
-                            date='22.02.2022'
-                            stars={3}
-                            text='Die Toilette war Scheiße.'
-                            />
-                    <Review  title='Dixie'
-                            date='22.02.2022'
-                            stars={2}
-                            text='Die Toilette war Scheiße.'
-                            />
-                    <Review  title='Am Hauptbahnhof'
-                            date='22.02.2022'
-                            stars={3}
-                            text='Die Toilette war Scheiße.'
-                            />
-                    <Review  title='Dixie'
-                            date='22.02.2022'
-                            stars={2}
-                            text='Die Toilette war Scheiße.'
-                            />
-                    <Review  title='Am Hauptbahnhof'
-                            date='22.02.2022'
-                            stars={3}
-                            text='Die Toilette war Scheiße.'
-                            />
-                    <Review  title='Dixie'
-                            date='22.02.2022'
-                            stars={2}
-                            text='Die Toilette war Scheiße.'
-                            />
+                            )
+                        }            
+                )}
             </View>
         </ScrollView>
     )
