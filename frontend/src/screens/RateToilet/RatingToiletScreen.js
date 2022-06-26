@@ -6,7 +6,9 @@ import StarRating from 'react-native-star-rating';
 import { TextInput } from 'react-native-paper';
 import ThemeContext from "../../darkMode/ThemeContext";
 
-const RatingToiletScreen = ({ navigation }) => {
+import { BACKEND_ENDPOINT_REVIEWS } from '../../constants';
+
+const RatingToiletScreen = ({ route, navigation }) => {
 
     // Stars section
     const defaultRating = 3;
@@ -27,9 +29,31 @@ const RatingToiletScreen = ({ navigation }) => {
     const onStarRatingPress_sec = (rating) => {
         setStarCount3(rating)
     }
-
+    function changeDetails(v) {
+        setText(v);
+    }
     const handleSubmit = () =>{
-        navigation.navigate("ThankYou");
+        const {address} = route.params;
+        console.log("inside review ");
+        getAsyncStorageItem('token').then(
+            (tokenFromStorage) => {
+            //setToken(tokenFromStorage);
+            axios.post(BACKEND_ENDPOINT_REVIEWS+'addReview', {
+                token: tokenFromStorage,
+                address: address,
+                cleanliness:starCount1,
+                waitingtime:starCount2,
+                security:starCount3,
+                rating: total,
+                description: text,
+                date: "27.01.2022"
+            }).then(
+                () => navigation.navigate("ThankYou")
+
+            ).catch(err => console.log("couldn't add toilet"))
+            //navigation.navigate("error occured")
+            })
+            .catch(err => console.log(err));
     }
     // Average of all ratings
     const total = parseFloat(((starCount1 + starCount2 + starCount3)/3).toFixed(2));
@@ -44,7 +68,7 @@ const RatingToiletScreen = ({ navigation }) => {
                 <Text style={[styles.rateToilet, {color: theme.color}]}>Rate Toilet : </Text> 
                 <View style={styles.center}>
                     <Text style={[styles.smallMargin, {color: theme.color}]}>
-                        Cleaness {starCount1} / {maxRating}
+                        Cleanliness {starCount1} / {maxRating}
                     </Text>
                     <StarRating 
                         maxStars={maxRating}
@@ -100,6 +124,7 @@ const RatingToiletScreen = ({ navigation }) => {
                     placeholder="Type something"
                     right={<TextInput.Affix text="/250" />}
                     activeOutlineColor={theme.activeOutColor}
+                    onChangeText={(value) => changeDetails(value)}
                 />
                 </View>
                 <TouchableOpacity 
