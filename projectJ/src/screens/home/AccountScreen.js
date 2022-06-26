@@ -143,7 +143,7 @@ const styles = StyleSheet.create({
     padding:15,
     justifyContent:'center',
     textAlign:'left',
-    marginHorizontal: 23,
+    marginHorizontal: 30,
     marginVertical: 5,
     borderRadius: 5
   },

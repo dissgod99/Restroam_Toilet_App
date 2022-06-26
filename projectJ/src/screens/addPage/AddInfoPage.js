@@ -20,7 +20,7 @@ const BACKEND_ENDPOINT = 'http://192.168.1.100:3000/api/toilets/addToilet';
 const AddInfoPage = ({navigation}) =>{
     var numberi = 0;
     const [price, setPrice] = useState('0,00€');
-    const [address, setAddress] = useState('adressss');
+    const [address, setAddress] = useState("");
     const [isEnabled, setIsEnabled] = useState(false);
     const [description, setDescription] = useState("")
     const [currentLocation, setCurrentLocation] = useState("")
@@ -41,46 +41,31 @@ const AddInfoPage = ({navigation}) =>{
   }
 
   const getLocation = async () => {
-    const userLocation = await Location.getCurrentPositionAsync();
-    setCurrentLocation(userLocation)
-  }
+    let coords = await Location.getCurrentPositionAsync();
+    setCurrentLocation(coords)
+    };
 
 
-//   const getAddress = async ({lat, lng}) =>{
-//     Geocoder.fallbackToGoogle('AIzaSyCFbwdnUJoJA5FD6NiAwFevhUnU5jHWycA');
-//     let res = await Geocoder.geocodePosition({lat, lng})
-//     let addr = (res[0].formattedAddress)
-//   }
-
-  const fillWithCurrentAddress = () =>{
-    Geocoder.fallbackToGoogle('AIzaSyCFbwdnUJoJA5FD6NiAwFevhUnU5jHWycA');
+  const fillWithCurrentAddress =  async () =>{
+    
     setAddress("")
     const latitude = currentLocation["coords"]["latitude"]
-    const longitude =currentLocation["coords"]["longitude"]
-    //let res = Geocoder.geocodePosition({latitude, longitude})
-    //let addr = (res[0].formattedAddress)
-    console.log("hello")
-    setAddress(JSON.stringify(latitude + " | " + longitude))
-    //setAddress(addr)
-    console.log(address)
-    // Geocoder.fallbackToGoogle('AIzaSyCFbwdnUJoJA5FD6NiAwFevhUnU5jHWycA');
+    const longitude= currentLocation["coords"]["longitude"]
+
+    let response = await Location.reverseGeocodeAsync({
+             latitude,
+             longitude
+         });
+
+    for (let item of response) {
+        let addresse = `${item.name}, ${item.street}, ${item.postalCode}, ${item.city}`;
+    setAddress(addresse)
+    console.log(addresse)
     
-    // try{
-    // setAddress("")
-    // const userLocation = await Location.getCurrentPositionAsync();
-    // setCurrentLocation(userLocation)
-    // let res = await Geocoder.geocodePosition(currentLocation["coords"]["latitude"], currentLocation["coords"]["longitude"])
-    // let addr = (res[0].formattedAddress)
-    // setAddress(addr)
-    // console.log(addr)
-    // }
-    // catch(err){
-    //     alert(err)
-    // }
-  }
+  }}
   useEffect(() => {
     getLocation();
-  })
+  }, [])
 
 
   const theme = useContext(ThemeContext);
@@ -193,7 +178,6 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: "flex-start",
         alignItems: "center",
-        //backgroundColor: "white"
     },
     containerElements:{
         justifyContent: "center",
@@ -210,7 +194,6 @@ const styles = StyleSheet.create({
         fontWeight: "bold"
     },
     btn: {
-        //backgroundColor: "#e6697e",
         paddingHorizontal: 80,
         paddingVertical: 10,
         borderRadius: 5,
@@ -250,7 +233,7 @@ const styles = StyleSheet.create({
         flexDirection: "row",
         marginTop: 8,
         borderRadius: 3,
-        width: 170,
+        width: 185,
         paddingVertical: 5,
         paddingHorizontal: 10
     },

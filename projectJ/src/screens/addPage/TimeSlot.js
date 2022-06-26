@@ -129,7 +129,7 @@ const TimeSlot = () => {
                 <CheckBox  
                   title="Mon"
                   textStyle={{color: theme.color}}
-                containerStyle={{backgroundColor: theme.background}}  
+                  containerStyle={{backgroundColor: theme.background}}  
                   checked={dayIsChecked.Mon}
                   checkedColor={theme.check}
                   onPress={() => setDayIsChecked({
@@ -226,7 +226,6 @@ const TimeSlot = () => {
 };
 
 export default TimeSlot;
-
 const styles = StyleSheet.create({
     container:{
         flex: 1,
