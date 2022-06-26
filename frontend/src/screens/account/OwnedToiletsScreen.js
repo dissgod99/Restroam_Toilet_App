@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import ThemeContext from "../../darkMode/ThemeContext";
 import Toilet from './ownedToilets/Toilet';
 import FontAwesome from "react-native-vector-icons/FontAwesome";
@@ -14,31 +14,68 @@ const OwnedToiletsScreen = ({ route, navigation }) => {
     const [toiletItems, setToiletItems] = useState([]);
 
     useEffect(() => {
-        fetchToilets();
-    }, []);
-
-    const fetchToilets = () => {
+        let isMounted = true;
         axios
             .post(BACKEND_ENDPOINT_TOILETS + 'user-owned-toilets', { token })
             .then(({ status, data }) => {
-                console.log(data.payload);
-                setToiletItems(data.payload);
+                if (isMounted) {
+                    setToiletItems(data.payload);
+                }
             }).catch(err => console.log(err));
-    }
+        return () => { isMounted = false; };
+        // fetchToilets();
+    }, []);
+
+    // const fetchToilets = () => {
+    //     axios
+    //         .post(BACKEND_ENDPOINT_TOILETS + 'user-owned-toilets', { token })
+    //         .then(({ status, data }) => {
+    //             console.log(data.payload);
+    //             setToiletItems(data.payload);
+    //         }).catch(err => console.log(err));
+    // };
 
     const deleteToilet = (index) => {
         let toiletsCopy = [...toiletItems];
         toiletsCopy.splice(index, 1);
         setToiletItems(toiletsCopy);
-    }
+    };
 
-    const editToilet = (index) => {
-        navigation.navigate('Edit Toilet');
-    }
+    const editToilet = (index, { name, address, price }) => {
+        navigation.navigate('Edit Toilet',
+            {
+                editTitle: { name },
+                editLocation: { address },
+                editPrice: { price }
+            });
+    };
 
-    const updateToilets = () => {
-        fetchToilets();
-    }
+    // const updateToilets = () => {
+    //     fetchToilets();
+    // };
+
+    const alertConfirmDeleteToilet = (index) =>
+        Alert.alert(
+            "Remove Toilet?",
+            "Are sure you want to remove this toilet? This action may not be reversible!",
+            [
+                {
+                    text: "No",
+                    onPress: () => { },
+                    style: "cancel",
+                },
+                {
+                    text: "Yes",
+                    // still no backend state save
+                    onPress: () => deleteToilet(index),
+                    style: "default",
+                },
+            ],
+            {
+                cancelable: true,
+                onDismiss: () => { }
+            }
+        );
 
     const theme = useContext(ThemeContext)
 
@@ -60,14 +97,16 @@ const OwnedToiletsScreen = ({ route, navigation }) => {
                                             price={price}
                                         />
                                         <View style={styles.itemRight}>
-                                            <TouchableOpacity onPress={() => navigation.navigate('Edit Toilet', {
-                                                editTitle: title,
-                                                editLocation: location,
-                                                editPrice: price
-                                            })}>
+                                            <TouchableOpacity onPress={() => editToilet(index, { name, address, price })
+                                                // navigation.navigate('Edit Toilet', {
+                                                //     editTitle: { name },
+                                                //     editLocation: { address },
+                                                //     editPrice: { price }
+                                                // })
+                                            }>
                                                 <FontAwesome name="edit" size={25} />
                                             </TouchableOpacity>
-                                            <TouchableOpacity onPress={() => deleteToilet(index)}>
+                                            <TouchableOpacity onPress={() => alertConfirmDeleteToilet(index)}>
                                                 <FontAwesome name="trash-o" size={25} />
                                             </TouchableOpacity>
                                         </View>
@@ -76,9 +115,9 @@ const OwnedToiletsScreen = ({ route, navigation }) => {
                             })
                         }
                     </View>
-                    <TouchableOpacity onPress={() => updateToilets()}>
+                    {/* <TouchableOpacity onPress={() => updateToilets()}>
                         <Text>Update</Text>
-                    </TouchableOpacity>
+                    </TouchableOpacity> */}
                 </View>
             </View>
         </ScrollView>

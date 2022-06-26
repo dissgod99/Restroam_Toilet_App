@@ -56,7 +56,7 @@ const nodeMailerTestASync = async () => {
     console.log('Preview Url: %s', nodemailer.getTestMessageUrl(info));
 };
 
-nodeMailerTestASync().catch(console.error);
+//nodeMailerTestASync().catch(console.error);
 
 const jsonParser = bodyParser.json();
 
