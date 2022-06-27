@@ -8,6 +8,7 @@ import * as jpeg from 'jpeg-js';
 import { Buffer } from 'buffer';
 import * as mobilenet from '@tensorflow-models/mobilenet';
 import forbidden from '../../../Forbidden.json';
+import { fetch} from '@tensorflow/tfjs-react-native';
 
 export default function UploadImage(navigation) {
     const [image1, setImage1] = useState(null);
@@ -27,7 +28,7 @@ export default function UploadImage(navigation) {
                 if (status !== 'granted') {
                     alert('Sorry, we need camera roll permissions to make this work!');
                 }
-                await tf.ready()
+                await tf.ready();
                 setModel(await mobilenet.load());
             }
         })();
