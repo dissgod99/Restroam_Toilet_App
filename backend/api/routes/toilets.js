@@ -1,4 +1,4 @@
-const { checkIfUserIsDeleted } = require('./util');
+const { checkIfUserIsDeleted ,countAverageRating} = require('./util');
 
 const express = require('express');
 
@@ -22,7 +22,7 @@ router.use(CORS());
 const options = {
     provider: 'google',
 
-    // Optional depending on the providers
+    // Optional dependin g on the providers
     //fetch: customFetchImplementation,
     apiKey: 'AIzaSyCFbwdnUJoJA5FD6NiAwFevhUnU5jHWycA', // for Mapquest, OpenCage, Google Premier
     formatter: null // 'gpx', 'string', ...
@@ -150,23 +150,30 @@ router.post('/nearestToilets', jsonParser, async (req, res, next) => {
     Toilet.find({})
     .exec()
     .then(async (toilet) => {
-        console.log(toilet);
-        toilet.map(async (entry) => {
+        let toilets = [];
+        for(let i=0;i< toilet.length; i++) {
+            entry=toilet[i];
+            console.log(entry);
             const result = await geocoder.geocode(entry.address);
-            console.log(result[0].latitude);
+            
             var dist = distance(result[0].latitude, result[0].longitude, req.body.latitude, req.body.longitude, 'K');
-            entry.distance = dist;
-            entry.latitude=result[0].latitude;
-            entry.longitude=result[0].longitude;
             console.log(dist);
+            if(dist<2){
+                //console.log(dist);
+                //console.log(entry);
+               // toilets.push(toilet_info);
+               const rate = await countAverageRating(entry);
+               
+               toilets.push( {toilet_details:entry,distance:dist, averageRating:rate, latitude:result[0].latitude,longitude:result[0].longitude }); 
+
+            }
+                
         }
-    )
-    .filter(
-        (toilet) => {
-            return toilet.distance > 2;
-        }
-    );
-    return res.status(200).send(toilet);
+    console.log(toilets);
+    return res.status(200).json({
+        message: 'Successfully retrieved toilets for current user.',
+        payload: toilets
+    });
 })
 .catch(err => {return res.status(500).send("error occured!")});
     
