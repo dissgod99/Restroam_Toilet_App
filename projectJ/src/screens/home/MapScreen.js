@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Text, Image, ScrollView, Fragment, FlatList, TouchableOpacity, View, StyleSheet } from 'react-native';
+import { Text, Image, ScrollView, Fragment, FlatList, TouchableOpacity, View, StyleSheet, ActivityIndicator } from 'react-native';
 import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
 import { mapStyle } from '../../global/mapStyle';
 import * as Location from 'expo-location'
@@ -8,11 +8,10 @@ import MapViewDirections from 'react-native-maps-directions';
 import StarRating from 'react-native-star-rating';
 import DropDown from './DropDown';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import Geolocation from 'expo-location';
 
 export default function MapScreen({ navigation }) {
     const [latlng, setLatLng] = useState({});
-    const [position, setposition] = useState({});
+    const [position, setPosition] = useState(null);
     const checkPermission = async () => {
         const hasPermission = await Location.requestForegroundPermissionsAsync();
         if (hasPermission.status === 'granted') {
@@ -20,41 +19,26 @@ export default function MapScreen({ navigation }) {
             return permission;
         }
     }
+    const [direction, setDirection] = useState(<View></View>);
 
     const askPermission = async () => {
         const permission = await Location.requestBackgroundPermissionsAsync();
         return permission.status === 'granted';
     }
 
-    const getLocation = async () => {
-        try {
-            const { granted } = await Location.requestBackgroundPermissionsAsync();
-            if (!granted) {
-                return;
-            }
-            const {
-                coords: { latitude, longitude }
-            } = await Location.getCurrentPositionAsync();
-            setLatLng({ latitude: latitude, longitude: longitude });
-        }
-        catch (err) {
-
-        }
-    }
-
     const _map = useRef(1);
 
     useEffect(() => {
         checkPermission();
-        getLocation()
-            , []
-    })
+        getCurrentLocation();
+    }, [])
 
     const toiletsAround = [{ latitude: 49.895685, longitude: 8.681163 },
     { latitude: 49.895975, longitude: 8.683416 },
     { latitude: 49.897620, longitude: 8.681999 },
     { latitude: 49.897316, longitude: 8.684767 },
     { latitude: 49.8693297, longitude: 8.6371352 },
+    { latitude: 49.865, longitude: 8.6371350 },
 
     ]
     const [clicked, setClicked] = useState(false);
@@ -81,26 +65,48 @@ export default function MapScreen({ navigation }) {
     }
 
     const [markerclicked, setMarkerlicked] = useState(false);
+    const [marker, setMarker] = useState(null);
+    const [itemclicked, setItemclicked] = useState({});
+    const [indexclicked, setIndexclicked] = useState(-1);
+    const [vision, setVision] = useState(null);
 
-    const markerClick = (item1) => {
-        setMarkerlicked(!markerclicked);
+    const markerClick = (item1, index) => {
+        if (indexclicked == -1) {
+            setMarkerlicked(!markerclicked);
+            setIndexclicked(index);
+            setVision({
+                latitude: toiletsAround[index].latitude,
+                longitude: toiletsAround[index].longitude,
+                latitudeDelta: 0.01,
+                longitudeDelta: 0.01,
+            })
+        }
+        else if (indexclicked == index) {
+            setMarkerlicked(!markerclicked);
+            setIndexclicked(-1);
+        }
+        else {
+            setIndexclicked(index);
+            setVision({
+                latitude: toiletsAround[index].latitude,
+                longitude: toiletsAround[index].longitude,
+                latitudeDelta: 0.01,
+                longitudeDelta: 0.01,
+            })
+        }
+        setMarker(item1);
     }
 
     async function getCurrentLocation() {
         await Location.enableNetworkProviderAsync();
         let pos = await Location.getCurrentPositionAsync({ highAccuracy: true });
-        setposition({
+        setPosition({
             latitude: pos.coords.latitude,
             longitude: pos.coords.longitude,
             latitudeDelta: 0.01,
             longitudeDelta: 0.01,
         });
-
     }
-
-    useEffect(() => {
-        getCurrentLocation()
-    }, [])
 
     return (
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
@@ -112,7 +118,13 @@ export default function MapScreen({ navigation }) {
                 customMapStyle={mapStyle}
                 showsUserLocation={true}
                 followsUserLocation={true}
-                region={position}
+                initialRegion={position == null ? {
+                    latitude: 0,
+                    longitude: 0,
+                    latitudeDelta: 0.01,
+                    longitudeDelta: 0.01,
+                } : position}
+                region={vision == null ? position : vision}
             >
                 {toiletsAround.map((item, index) => {
                     return <MapView.Marker
@@ -120,21 +132,28 @@ export default function MapScreen({ navigation }) {
                         key={index.toString()}
                         //title={marker.title}
                         //description={marker.description}
-                        onPress={() => markerClick(item)}>
+                        onPress={() => markerClick(item, index)}>
                         <Image source={require('../../../assets/toiletMarker.png')}
                             style={styles.toiletsAround}
                             resizeMode="cover" />
                     </MapView.Marker>
-                })}
-                <MapViewDirections
-                    origin={toiletsAround[1]}
-                    destination={toiletsAround[0]}
-
-                    apikey={"AIzaSyCFbwdnUJoJA5FD6NiAwFevhUnU5jHWycA"}
-                    strokeWidth={3}
-                    strokeColor="#222"
-                />
+                })}{
+                    direction
+                }
             </MapView>
+            {
+                position == null ? <View style={{
+                    zIndex: 500,
+                    width: '100%',
+                    height: '100%',
+                    backgroundColor: '#989898',
+                    justifyContent: 'center',
+                }}>
+                    <ActivityIndicator color={'black'} size='large'>
+
+                    </ActivityIndicator>
+                </View> : <></>
+            }
 
             {/* <View style={styles.top}>
                     <TouchableOpacity 
@@ -201,6 +220,39 @@ export default function MapScreen({ navigation }) {
                                     borderRadius: 10,
                                     padding: '2%',
                                     width: '32%'
+                                }} onPress={() => {
+                                    setDirection(
+                                        <MapViewDirections
+                                            origin={position}
+                                            destination={marker != null ? marker : position}
+
+                                            apikey={"AIzaSyCFbwdnUJoJA5FD6NiAwFevhUnU5jHWycA"}
+                                            strokeWidth={3}
+                                            strokeColor="#222"
+                                        />)
+                                    var big = [0, 0]
+                                    var small = [0, 0]
+                                    if (position.latitude > marker.latitude) {
+                                        big[0] = position.latitude;
+                                        small[0] = marker.latitude
+                                    } else { 
+                                        big[0] = marker.latitude;
+                                        small[0] = position.latitude
+                                    }
+
+                                    if (position.longitude > marker.longitude) {
+                                        big[1] = position.longitude;
+                                        small[1] = marker.longitude
+                                    } else { 
+                                        big[1] = marker.longitude;
+                                        small[1] = position.longitude
+                                    }
+                                    setVision({
+                                        latitude: small[0] + ((big[0] - small[0]) / 2),
+                                        longitude: small[1] + ((big[1] - small[1]) / 2),
+                                        latitudeDelta: (big[0] - small[0]) * 3.5,
+                                        longitudeDelta: (big[1] - small[1]) * 3.5,
+                                    })
                                 }}>
                                     <Icon name="walk" size={25} color={"black"} />
                                     <Text style={{
@@ -222,7 +274,7 @@ export default function MapScreen({ navigation }) {
                                     <Icon name="pencil-box-multiple" size={25} color={"black"} />
                                     <Text style={{
                                         fontSize: 7.5
-                                    }}>Reviews</Text>
+                                    }}>Review</Text>
                                 </TouchableOpacity>
                                 <TouchableOpacity style={{
                                     display: 'flex',
@@ -232,7 +284,10 @@ export default function MapScreen({ navigation }) {
                                     borderRadius: 10,
                                     padding: '2%',
                                     width: '32%'
-                                }}>
+                                }} onPress={() => {
+                                    navigation.navigate("WriteReport")
+                                }
+                                }>
                                     <Icon name="alert" size={25} color={"black"} />
                                     <Text style={{
                                         fontSize: 7.5
