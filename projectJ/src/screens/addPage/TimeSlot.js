@@ -1,10 +1,10 @@
-import React, {useContext, useState} from "react";
+import React, {useContext, useEffect, useState} from "react";
 import {FlatList, StyleSheet, Text, View, TextInput, Switch, Button, ScrollView, TouchableOpacity } from "react-native"
 import ThemeContext from "../../darkMode/ThemeContext";
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { CheckBox } from "@rneui/base";
 
-const TimeSlot = () => {
+const TimeSlot = (props) => {
     const [dayIsChecked, setDayIsChecked] = useState(
 
         {
@@ -18,6 +18,17 @@ const TimeSlot = () => {
         }
       )
      
+      useEffect(() => {
+        
+          Object.keys(dayIsChecked).forEach(k => {
+            if(dayIsChecked.k){
+              props.setData(k);
+            }
+          })
+          console.log(props.data);
+      
+      },[dayIsChecked])
+
       const theme = useContext(ThemeContext)
     
       // Use States for Starting hours

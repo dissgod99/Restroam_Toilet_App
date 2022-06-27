@@ -45,7 +45,10 @@ export default function AddToilet({navigation}) {
   const theme = useContext(ThemeContext)
   
   const [counter, setCounter] = useState(0);
-  const [hourSlots, setHourSlots] = useState([<TimeSlot/>])
+  
+  //let test = [null, null, []]
+  const[test, setTest] = useState([null, null, []])
+  const [hourSlots, setHourSlots] = useState([<TimeSlot data={test}/>])
 
   const MAX_NB_SLOTS = 7;
 
@@ -53,7 +56,7 @@ export default function AddToilet({navigation}) {
     if(hourSlots.length < MAX_NB_SLOTS){
        // setCounter(counter + 1)
         console.log(counter)
-        setHourSlots([...hourSlots, <TimeSlot/>])
+        setHourSlots([...hourSlots, <TimeSlot data={test}/>])
         console.log(hourSlots)}
         else{
           return;
@@ -90,7 +93,7 @@ export default function AddToilet({navigation}) {
         </Text>
 
         {hourSlots.map(() => {
-          return  <TimeSlot/>
+          return  <TimeSlot data={setTest}/>
         }        
         )}
       </View>
