@@ -54,9 +54,9 @@ const AccountScreen = ({ navigation }) => {
           <Text style={[styles.data, { color: theme.color }]}>
             E-Mail: {user_email}
           </Text>
-          <Text style={[styles.data, { color: theme.color }]}>
+          {/* <Text style={[styles.data, { color: theme.color }]}>
             Toilets visited: 333
-          </Text>
+          </Text> */}
           <Text style={[styles.data, styles.dataMargin, { color: theme.color }]}>
             Toilets reviewed: 111
           </Text>
@@ -95,13 +95,13 @@ const AccountScreen = ({ navigation }) => {
         <TouchableOpacity onPress={() => navigation.navigate('Reviews')}>
           <Text style={[styles.menu, { color: theme.color, backgroundColor: theme.menuBackground }]}>
             <Icon name="account-star-outline" size={35} color={theme.color} />
-            Reviews
+            Your Reviews 
           </Text>
         </TouchableOpacity>
         <TouchableOpacity onPress={() => navigation.navigate('Reports')}>
           <Text style={[styles.menu, { color: theme.color, backgroundColor: theme.menuBackground }]}>
             <Icon name="notebook-outline" size={35} color={theme.color} />
-            Reports
+            Received complaints 
           </Text>
         </TouchableOpacity>
         {/* <TouchableOpacity onPress={() => navigation.navigate('WriteReport')}>
@@ -171,7 +171,7 @@ const styles = StyleSheet.create({
     padding: 15,
     justifyContent: 'center',
     textAlign: 'left',
-    marginHorizontal: 23,
+    marginHorizontal: 30,
     marginVertical: 5,
     borderRadius: 5
   },

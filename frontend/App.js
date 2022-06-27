@@ -67,7 +67,8 @@ export default function App() {
               headerStyle: {
                 //backgroundColor: "#ae8647"
                 backgroundColor: headColor
-              }
+              },
+              headerShown: false,
             }} />
           <Stack.Screen
             name="Rating"
@@ -183,7 +184,7 @@ export default function App() {
             options={
               {
                 headerStyle: {
-                  backgroundColor: "#f28d82"
+                  backgroundColor: headColor
                 }
               }
             }
@@ -254,7 +255,7 @@ export default function App() {
             options={
               {
                 headerStyle: {
-                  backgroundColor: "#f28d82"
+                  backgroundColor: headColor
                 }
               }
             }
@@ -265,7 +266,7 @@ export default function App() {
             options={
               {
                 headerStyle: {
-                  backgroundColor: "#f28d82"
+                  backgroundColor: headColor
                 }
               }
             }

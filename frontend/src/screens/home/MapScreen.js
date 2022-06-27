@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect , useContext} from 'react';
 import { Text, Image, ScrollView, Fragment, FlatList, TouchableOpacity, View, StyleSheet, ActivityIndicator } from 'react-native';
 import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
 import { mapStyle } from '../../global/mapStyle';
@@ -7,6 +7,8 @@ import renderIf from './renderIf'
 import MapViewDirections from 'react-native-maps-directions';
 import StarRating from 'react-native-star-rating';
 import DropDown from './DropDown';
+import { mapStyleDarkMode } from '../../global/mapStyleDarkMode';
+import ThemeContext from '../../darkMode/ThemeContext';
 
 const _ = require('lodash');
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -51,7 +53,6 @@ export default function MapScreen({ navigation }) {
                 latitudeDelta: 0.01,
                 longitudeDelta: 0.01,
             });
-            //await getToiletsAroundUser();
 
         }
         catch (err) {
@@ -84,6 +85,7 @@ export default function MapScreen({ navigation }) {
         checkPermission();
         getLocation();
         getCurrentLocation();
+        getToiletsAroundUser();
 
     }, [])
 
@@ -155,7 +157,8 @@ export default function MapScreen({ navigation }) {
             longitudeDelta: 0.01,
         });
     }
-
+    const theme = useContext(ThemeContext);
+    
     return (
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
             <DropDown></DropDown>
@@ -163,7 +166,7 @@ export default function MapScreen({ navigation }) {
                 ref={_map}
                 provider={PROVIDER_GOOGLE}
                 style={styles.map}
-                customMapStyle={mapStyle}
+                customMapStyle={theme.theme == "light" ? mapStyle : mapStyleDarkMode}
                 showsUserLocation={true}
                 followsUserLocation={true}
                 initialRegion={position == null ? {

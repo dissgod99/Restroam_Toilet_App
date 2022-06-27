@@ -1,5 +1,5 @@
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Button, Text, View, StyleSheet, Image, Platform, TouchableOpacity, ActivityIndicator } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -9,8 +9,12 @@ import { Buffer } from 'buffer';
 import * as mobilenet from '@tensorflow-models/mobilenet';
 import forbidden from '../../../Forbidden.json';
 import { fetch} from '@tensorflow/tfjs-react-native';
+import ThemeContext from '../../darkMode/ThemeContext';
 
 export default function UploadImage(navigation) {
+    // Dark Mode Variable
+    const theme = useContext(ThemeContext)
+
     const [image1, setImage1] = useState(null);
     const [image2, setImage2] = useState(null);
     const [image3, setImage3] = useState(null);
@@ -125,7 +129,7 @@ export default function UploadImage(navigation) {
     }
 
     return (
-        <View style={{ flex: 1 }}>
+        <View style={[styles.container, {backgroundColor: theme.background}]}>
             <View style={{ flex: 1, flexWrap: "wrap", flexDirection: "row" }}>
                 {imageArray.map((img, idx) => {
                     if (img[0] == null)
@@ -163,7 +167,7 @@ export default function UploadImage(navigation) {
                 </Text>
             </View>
             <TouchableOpacity
-                style={styles.btn}
+                style={[styles.btn, {backgroundColor: theme.submitBtn}]}
                 onPress={() => {
                     if (load) {
                         return;
@@ -189,8 +193,7 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: "flex-start",
-        alignItems: "center",
-        backgroundColor: "white"
+        alignItems: "center"
     },
     containerElements: {
         justifyContent: "center",
@@ -207,7 +210,6 @@ const styles = StyleSheet.create({
         fontWeight: "bold"
     },
     btn: {
-        backgroundColor: "#e6697e",
         paddingHorizontal: 80,
         paddingVertical: 10,
         borderRadius: 5,

@@ -1,12 +1,17 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext , useEffect} from "react";
 import { Text, ScrollView, View, StyleSheet, TouchableOpacity } from "react-native"
 import { TextInput, Switch } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import ThemeContext from "../../darkMode/ThemeContext";
 import {getAsyncStorageItem} from "../../util";
 import {BACKEND_ENDPOINT_TOILETS} from "../../constants"
+import * as Location from "expo-location"
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 import axios from "axios";
+
+import { Image } from "react-native-animatable";
+import Geocoder from "react-native-geocoder"
 
 // change url backend login api (on heroku)
 // for now it is set to the IP address of my machine (192.168.1.100) to test it on yours replace it with your IP
@@ -18,6 +23,7 @@ const AddInfoPage = ({ navigation }) => {
     const [address, setAddress] = useState('');
     const [details, setDetails] = useState('');
     const [isEnabled, setIsEnabled] = useState(false);
+    const [currentLocation, setCurrentLocation] = useState("");
 
     function toggleSwitch() {
         setIsEnabled(!isEnabled);
@@ -36,6 +42,34 @@ const AddInfoPage = ({ navigation }) => {
         setDetails(v);
     }
 
+    const getLocation = async () => {
+        let coords = await Location.getCurrentPositionAsync();
+        setCurrentLocation(coords)
+        };
+    
+    
+      const fillWithCurrentAddress =  async () =>{
+        
+        setAddress("")
+        const latitude = currentLocation["coords"]["latitude"]
+        const longitude= currentLocation["coords"]["longitude"]
+    
+        let response = await Location.reverseGeocodeAsync({
+                 latitude,
+                 longitude
+             });
+    
+        for (let item of response) {
+            let addresse = `${item.name}, ${item.street}, ${item.postalCode}, ${item.city}`;
+        setAddress(addresse)
+        console.log(addresse)
+        
+      }}
+      useEffect(() => {
+        getLocation();
+      }, [])
+    
+    
     const theme = useContext(ThemeContext);
     return (
         <View style={[styles.container, { backgroundColor: theme.background }]}>
@@ -52,12 +86,23 @@ const AddInfoPage = ({ navigation }) => {
                         </Text>
                         <TextInput style={styles.box}
                             mode="outlined"
-                            label="Address"
-                            placeholder="Type place"
+                            editable={true}
+                            //label="Give address"
+                            placeholder="Enter address"
                             right={<TextInput.Affix text="/100" />}
                             activeOutlineColor={theme.activeOutColor}
                             onChangeText={(value) => changeAddress(value)}
+                            value={address}
                         />
+                        <TouchableOpacity onPress={async () => fillWithCurrentAddress()}
+                                        style={[styles.getAddress, {backgroundColor: theme.submitBtn}]}>
+                            <Text style={styles.getAddressText}>Get current address</Text>
+                            <Icon 
+                                name="map-marker"
+                                size={20}
+                            />
+
+                        </TouchableOpacity>
                     </View>
                     <Text style={[styles.details, { color: theme.color }]}>
                         Indicate details
@@ -93,7 +138,7 @@ const AddInfoPage = ({ navigation }) => {
 
                     <View>
                         <Text style={[styles.txt, { color: theme.color }]}>
-                            More details
+                            Description
                         </Text>
                         <TextInput style={styles.box}
                             mode="outlined"
@@ -200,6 +245,18 @@ const styles = StyleSheet.create({
     },
     position: {
         marginRight: 10
+    },
+    getAddress:{
+        flexDirection: "row",
+        marginTop: 8,
+        borderRadius: 3,
+        width: 185,
+        paddingVertical: 5,
+        paddingHorizontal: 10
+    },
+    getAddressText: {
+        fontWeight: "bold",
+        marginRight: 5
     }
 
 
