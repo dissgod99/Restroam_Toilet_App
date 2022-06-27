@@ -35,7 +35,7 @@ router.post('/addToilet', jsonParser, async (req, res, next) => {
         const token = req.body.token;
         console.log(token);
         //if (!token)
-          //  throw new Error('Missing arugments in request body. Please pass in the token.');
+        //  throw new Error('Missing arugments in request body. Please pass in the token.');
         const decryptedSignature = jwt.verify(token, JWT_SECRET);
         // from this point we know that the request is not malformed. JWT has not been tampered with
 
@@ -43,7 +43,7 @@ router.post('/addToilet', jsonParser, async (req, res, next) => {
         let user = await User.findById(userId);
 
         await checkIfUserIsDeleted(user);
-   
+
         Toilet.find({ address: req.body.address })
             .exec()
             .then(toilet => {
@@ -89,7 +89,9 @@ router.post('/addToilet', jsonParser, async (req, res, next) => {
 
 });
 
-router.delete('/deleteToilet', jsonParser, async (req, res, next) => {
+
+// also need to pass in the token and check if it matches that of user that created toilet for security layer?
+router.post('/deleteToilet', jsonParser, async (req, res, next) => {
     Toilet.find({ name: req.body.name })
         .exec()
         .then(async (toilet) => {
@@ -97,11 +99,11 @@ router.delete('/deleteToilet', jsonParser, async (req, res, next) => {
                 console.log(toilet);
                 await Toilet.deleteOne({ "name": req.body.name });
                 return res.status(200).json({
-                    message: 'toilet deleted successfully',
+                    message: 'Toilet deleted successfully',
                 });
             } else {
                 return res.status(500).json({
-                    message: "toilet at this location doesn't exists"
+                    message: "Toilet at this location doesn't exists"
                 });
             }
 
@@ -110,66 +112,71 @@ router.delete('/deleteToilet', jsonParser, async (req, res, next) => {
 
 });
 
-router.post('/editToilet', jsonParser, async (req, res, next) => {
-    Toilet.find({ name: req.body.name })
-        .exec()
-        .then(async (toilet) => {
-            if (toilet.length > 0) {
-                await Toilet.updateOne(
-                    { "name": req.body.name },
-                    { $set: req.body.update });// should be a json object like { "EmployeeName" : "NewMartin"}
-                return res.status(200).json({
-                    message: 'toilet updated successfully',
-                });
-            } else {
-                return res.status(409).json({
-                    message: "toilet at this location doesn't exists"
-                });
-            }
+router.post('/edit-toilet', jsonParser, async (req, res, next) => {
+    let { name, newName, newAddress, newPrice, newDetails, newHandicapAccess } = req.body;
+    
+    let updateObj = {
+        name: newName,
+        address: newAddress,
+        price: newPrice,
+        details: newDetails,
+        handicapAccess: newHandicapAccess,
+    };
 
-        })
-        .catch(err => console.log("error occured while editing the toilet!"));
+    let updatedToilet;
+    try {
+        updatedToilet = await Toilet.findOneAndUpdate({ name }, updateObj, { new: true })
+        return res.status(200).json({
+            message: 'Toilet updated successfully to: ' + JSON.stringify(updatedToilet),
+        });
+    }
+    catch (err) {
+        console.log("error occured while editing the toilet: " + err);
+        return res.status(400).json({
+            message: err,
+        });
+    };
 
 });
 
 function distance(lat1, lon1, lat2, lon2, unit) {
-    var radlat1 = Math.PI * lat1/180
-    var radlat2 = Math.PI * lat2/180
-    var theta = lon1-lon2
-    var radtheta = Math.PI * theta/180
+    var radlat1 = Math.PI * lat1 / 180
+    var radlat2 = Math.PI * lat2 / 180
+    var theta = lon1 - lon2
+    var radtheta = Math.PI * theta / 180
     var dist = Math.sin(radlat1) * Math.sin(radlat2) + Math.cos(radlat1) * Math.cos(radlat2) * Math.cos(radtheta);
     dist = Math.acos(dist)
-    dist = dist * 180/Math.PI
+    dist = dist * 180 / Math.PI
     dist = dist * 60 * 1.1515
-    if (unit=="K") { dist = dist * 1.609344 }
-    if (unit=="N") { dist = dist * 0.8684 }
+    if (unit == "K") { dist = dist * 1.609344 }
+    if (unit == "N") { dist = dist * 0.8684 }
     return dist
 }
 
 router.post('/nearestToilets', jsonParser, async (req, res, next) => {
     Toilet.find({})
-    .exec()
-    .then(async (toilet) => {
-        console.log(toilet);
-        toilet.map(async (entry) => {
-            const result = await geocoder.geocode(entry.address);
-            console.log(result[0].latitude);
-            var dist = distance(result[0].latitude, result[0].longitude, req.body.latitude, req.body.longitude, 'K');
-            entry.distance = dist;
-            entry.latitude=result[0].latitude;
-            entry.longitude=result[0].longitude;
-            console.log(dist);
-        }
-    )
-    .filter(
-        (toilet) => {
-            return toilet.distance > 2;
-        }
-    );
-    return res.status(200).send(toilet);
-})
-.catch(err => {return res.status(500).send("error occured!")});
-    
+        .exec()
+        .then(async (toilet) => {
+            console.log(toilet);
+            toilet.map(async (entry) => {
+                const result = await geocoder.geocode(entry.address);
+                console.log(result[0].latitude);
+                var dist = distance(result[0].latitude, result[0].longitude, req.body.latitude, req.body.longitude, 'K');
+                entry.distance = dist;
+                entry.latitude = result[0].latitude;
+                entry.longitude = result[0].longitude;
+                console.log(dist);
+            }
+            )
+                .filter(
+                    (toilet) => {
+                        return toilet.distance > 2;
+                    }
+                );
+            return res.status(200).send(toilet);
+        })
+        .catch(err => { return res.status(500).send("error occured!") });
+
 });
 
 function sortByPrice(arr) {
@@ -209,7 +216,7 @@ router.post('/user-owned-toilets', jsonParser, async (req, res, next) => {
         toiletsTmp.forEach(toit => {
             if (toit.owner._id == userId) toilets.push(toit);
         });
-        
+
         res.status(200).json({
             message: 'Successfully retrieved toilets for current user.',
             payload: toilets

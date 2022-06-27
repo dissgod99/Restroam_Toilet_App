@@ -2,7 +2,8 @@ import { StatusBar } from 'expo-status-bar';
 import { FlatList, StyleSheet, Text, View, TextInput } from 'react-native';
 import TimeSelect from './TimeSelect';
 
-export default function TimeSelectArray() {
+export default function TimeSelectArray({ tempOpeningTimes, updateOpeningTimes }) {
+
   const weekArray = [
     {
       day: 'Monday',
@@ -40,11 +41,29 @@ export default function TimeSelectArray() {
       startMinute: 0, endHour: 0, endMinute: 0,
     },
   ];
+
+  const updateByDay = (day, hourOrMin, startOrEnd, value) => {
+    let tmp1 = {};
+    tmp1[[startOrEnd]] = value;
+    let tmp2 = {};
+    tmp2[hourOrMin] = tmp1;
+    tempOpeningTimes[day] = tmp2;
+    console.log('inside TimeSelectArray updating to:' + JSON.stringify(tempOpeningTimes));
+    updateOpeningTimes(tempOpeningTimes);
+  }
+
   return (
     <View style={styles.cadreInput}>
       {weekArray.map(v => {
-        return (<TimeSelect day={v.day} startHour={v.startHour}
-          startMinute={v.startMinute} endHour={v.endHour} endMinute={v.endMinute} key={v.day}></TimeSelect>);
+        return (
+          <TimeSelect day={v.day} startHour={v.startHour}
+            startMinute={v.startMinute}
+            endHour={v.endHour} endMinute={v.endMinute}
+            updateByDay={updateByDay}
+            key={v.day}
+          >
+
+          </TimeSelect>);
       })}
     </View>
   );

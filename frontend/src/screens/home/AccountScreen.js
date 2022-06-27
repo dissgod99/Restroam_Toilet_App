@@ -104,11 +104,11 @@ const AccountScreen = ({ navigation }) => {
             Reports
           </Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate('WriteReport')}>
+        {/* <TouchableOpacity onPress={() => navigation.navigate('WriteReport')}>
           <Text style={[styles.menu, { color: theme.color, backgroundColor: theme.menuBackground }]}>
             <Icon name="flag-outline" size={35} color={theme.color} />
           </Text>
-        </TouchableOpacity>
+        </TouchableOpacity> */}
 
         {/* <TouchableOpacity onPress={() => navigation.navigate('Reviews')} style={[styles.alignItems, styles.menu, {backgroundColor: theme.menuBackground}]}>
       <Icon name="cog-outline" size={35} color={theme.color} style={styles.paddingIcon} />

@@ -1,12 +1,20 @@
-import React from "react";
+import React, { useState } from "react";
 import { ScrollView, StyleSheet, View, Text, TouchableOpacity } from "react-native";
 import TimeSelectArray from "../addPage/TimeSelectArray";
 
-const EditToiletScreen = ({route, navigation}) => {
+const EditToiletScreen = ({ route, navigation }) => {
 
-    const { editTitle, editLocation, editPrice }  = route.params;
+    const { originalTitle, originalLocation,
+        originalPrice, originalDetails, originalHandicapAccess } = route.params;
 
-    return(
+    const [newOpeningTimes, setNewOpeningTimes] = useState({});
+
+    const updateOpeningTimes = (someObj) => {
+        console.log('inside EditToiletScreen updating to:' + JSON.stringify(someObj));
+        setNewOpeningTimes(someObj);
+    };
+
+    return (
         <View style={styles.container}>
             <ScrollView>
                 <View style={styles.header}>
@@ -18,14 +26,16 @@ const EditToiletScreen = ({route, navigation}) => {
                     <Text style={styles.timeSelectHeader}>
                         Opening Hours
                     </Text>
-                    <TimeSelectArray></TimeSelectArray>
+                    <TimeSelectArray tempOpeningTimes={newOpeningTimes} updateOpeningTimes={updateOpeningTimes}></TimeSelectArray>
                 </View>
-                <TouchableOpacity 
-                    style={styles.buttonWrapper} 
-                    onPress={() => navigation.navigate('Edit More Information',{
-                        editTitle: editTitle,
-                        editLocation: editLocation,
-                        editPrice: editPrice
+                <TouchableOpacity
+                    style={styles.buttonWrapper}
+                    onPress={() => navigation.navigate('Edit More Information', {
+                        originalTitle,
+                        originalLocation,
+                        originalPrice,
+                        originalDetails,
+                        originalHandicapAccess,
                     })}
                 >
                     <Text style={styles.button}>
@@ -38,21 +48,21 @@ const EditToiletScreen = ({route, navigation}) => {
 }
 
 const styles = StyleSheet.create({
-    container:{
+    container: {
         flex: 1,
         backgroundColor: '#FFF',
         justifyContent: 'flex-start'
     },
-    timeSelect:{
+    timeSelect: {
         alignItems: "center",
         marginVertical: 20,
         marginTop: 10
     },
-    timeSelectHeader:{
+    timeSelectHeader: {
         fontWeight: "bold",
         fontSize: 18
     },
-    buttonWrapper:{
+    buttonWrapper: {
         backgroundColor: "#e6697e",
         paddingHorizontal: 100,
         paddingVertical: 10,
@@ -61,14 +71,14 @@ const styles = StyleSheet.create({
         marginHorizontal: 75,
         alignItems: "center"
     },
-    button:{
+    button: {
         fontWeight: "bold"
     },
-    header:{
+    header: {
         alignItems: "center",
         marginVertical: 20
     },
-    title:{
+    title: {
         fontSize: 20,
         fontWeight: "bold"
     }

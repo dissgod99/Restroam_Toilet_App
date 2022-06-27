@@ -1,52 +1,120 @@
+import axios from "axios";
 import React, { useState } from "react";
-import { ScrollView, StyleSheet, View, Text, TouchableOpacity } from "react-native";
+import { ScrollView, StyleSheet, View, Text, TouchableOpacity, ToastAndroid } from "react-native";
 import { TextInput, Switch } from "react-native-paper";
+import { BACKEND_ENDPOINT_TOILETS } from "../../constants";
 
-const EditInfoScreen = ({route, navigation}) => {
+const EditInfoScreen = ({ route, navigation }) => {
 
-    const [isEnabled, setIsEnabled] = useState(false);
-    const { editTitle, editLocation, editPrice }  = route.params;
+    const { originalTitle,
+        originalLocation,
+        originalPrice,
+        originalDetails,
+        originalHandicapAccess, } = route.params;
+
+    const [newHandicapAccess, setNewHandicapAccess] = useState(originalHandicapAccess);
+    const [newName, setNewName] = useState(originalTitle);
+    const [newAddress, setNewAddress] = useState(originalLocation);
+    const [newPrice, setNewPrice] = useState(originalPrice);
+    const [newDetails, setNewDetails] = useState(originalDetails);
+
 
     function toggleSwitch() {
-        setIsEnabled(!isEnabled);
+        setNewHandicapAccess(!newHandicapAccess);
     }
 
-    return(
+    function changeName(v) {
+        setNewName(v);
+    }
+
+    function changeAddress(v) {
+        setNewAddress(v);
+    }
+
+    function changePrice(v) {
+        newHandicapAccess(v);
+    }
+
+    function changeDetails(v) {
+        setNewDetails(v);
+    }
+
+    const handleSubmit = () => {
+
+        console.log(newHandicapAccess);
+
+        ToastAndroid.showWithGravity(
+            'Please wait until update...',
+            ToastAndroid.SHORT,
+            ToastAndroid.BOTTOM);
+
+        axios.post(BACKEND_ENDPOINT_TOILETS + 'edit-toilet', {
+            name: originalTitle,
+            newName,
+            newAddress,
+            newPrice,
+            newDetails,
+            newHandicapAccess,
+        })
+            .then(({ data }) => {
+                console.log(data.message);
+                ToastAndroid.showWithGravity(
+                    data.message,
+                    ToastAndroid.LONG,
+                    ToastAndroid.BOTTOM);
+            })
+            .catch((err) => console.log(err));
+    }
+
+    return (
         <View style={styles.container}>
             <ScrollView>
                 <View style={styles.header}>
                     <Text style={styles.title}>
                         Edit More Information
                     </Text>
-                
-
                     <View>
                         <Text style={styles.locationHeader}>
-                            Specify its location
+                            Name
                         </Text>
                         <TextInput
                             style={styles.location}
-                            defaultValue={editLocation}
+                            defaultValue={originalTitle}
+                            placeholder={originalTitle}
                             mode="outlined"
                             // label="Address"
                             // placeholder="Type Place"
                             activeOutlineColor="#e6697e"
                             right={<TextInput.Affix text="/100" />}
+                            onChangeText={changeName}
+                        />
+                        <Text style={styles.locationHeader}>
+                            Location
+                        </Text>
+                        <TextInput
+                            style={styles.location}
+                            defaultValue={originalLocation}
+                            placeholder={originalLocation}
+                            mode="outlined"
+                            // label="Address"
+                            activeOutlineColor="#e6697e"
+                            right={<TextInput.Affix text="/100" />}
+                            onChangeText={changeAddress}
                         />
                     </View>
-                    <Text style={styles.details}>
-                        Indicate Details
-                    </Text>
+
                     <View style={styles.detailsContainer}>
                         <View style={styles.position}>
                             <Text style={styles.locationHeader}>
-                                Specify Price
+                                Price
                             </Text>
                             <TextInput style={styles.boxPrice}
-                                defaultValue={editPrice}
+                                defaultValue={originalPrice}
+                                placeholder={originalPrice}
                                 mode="outlined"
                                 // placeholder="Type place"
                                 activeOutlineColor="#e6697e"
+                                onChangeText={changePrice}
                             />
                         </View>
                         <View>
@@ -54,9 +122,9 @@ const EditInfoScreen = ({route, navigation}) => {
                                 Handicap Access
                             </Text>
                             <Switch
-                                value={isEnabled} 
+                                value={newHandicapAccess}
                                 onValueChange={toggleSwitch}
-                                color= {"red"}
+                                color={"red"}
                             />
                         </View>
                     </View>
@@ -65,17 +133,19 @@ const EditInfoScreen = ({route, navigation}) => {
                             More Details
                         </Text>
                         <TextInput style={styles.location}
-                            defaultValue={editTitle}
+                            defaultValue={originalDetails}
+                            placeholder={originalDetails}
                             mode="outlined"
                             // label="Other details"
                             // placeholder="Type details"
                             right={<TextInput.Affix text="/250" />}
                             activeOutlineColor="#e6697e"
+                            onChangeText={changeDetails}
                         />
                     </View>
-                    <TouchableOpacity 
+                    <TouchableOpacity
                         style={styles.btn}
-                        onPress={() => navigation.navigate("ThankYou")}    
+                        onPress={handleSubmit}
                     >
                         <Text style={styles.submit}>
                             Submit
@@ -91,31 +161,31 @@ const EditInfoScreen = ({route, navigation}) => {
 export default EditInfoScreen;
 
 const styles = StyleSheet.create({
-    container:{
+    container: {
         flex: 1,
         justifyContent: "flex-start",
         alignItems: "center",
         backgroundColor: "white"
     },
-    header:{
+    header: {
         justifyContent: "center",
         alignItems: "center"
     },
-    title:{
+    title: {
         fontWeight: "bold",
         fontSize: 20,
         marginVertical: 20
     },
-    locationHeader:{
+    locationHeader: {
         marginVertical: 10,
         fontWeight: "bold"
     },
-    location:{
+    location: {
         width: 250,
         paddingLeft: 8,
         fontWeight: "bold"
     },
-    details:{
+    details: {
         marginVertical: 20,
         fontSize: 20,
         fontWeight: "bold"
@@ -123,14 +193,14 @@ const styles = StyleSheet.create({
     boxPrice: {
         width: 130
     },
-    position:{
+    position: {
         marginRight: 10
     },
-    detailsContainer:{
+    detailsContainer: {
         display: "flex",
         flexDirection: "row"
     },
-    btn:{
+    btn: {
         backgroundColor: "#e6697e",
         paddingHorizontal: 80,
         paddingVertical: 10,
@@ -139,7 +209,7 @@ const styles = StyleSheet.create({
         marginHorizontal: 75,
         alignItems: "center"
     },
-    submit:{
+    submit: {
         fontWeight: "bold"
     }
 });

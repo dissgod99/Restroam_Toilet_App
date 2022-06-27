@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from "react";
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert, ToastAndroid } from 'react-native';
 import ThemeContext from "../../darkMode/ThemeContext";
 import Toilet from './ownedToilets/Toilet';
 import FontAwesome from "react-native-vector-icons/FontAwesome";
@@ -36,17 +36,29 @@ const OwnedToiletsScreen = ({ route, navigation }) => {
     // };
 
     const deleteToilet = (index) => {
+        let toiletTbDeleted = toiletItems[index];
         let toiletsCopy = [...toiletItems];
         toiletsCopy.splice(index, 1);
         setToiletItems(toiletsCopy);
+        axios
+            .post(BACKEND_ENDPOINT_TOILETS + 'deleteToilet', { name: toiletTbDeleted.name })
+            .then(({ data }) => {
+                ToastAndroid.showWithGravity(
+                    data.message, 
+                    ToastAndroid.LONG, 
+                    ToastAndroid.BOTTOM);
+            })
+            .catch(err => console.log(err.message));
     };
 
-    const editToilet = (index, { name, address, price }) => {
+    const editToilet = (index, { name, address, price, details, handicapAccess }) => {
         navigation.navigate('Edit Toilet',
             {
-                editTitle: { name },
-                editLocation: { address },
-                editPrice: { price }
+                originalTitle: name ,
+                originalLocation: address,
+                originalPrice: price,
+                originalDetails: details,
+                originalHandicapAccess: handicapAccess,
             });
     };
 
@@ -88,7 +100,7 @@ const OwnedToiletsScreen = ({ route, navigation }) => {
                     </Text>
                     <View style={styles.items}>
                         {
-                            toiletItems.map(({ name, address, price }, index) => {
+                            toiletItems.map(({ name, address, price, details, handicapAccess }, index) => {
                                 return (
                                     <View key={index} style={[styles.item, { backgroundColor: theme.backgroundToilet }]}>
                                         <Toilet
@@ -97,7 +109,9 @@ const OwnedToiletsScreen = ({ route, navigation }) => {
                                             price={price}
                                         />
                                         <View style={styles.itemRight}>
-                                            <TouchableOpacity onPress={() => editToilet(index, { name, address, price })
+                                            <TouchableOpacity 
+                                            onPress={() => editToilet(index, 
+                                                { name, address, price, details, handicapAccess })
                                                 // navigation.navigate('Edit Toilet', {
                                                 //     editTitle: { name },
                                                 //     editLocation: { address },
