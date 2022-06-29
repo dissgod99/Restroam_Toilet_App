@@ -48,8 +48,11 @@ const DropDown = ({ data }) => {
         })
         setOptions(newOptions)
     }, [filter])
+
+    const theme = useContext(ThemeContext)
+
     return (
-        <View style={styles.container}>
+        <View style={[styles.container, {backgroundColor: theme.drop}]}>
             <ModalDropdown style={styles.drop} options={options} defaultValue='Toilet list' onSelect={(idx) => {
                 setToilet(options[idx])
             }} dropdownStyle={styles.down} showSearch={true} adjustFrame={(s) => {
@@ -88,7 +91,6 @@ const styles = StyleSheet.create({
         top: 20,
         zIndex: 300,
         justifyContent: 'space-between',
-        backgroundColor: 'white',
         flex: 1,
         flexDirection: 'row',
         alignItems: 'center',
@@ -99,18 +101,18 @@ const styles = StyleSheet.create({
         padding: 10,
         paddingRight: 25,
         paddingLeft: 25,
-        padding: 3
+        padding: 3,
     },
     down: {
         width: 188,
         position: 'absolute',
         left: 112,
-        top: 101
+        top: 101,
     },
     inputStyle: {
         borderWidth: 0.5,
         fontSize: 10,
-        paddingLeft: 5
+        paddingLeft: 5,
     }
 }
 )

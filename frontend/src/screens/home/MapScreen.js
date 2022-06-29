@@ -110,6 +110,7 @@ export default function MapScreen({ navigation }) {
             Friday: '10:00-17:00',
             Saturday: '10:00-17:00',
             Sunday: '10:00-17:00',
+            
         },
     }
 
@@ -214,7 +215,8 @@ export default function MapScreen({ navigation }) {
                     </TouchableOpacity>
                 </View> */}
             {renderIf(markerclicked)(
-                <View style={styles.bottom}>
+                <View style={[styles.bottom, {backgroundColor: theme.background}]}>
+                    
                     <View style={{
                         display: 'flex',
                         flexDirection: 'row',
@@ -223,8 +225,8 @@ export default function MapScreen({ navigation }) {
                         <View style={{
                             width: '45%'
                         }}>
-                            <Text style={styles.title}>{item.name}</Text>
-                            <Text style={{ fontSize: 10 }}>{item.location}</Text>
+                            <Text style={[styles.title, {color: theme.icon}]}>{item.name}</Text>
+                            <Text style={{ fontSize: 10, color: theme.color }}>{item.location}</Text>
                             <View style={styles.stars}>
                                 <StarRating
                                     maxStars={5}
@@ -236,7 +238,7 @@ export default function MapScreen({ navigation }) {
                                 />
                             </View>
 
-                            <Text style={styles.item}>{item.description}</Text>
+                            <Text style={[styles.item, {color: theme.color}]}>{item.description}</Text>
 
                             <View style={{
                                 display: 'flex',
@@ -248,7 +250,8 @@ export default function MapScreen({ navigation }) {
                                     display: 'flex',
                                     marginTop: '10%',
                                     alignItems: 'center',
-                                    borderWidth: 0.5,
+                                    borderWidth: 1,
+                                    borderColor: theme.icon,
                                     borderRadius: 10,
                                     padding: '2%',
                                     width: '32%'
@@ -286,16 +289,18 @@ export default function MapScreen({ navigation }) {
                                         longitudeDelta: (big[1] - small[1]) * 1.5,
                                     })
                                 }}>
-                                    <Icon name="walk" size={25} color={"black"} />
+                                    <Icon name="walk" size={25} color={theme.icon} />
                                     <Text style={{
-                                        fontSize: 7.5
+                                        fontSize: 7.5,
+                                        color: theme.icon
                                     }}>Directions</Text>
                                 </TouchableOpacity>
                                 <TouchableOpacity style={{
                                     display: 'flex',
                                     marginTop: '10%',
                                     alignItems: 'center',
-                                    borderWidth: 0.5,
+                                    borderWidth: 1,
+                                    borderColor: theme.icon,
                                     borderRadius: 10,
                                     padding: '2%',
                                     width: '32%'
@@ -303,16 +308,18 @@ export default function MapScreen({ navigation }) {
                                     navigation.navigate("Rating")
                                 }
                                 }>
-                                    <Icon name="pencil-box-multiple" size={25} color={"black"} />
+                                    <Icon name="pencil-box-multiple" size={25} color={theme.icon} />
                                     <Text style={{
-                                        fontSize: 7.5
+                                        fontSize: 7.5,
+                                        color: theme.icon
                                     }}>Review</Text>
                                 </TouchableOpacity>
                                 <TouchableOpacity style={{
                                     display: 'flex',
                                     marginTop: '10%',
                                     alignItems: 'center',
-                                    borderWidth: 0.5,
+                                    borderWidth: 1,
+                                    borderColor: theme.icon,
                                     borderRadius: 10,
                                     padding: '2%',
                                     width: '32%'
@@ -320,19 +327,21 @@ export default function MapScreen({ navigation }) {
                                     navigation.navigate("WriteReport")
                                 }
                                 }>
-                                    <Icon name="alert" size={25} color={"black"} />
+                                    <Icon name="alert" size={25} color={theme.icon} />
                                     <Text style={{
-                                        fontSize: 7.5
+                                        fontSize: 7.5,
+                                        color: theme.icon
                                     }}>Report</Text>
                                 </TouchableOpacity>
                             </View>
                         </View>
                         <View style={{
                             width: '50%',
-                            marginRight: '5%'
+                            marginRight: '5%',
                         }}>
                             <Text style={{
-                                fontWeight: 'bold'
+                                fontWeight: 'bold',
+                                color: theme.icon
                             }}>Opening Hours</Text>
                             {
                                 Object.entries(item.openingHours).map((key) => {
@@ -343,10 +352,10 @@ export default function MapScreen({ navigation }) {
                                         width: '100%',
                                         fontWeight: '20'
                                     }} key={key}>
-                                        <Text>
+                                        <Text style={{color: theme.color}}>
                                             {key[0] + ': '}
                                         </Text>
-                                        <Text>
+                                        <Text style={{color: theme.color}}>
                                             {key[1]}
                                         </Text>
                                     </View>)
@@ -356,8 +365,9 @@ export default function MapScreen({ navigation }) {
                     </View>
 
 
-
+                    
                 </View>)}
+                
         </View>
     )
 }
@@ -425,7 +435,7 @@ const styles = StyleSheet.create({
     },
     bottom: {
         position: 'absolute',
-        backgroundColor: "#fff",
+        //backgroundColor: "#fff",
         paddingBottom: 10,
         paddingTop: 10,
         paddingLeft: 25,
