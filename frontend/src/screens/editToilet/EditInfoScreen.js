@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { ScrollView, StyleSheet, View, Text, TouchableOpacity, ToastAndroid } from "react-native";
 import { TextInput, Switch } from "react-native-paper";
 import { BACKEND_ENDPOINT_TOILETS } from "../../constants";
@@ -59,9 +59,12 @@ const EditInfoScreen = ({ route, navigation }) => {
                     data.message,
                     ToastAndroid.LONG,
                     ToastAndroid.BOTTOM);
+                navigation.navigate("ThankYou")
             })
             .catch((err) => console.log(err));
     }
+
+    const theme = useContext(ThemeContext);
 
     return (
         <View style={styles.container}>
