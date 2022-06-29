@@ -11,7 +11,7 @@ import forbidden from '../../../Forbidden.json';
 import { fetch} from '@tensorflow/tfjs-react-native';
 import ThemeContext from '../../darkMode/ThemeContext';
 
-export default function UploadImage(navigation) {
+export default function UploadImage({navigation}) {
     // Dark Mode Variable
     const theme = useContext(ThemeContext)
 
