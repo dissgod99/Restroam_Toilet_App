@@ -19,13 +19,19 @@ const TimeSlot = (props) => {
       )
      
       useEffect(() => {
-        
+        let tmp = {
+          start: props.data.start,
+          end: props.data.end,
+          days: []
+        }
           Object.keys(dayIsChecked).forEach(k => {
-            if(dayIsChecked.k){
-              props.setData(k);
+            if(dayIsChecked[k]){
+              tmp.days.push(k);
             }
           })
-          console.log(props.data);
+          
+          props.setData(tmp);
+          console.log("Props Data == ", props.data);
       
       },[dayIsChecked])
 
@@ -107,7 +113,6 @@ const TimeSlot = (props) => {
                     is24Hour={true}
                     display="default"
                     onChange={onChange}
-                  
                   />
                 )}
             </View>

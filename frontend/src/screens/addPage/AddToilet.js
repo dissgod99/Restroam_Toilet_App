@@ -8,7 +8,7 @@ import { CheckBox } from "@rneui/base";
 import TimeSlot from './TimeSlot';
 
 export default function AddToilet({navigation}) {
-  const [dayIsChecked, setDayIsChecked] = useState(
+  const [table, setTable] = useState(
 
     {
       Mon: {checked: false,
@@ -47,7 +47,12 @@ export default function AddToilet({navigation}) {
   const [counter, setCounter] = useState(0);
   
   //let test = [null, null, []]
-  const[test, setTest] = useState([null, null, []])
+  const[test, setTest] = useState([{
+    start: "",
+    end: "",
+    days: []
+  }])
+  const [part, setPart] = useState([])
   const [hourSlots, setHourSlots] = useState([<TimeSlot data={test}/>])
 
   const MAX_NB_SLOTS = 7;
@@ -57,7 +62,19 @@ export default function AddToilet({navigation}) {
        // setCounter(counter + 1)
         console.log(counter)
         setHourSlots([...hourSlots, <TimeSlot data={test}/>])
-        console.log(hourSlots)}
+        let addedItem = {
+          start: "",
+          end: "",
+          days: []
+        }
+        //let tmpp = test.push(addedItem);
+        //setTest([...test, ["heyyyy"]]);
+        
+        setPart([...part, test])
+        console.log("itemmmAfterInsertion == ", part);
+        //setPart([...part, test])
+        //console.log("HourSlott == ", hourSlots)
+      }
         else{
           return;
         }
@@ -69,13 +86,14 @@ export default function AddToilet({navigation}) {
       console.log(counter);
       let newList = [...hourSlots].slice(0, [...hourSlots].length-1)
       setHourSlots(newList)
+      setPart([...part].slice(0, [...part].length-1))
+      console.log("itemmmAfterDeletion == ", part);
     }
     else{
       return;
     }
   }
   
-
   return (
     <View style={styles.container}>
       <ScrollView style={{backgroundColor: theme.background}}>
@@ -92,17 +110,25 @@ export default function AddToilet({navigation}) {
           Select opening hours
         </Text>
 
-        {hourSlots.map(() => {
-          return  <TimeSlot data={setTest}/>
-        }        
+        {hourSlots.map(({}, index) => {
+          console.log("indexxxx", index)
+          return  (<View key={index}>
+                    <TimeSlot setData={setTest} data={test}/>
+                  </View>)
+                 }        
         )}
       </View>
-
+        {hourSlots.length < 7 ?
+  
         <TouchableOpacity style={styles.addMore} onPress={() => addOneMoreTimeSlot()}>
           <Text style={[styles.addMoreTxt, {color: theme.addMore}]}>
                 [+] Add more Slots
           </Text>
       </TouchableOpacity>
+      :
+      <></>
+      
+      }
       {
         
         hourSlots.length>1 ?
