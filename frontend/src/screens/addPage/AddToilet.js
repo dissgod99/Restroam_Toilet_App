@@ -8,40 +8,7 @@ import { CheckBox } from "@rneui/base";
 import TimeSlot from './TimeSlot';
 
 export default function AddToilet({navigation}) {
-  const [table, setTable] = useState(
-
-    {
-      Mon: {checked: false,
-            startHour: "<Starting Hour>",
-            endHour: "<Closing Hour>"
-      },
-      Tue: {checked: false,
-        startHour: "<Starting Hour>",
-        endHour: "<Closing Hour>"
-      },
-      Wed: {checked: false,
-        startHour: "<Starting Hour>",
-        endHour: "<Closing Hour>"
-      },
-      Thu: {checked: false,
-        startHour: "<Starting Hour>",
-        endHour: "<Closing Hour>"
-      },
-      Fri: {checked: false,
-        startHour: "<Starting Hour>",
-        endHour: "<Closing Hour>"
-      },
-      Sat: {checked: false,
-        startHour: "<Starting Hour>",
-        endHour: "<Closing Hour>"
-      },
-      Sun: {checked: false,
-        startHour: "<Starting Hour>",
-        endHour: "<Closing Hour>"
-      },
-    }
-  )
- 
+  
   const theme = useContext(ThemeContext)
   
   const [counter, setCounter] = useState(0);
@@ -53,25 +20,109 @@ export default function AddToilet({navigation}) {
     days: []
   }])
   const [part, setPart] = useState([])
+
+  const [tableOfCheckedDays, setTableOfCheckedDays] = useState(
+    {
+      Mon: false,
+      Tue: false,
+      Wed: false,
+      Thu: false,
+      Fri: false,
+      Sat: false,
+      Sun: false
+    }
+  )
+
   const [hourSlots, setHourSlots] = useState([<TimeSlot data={test}/>])
 
   const MAX_NB_SLOTS = 7;
+
+  const alreadyChecked = () => {
+    let out = []
+    if(part == []){
+      return [];
+    }
+    part.forEach(obj => 
+      {
+        obj["days"].forEach(d => {
+          out.push(d);
+        })
+      }
+      );
+    return out;
+  }
+
+  
 
   const addOneMoreTimeSlot = () =>{
     if(hourSlots.length < MAX_NB_SLOTS){
        // setCounter(counter + 1)
         console.log(counter)
-        setHourSlots([...hourSlots, <TimeSlot data={test}/>])
-        let addedItem = {
-          start: "",
-          end: "",
-          days: []
-        }
+        let checkedDays = alreadyChecked()
+        console.log("CHECKED DAYYYS == ", checkedDays)
+        console.log("TABLE == ", tableOfCheckedDays)
+        console.log(Object.keys(tableOfCheckedDays))
+
+        
+        setHourSlots([...hourSlots, <TimeSlot data={test} check={tableOfCheckedDays}/>])
+        // let addedItem = {
+        //   start: "",
+        //   end: "",
+        //   days: []
+        // }
         //let tmpp = test.push(addedItem);
         //setTest([...test, ["heyyyy"]]);
+        if(part != []){
+          console.log("NOT EMPTYY")
         
+        part.forEach(e => {
+          console.log("step ", e)
+          let tmpDays = e["days"]
+          tmpDays.forEach(d => {
+          if(tableOfCheckedDays[d] == false){
+            console.log("HERE, ", d)
+            switch(d)
+            {
+              case "Mon":
+                setTableOfCheckedDays({...tableOfCheckedDays, Mon:true});
+                console.log("set MON");
+                break;
+              case "Tue":
+                setTableOfCheckedDays({...tableOfCheckedDays, Tue:true});
+                console.log("set Tue");
+                break;
+              case "Wed":
+                setTableOfCheckedDays({...tableOfCheckedDays, Wed:true});
+                console.log("set Wed");
+                break;
+              case "Thu":
+                setTableOfCheckedDays({...tableOfCheckedDays, Thu:true});
+                console.log("set Thu");
+                break;
+              case "Fri":
+                setTableOfCheckedDays({...tableOfCheckedDays, Fri:true});
+                console.log("set Fri");
+                break;
+              case "Sat":
+                setTableOfCheckedDays({...tableOfCheckedDays, Sat:true});
+                console.log("set Sat");
+                break;
+              case "Sun":
+                setTableOfCheckedDays({...tableOfCheckedDays, Sun:true});
+                console.log("set Sun");
+                break;
+              default:
+                console.log("default CASE");
+          }
+        }
+      })
+      })}
+
+
+        //console.log(tableOfCheckedDays["Mon"])
         setPart([...part, test])
         console.log("itemmmAfterInsertion == ", part);
+        console.log("TableAfter == ", tableOfCheckedDays);
         //setPart([...part, test])
         //console.log("HourSlott == ", hourSlots)
       }
@@ -95,8 +146,8 @@ export default function AddToilet({navigation}) {
   }
   
   return (
-    <View style={styles.container}>
-      <ScrollView style={{backgroundColor: theme.background}}>
+    <View style={[styles.container, {backgroundColor: theme.background}]}>
+      <ScrollView>
       
       <View style={styles.centerTitle}>
         <Text style={[styles.cadre, {color: theme.color}]}>
@@ -163,9 +214,10 @@ export default function AddToilet({navigation}) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#ffffff',
+    //backgroundColor: '#ffffff',
     justifyContent: 'flex-start',
-    height: "100%"
+    height: "100%",
+    width: "100%"
 
   },
   cadre: {
