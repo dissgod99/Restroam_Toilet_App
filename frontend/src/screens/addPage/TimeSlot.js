@@ -19,7 +19,6 @@ const TimeSlot = (props) => {
       )
 
       const [changedTime, setChangedTime] = useState(
-
         {
           startt: false,
           endd: false
@@ -193,7 +192,7 @@ const TimeSlot = (props) => {
                   })
                   }
                   //disabled={text == "<Starting Hour>" || textEnd == "<Closing Hour>"}
-                  //disabled ={props.check["Mon"]}
+                  //disabled ={props.check.includes("Mon")}
 
                 />
                 <CheckBox  

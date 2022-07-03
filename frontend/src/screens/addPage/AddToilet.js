@@ -1,5 +1,5 @@
 import { StatusBar } from 'expo-status-bar';
-import { FlatList, StyleSheet, Text, View, TextInput, Switch, Button, ScrollView, TouchableOpacity } from 'react-native';
+import { FlatList, StyleSheet, Text, View, TextInput, Switch, Button, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { useContext, useState, useRef } from 'react';
 import Theme from '../../darkMode/Theme';
@@ -33,8 +33,9 @@ export default function AddToilet({navigation}) {
     }
   )
 
-  const [hourSlots, setHourSlots] = useState([<TimeSlot data={test}/>])
-
+  const [hourSlots, setHourSlots] = useState([<View >
+                                                <TimeSlot data={test}/> 
+                                              </View>])
   const MAX_NB_SLOTS = 7;
 
   const alreadyChecked = () => {
@@ -51,6 +52,22 @@ export default function AddToilet({navigation}) {
       );
     return out;
   }
+  const checkBoundaries = (objects) =>{
+    let valid = true;
+    if(objects == []){
+      console.log(" FIRST CASE !!!!!");
+      return false;
+    }
+    objects.forEach(object => {
+      valid = object["end"] > object["start"] && object["end"] != "<Closing Hour>" && object["start"] != "<Starting Hour>" 
+      if(valid == false){
+        console.log(" 2nd CASE !!!!!");
+        return valid
+      }
+    })
+    console.log(" third CASE !!!!!");
+    return valid
+  }
 
   
 
@@ -64,14 +81,10 @@ export default function AddToilet({navigation}) {
         console.log(Object.keys(tableOfCheckedDays))
 
         
-        setHourSlots([...hourSlots, <TimeSlot data={test} check={tableOfCheckedDays}/>])
-        // let addedItem = {
-        //   start: "",
-        //   end: "",
-        //   days: []
-        // }
-        //let tmpp = test.push(addedItem);
-        //setTest([...test, ["heyyyy"]]);
+        
+        
+        // setTableOfCheckedDays({...tableOfCheckedDays, Mon: true})
+        // console.log("TTHISSS == ", tableOfCheckedDays)
         if(part != []){
           console.log("NOT EMPTYY")
         
@@ -118,7 +131,7 @@ export default function AddToilet({navigation}) {
       })
       })}
 
-
+        setHourSlots([...hourSlots, <TimeSlot data={test} check={["Mon", "Tue"]}/>])
         //console.log(tableOfCheckedDays["Mon"])
         setPart([...part, test])
         console.log("itemmmAfterInsertion == ", part);
@@ -136,9 +149,11 @@ export default function AddToilet({navigation}) {
       //setCounter(counter - 1)
       console.log(counter);
       let newList = [...hourSlots].slice(0, [...hourSlots].length-1)
+      // Check days Array
       setHourSlots(newList)
       setPart([...part].slice(0, [...part].length-1))
       console.log("itemmmAfterDeletion == ", part);
+      console.log("TableAfterDeletion == ", tableOfCheckedDays)
     }
     else{
       return;
@@ -163,7 +178,7 @@ export default function AddToilet({navigation}) {
 
         {hourSlots.map(({}, index) => {
           console.log("indexxxx", index)
-          return  (<View key={index}>
+          return  (<View key={index} pointerEvents={hourSlots.length == index+1 ? "auto" : "none"}>
                     <TimeSlot setData={setTest} data={test}/>
                   </View>)
                  }        
@@ -197,7 +212,27 @@ export default function AddToilet({navigation}) {
                 style={[styles.btn, {backgroundColor: theme.submitBtn}]}
                 onPress={() => {
                   // code to check hours 
-                  navigation.navigate("More Toilet Infomation")}}
+
+                  // CASE 0: NO PROBLEM
+                  if(checkBoundaries(part)){
+                    navigation.navigate("More Toilet Infomation")
+                  }else{
+                    Alert.alert(
+                      "WARNING",
+                      "End Time cannot be smaller than start time",
+                      [
+                        {  
+                          text: 'Cancel',  
+                          onPress: () => console.log('Cancel Pressed'),  
+                          style: 'cancel',  
+                      },  
+                      {text: 'OK', onPress: () => console.log('OK Pressed')},  
+                      ]
+                    )
+                  }
+                }
+              }
+                  
                         >
                 <Text style={styles.stOfSubmit}>
                                 Next
