@@ -59,7 +59,7 @@ export default function AddToilet({navigation}) {
   }, [test])
 
   useEffect(() => {
-    
+    setRescue(rescue.slice(0, rescue.length-1));
   }, [deleteItem])
 
   // useEffect(() => {
@@ -305,32 +305,72 @@ export default function AddToilet({navigation}) {
                   // }                  
                   // else{
                   console.log("Skipped to the good part") 
-                  setClickNext(!clickNext); 
+                  //setClickNext(!clickNext); 
                   //setCounter(counter + 0.5);
                   //setClickNext(true);
                   console.log("Click SET to TRUE");
                   console.log("Data just before Next Click == ", rescue);
-                  setOut([...out, rescue[rescue.length-1]])
+                  //setOut([...out, rescue[rescue.length-1]])
                   //console.log("SSETOUTTT === ", out)
                   // CASE 0: NO PROBLEM
-                  navigation.navigate("More Toilet Infomation");}
+                  // navigation.navigate("More Toilet Infomation");
+                
+                  if(rescue.length == 0){
+                    Alert.alert(
+                      "ERROR",
+                      "Please choose opening times and days",
+                      [
+                        {  
+                          text: 'Cancel',  
+                          onPress: () => console.log('Cancel ERROR Pressed'),  
+                          style: 'cancel',  
+                      },  
+                      {text: 'OK', onPress: () => console.log('OK ERROR Pressed')},  
+                      ]
+                    )
+                  }else{
+                    const checkInputs = rescue.every(obj => {
+                      const times = (obj["start"] < obj["end"]) && (obj["days"].length!=0)
+                      
+                      return times;
+                    })
+                    if(checkInputs){
+                      navigation.navigate("More Toilet Infomation");
+                    }else{
+                      Alert.alert(
+                                "Selected times/days problem",
+                                "Days must be selected AND End Time cannot be smaller than start time",
+                                [
+                                  {  
+                                    text: 'Cancel',  
+                                    onPress: () => console.log('Cancel Pressed'),  
+                                    style: 'cancel',  
+                                },  
+                                {text: 'OK', onPress: () => console.log('OK Pressed')},  
+                                ]
+                              )
+                            }
+                    }
+                    
+                  }
+                  
+                  
+                  // else{
+                  //   navigation.navigate("More Toilet Infomation");
+                  // }
+                
+                
+                
+                
+                
+                
+                
+                
+                
                   
                   // console.log("PARRRRTRTTT == ", part)
-                  // if(part.length == 0){
-                  //   Alert.alert(
-                  //     "ERROR",
-                  //     "Please choose opening times and days",
-                  //     [
-                  //       {  
-                  //         text: 'Cancel',  
-                  //         onPress: () => console.log('Cancel ERROR Pressed'),  
-                  //         style: 'cancel',  
-                  //     },  
-                  //     {text: 'OK', onPress: () => console.log('OK ERROR Pressed')},  
-                  //     ]
-                  //   )
-                  // }else{
-                  //   //navigation.navigate("More Toilet Infomation");
+                  //else{
+                    //navigation.navigate("More Toilet Infomation");
 
                   //   if (checkBoundaries(part)){
                   //       //setHourSlots([...hourSlots, <></> ])
