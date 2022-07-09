@@ -133,9 +133,7 @@ export default function MapScreen({ navigation }) {
                         //title={marker.title}
                         //description={marker.description}
                         onPress={() => markerClick(item, index)}>
-                        <Image source={require('../../../assets/toiletMarker.png')}
-                            style={styles.toiletsAround}
-                            resizeMode="cover" />
+                        <Icon name="toilet" size={25} color={"#f28d82"} />
                     </MapView.Marker>
                 })}{
                     direction
@@ -250,8 +248,8 @@ export default function MapScreen({ navigation }) {
                                     setVision({
                                         latitude: small[0] + ((big[0] - small[0]) / 2),
                                         longitude: small[1] + ((big[1] - small[1]) / 2),
-                                        latitudeDelta: (big[0] - small[0]) * 3.5,
-                                        longitudeDelta: (big[1] - small[1]) * 3.5,
+                                        latitudeDelta: (big[0] - small[0]) * 1.5,
+                                        longitudeDelta: (big[1] - small[1]) * 1.5,
                                     })
                                 }}>
                                     <Icon name="walk" size={25} color={"black"} />
@@ -268,13 +266,13 @@ export default function MapScreen({ navigation }) {
                                     padding: '2%',
                                     width: '32%'
                                 }} onPress={() => {
-                                    navigation.navigate("Rating")
+                                    navigation.navigate("Rating Overview", {toilet: item})
                                 }
                                 }>
                                     <Icon name="pencil-box-multiple" size={25} color={"black"} />
                                     <Text style={{
                                         fontSize: 7.5
-                                    }}>Review</Text>
+                                    }}>Reviews</Text>
                                 </TouchableOpacity>
                                 <TouchableOpacity style={{
                                     display: 'flex',
