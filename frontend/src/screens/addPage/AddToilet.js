@@ -1,7 +1,7 @@
 import { StatusBar } from 'expo-status-bar';
 import { FlatList, StyleSheet, Text, View, TextInput, Switch, Button, ScrollView, TouchableOpacity, Alert } from 'react-native';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { useContext, useState, useRef } from 'react';
+import { useContext, useState, useRef, useEffect } from 'react';
 import Theme from '../../darkMode/Theme';
 import ThemeContext from '../../darkMode/ThemeContext';
 import { CheckBox } from "@rneui/base";
@@ -12,14 +12,65 @@ export default function AddToilet({navigation}) {
   const theme = useContext(ThemeContext)
   
   const [counter, setCounter] = useState(0);
-  
+  const [deleteItem, setDeleteItem] = useState(100);
+  const [clickNext, setClickNext] = useState(false)
   //let test = [null, null, []]
-  const[test, setTest] = useState([{
+  const[test, setTest] = useState({
     start: "",
     end: "",
     days: []
-  }])
+  })
+
   const [part, setPart] = useState([])
+  const [rescue, setRescue] = useState([])
+  const [out, setOut] = useState([])
+    useEffect(() => {
+      if(test.days.length==0 || 
+        test.end == "<Closing Hour>" ||
+        test.start == "<Starting Hour>"
+        ){
+          return;
+        }
+        else{ 
+          if(counter == 0){
+              if(rescue.length > 0){
+              const check = rescue[rescue.length-1].days.every(e => {
+                return test.days.includes(e);
+              })
+              console.log("testy", check)
+              if(check)
+                {setRescue([...rescue.slice(0, rescue.length-1), test]);}}
+              else
+              {setRescue([...rescue, test]);}}
+          
+          else{
+            const check2 = rescue[rescue.length-1].days.every(e => {
+              return test.days.includes(e);
+            })
+            console.log("testy22", check2)
+              if(check2)
+                {setRescue([...rescue.slice(0, rescue.length-1), test]);}
+              else
+              {setRescue([...rescue, test]);}
+          }
+        
+        }
+      
+  }, [test])
+
+  useEffect(() => {
+    
+  }, [deleteItem])
+
+  // useEffect(() => {
+  //   if(test.days.length==0 || 
+  //           test.end == "<Closing Hour>" ||
+  //           test.start == "<Starting Hour>"
+  //           ){
+  //             return;
+  //           }else{
+  //   setRescue([...rescue, test])}
+  // }, [counter, clickNext])
 
   const [tableOfCheckedDays, setTableOfCheckedDays] = useState(
     {
@@ -54,12 +105,13 @@ export default function AddToilet({navigation}) {
   }
   const checkBoundaries = (objects) =>{
     let valid = true;
-    if(objects == []){
-      console.log(" FIRST CASE !!!!!");
-      return false;
-    }
+    // if(objects == []){
+    //   console.log(" FIRST CASE !!!!!");
+    //   return false;
+    // }
     objects.forEach(object => {
       valid = object["end"] > object["start"] && object["end"] != "<Closing Hour>" && object["start"] != "<Starting Hour>" 
+      //valid = object["end"] > object["start"];
       if(valid == false){
         console.log(" 2nd CASE !!!!!");
         return valid
@@ -71,13 +123,13 @@ export default function AddToilet({navigation}) {
 
   
 
-  const addOneMoreTimeSlot = () =>{
+  const addOneMoreTimeSlot =  () =>{
     if(hourSlots.length < MAX_NB_SLOTS){
-       // setCounter(counter + 1)
+       setCounter(counter + 1)
         console.log(counter)
         let checkedDays = alreadyChecked()
-        console.log("CHECKED DAYYYS == ", checkedDays)
-        console.log("TABLE == ", tableOfCheckedDays)
+        //console.log("CHECKED DAYYYS == ", checkedDays)
+        //console.log("TABLE == ", tableOfCheckedDays)
         console.log(Object.keys(tableOfCheckedDays))
 
         
@@ -134,26 +186,37 @@ export default function AddToilet({navigation}) {
         setHourSlots([...hourSlots, <TimeSlot data={test} check={["Mon", "Tue"]}/>])
         //console.log(tableOfCheckedDays["Mon"])
         setPart([...part, test])
-        console.log("itemmmAfterInsertion == ", part);
-        console.log("TableAfter == ", tableOfCheckedDays);
+        //console.log("itemmmAfterInsertion == ", part);
+        //console.log("TableAfter == ", tableOfCheckedDays);
         //setPart([...part, test])
         //console.log("HourSlott == ", hourSlots)
+        //setOut([...out, rescue[rescue.length-1]])
+
+
       }
         else{
           return;
         }
+
+
+
+
+
+
   }
   
   const deletePreviousTimeSlot = () =>{
     if(hourSlots.length > 1){
       //setCounter(counter - 1)
-      console.log(counter);
+      //console.log(counter);
       let newList = [...hourSlots].slice(0, [...hourSlots].length-1)
       // Check days Array
       setHourSlots(newList)
       setPart([...part].slice(0, [...part].length-1))
-      console.log("itemmmAfterDeletion == ", part);
-      console.log("TableAfterDeletion == ", tableOfCheckedDays)
+      setDeleteItem(deleteItem-1);
+      //setRescue([...rescue].slice(0, [...rescue].length-1))
+      //console.log("itemmmAfterDeletion == ", part);
+      //console.log("TableAfterDeletion == ", tableOfCheckedDays)
     }
     else{
       return;
@@ -177,10 +240,12 @@ export default function AddToilet({navigation}) {
         </Text>
 
         {hourSlots.map(({}, index) => {
-          console.log("indexxxx", index)
-          return  (<View key={index} pointerEvents={hourSlots.length == index+1 ? "auto" : "none"}>
+          //console.log("indexxxx", index)
+          return  (
+                  <View key={index} pointerEvents={hourSlots.length == index+1 ? "auto" : "none"}>
                     <TimeSlot setData={setTest} data={test}/>
-                  </View>)
+                  </View> 
+                  )
                  }        
         )}
       </View>
@@ -211,27 +276,109 @@ export default function AddToilet({navigation}) {
         <TouchableOpacity 
                 style={[styles.btn, {backgroundColor: theme.submitBtn}]}
                 onPress={() => {
+                  //addOneMoreTimeSlot();
                   // code to check hours 
+                  //addOneMoreTimeSlot();
+                  //deletePreviousTimeSlot();
+                  const emptyHours = [
+                    {
+                      days: [],
+                    }
 
+                  ]
+                  // if(rescue[0].days.length==0 && 
+                  //   rescue[0].end == "<Closing Hour>" &&
+                  //   rescue[0].start == "<Starting Hour>"
+                  //   ){
+                  //     Alert.alert(
+                  //           "ERROR",
+                  //           "Please choose opening times and days",
+                  //           [
+                  //             {  
+                  //               text: 'Cancel',  
+                  //               onPress: () => console.log('Cancel ERROR Pressed'),  
+                  //               style: 'cancel',  
+                  //           },  
+                  //           {text: 'OK', onPress: () => console.log('OK ERROR Pressed')},  
+                  //           ]
+                  //         )
+                  // }                  
+                  // else{
+                  console.log("Skipped to the good part") 
+                  setClickNext(!clickNext); 
+                  //setCounter(counter + 0.5);
+                  //setClickNext(true);
+                  console.log("Click SET to TRUE");
+                  console.log("Data just before Next Click == ", rescue);
+                  setOut([...out, rescue[rescue.length-1]])
+                  //console.log("SSETOUTTT === ", out)
                   // CASE 0: NO PROBLEM
-                  if(checkBoundaries(part)){
-                    navigation.navigate("More Toilet Infomation")
-                  }else{
-                    Alert.alert(
-                      "WARNING",
-                      "End Time cannot be smaller than start time",
-                      [
-                        {  
-                          text: 'Cancel',  
-                          onPress: () => console.log('Cancel Pressed'),  
-                          style: 'cancel',  
-                      },  
-                      {text: 'OK', onPress: () => console.log('OK Pressed')},  
-                      ]
-                    )
-                  }
+                  navigation.navigate("More Toilet Infomation");}
+                  
+                  // console.log("PARRRRTRTTT == ", part)
+                  // if(part.length == 0){
+                  //   Alert.alert(
+                  //     "ERROR",
+                  //     "Please choose opening times and days",
+                  //     [
+                  //       {  
+                  //         text: 'Cancel',  
+                  //         onPress: () => console.log('Cancel ERROR Pressed'),  
+                  //         style: 'cancel',  
+                  //     },  
+                  //     {text: 'OK', onPress: () => console.log('OK ERROR Pressed')},  
+                  //     ]
+                  //   )
+                  // }else{
+                  //   //navigation.navigate("More Toilet Infomation");
+
+                  //   if (checkBoundaries(part)){
+                  //       //setHourSlots([...hourSlots, <></> ])
+                  //       console.log("DATA when CLICK == ", part)
+                  //       navigation.navigate("More Toilet Infomation")
+                  //     }else{
+                  //       Alert.alert(
+                  //         "Selected times problem",
+                  //         "End Time cannot be smaller than start time OR Times cannot be undefined",
+                  //         [
+                  //           {  
+                  //             text: 'Cancel',  
+                  //             onPress: () => console.log('Cancel Pressed'),  
+                  //             style: 'cancel',  
+                  //         },  
+                  //         {text: 'OK', onPress: () => console.log('OK Pressed')},  
+                  //         ]
+                  //       )
+                  //     }
+
+                  // }
+
+
+
+
+
+
+
+                  // else if (checkBoundaries(part)){
+                  //   //setHourSlots([...hourSlots, <></> ])
+                  //   console.log("DATA when CLICK == ", part)
+                  //   navigation.navigate("More Toilet Infomation")
+                  // }else{
+                  //   Alert.alert(
+                  //     "WARNING",
+                  //     "End Time cannot be smaller than start time",
+                  //     [
+                  //       {  
+                  //         text: 'Cancel',  
+                  //         onPress: () => console.log('Cancel Pressed'),  
+                  //         style: 'cancel',  
+                  //     },  
+                  //     {text: 'OK', onPress: () => console.log('OK Pressed')},  
+                  //     ]
+                  //   )
+                  // }
                 }
-              }
+              
                   
                         >
                 <Text style={styles.stOfSubmit}>
