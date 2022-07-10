@@ -154,10 +154,13 @@ export default function AddToilet({navigation}) {
                       ]
                     )
                   }else{
-                    const checkInputs = rescue.every(obj => {
-                      const times = (obj["start"] < obj["end"]) && (obj["days"].length!=0)
-                      
-                      return times;
+                    const checkInputs = rescue.every(obj => {                      
+                      return (obj["start"] < obj["end"]) 
+                              && (obj["days"].length!=0)
+                              && (obj["start"] != "")
+                              && (obj["end"] != "")
+                              && (obj["start"] != "<Starting Hour>")
+                              && (obj["end"] != "<Closing Hour>");
                     })
                     if(checkInputs){
                       navigation.navigate("More Toilet Infomation");
