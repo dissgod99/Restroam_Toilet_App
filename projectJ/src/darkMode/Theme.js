@@ -13,7 +13,18 @@ const Theme = {
          activeOutColor: "#e6697e",
          day: "gold",
          night: "grey",
-         show: "#f28d82"
+         show: "#f28d82",
+         ackgroundReports: "#f5f5f5",
+         reportsChoice: "white",
+         check: "#e6697e",
+         addMore: "black",
+         water: "#a6cbe3",
+         bottomBar: "white",
+         icon: "#f28d82",
+         drop: "white",
+         titleReview: "black",
+         reviewBorder: "black"
+
      },
     dark:{
         theme: "dark",
@@ -29,7 +40,18 @@ const Theme = {
         activeOutColor: "#ae8647",
         day: "grey",
         night: "gold",
-        show: "grey"
+        show: "grey",
+        backgroundReports: "#2b2b2b",
+        reportsChoice: "#bcbcbc",
+        check: "gold",
+        addMore: "#d7b604",
+        water: "#6040bd",
+        bottomBar: "#242526",
+        icon: "#ccaa55",
+        drop: "#ccaa55",
+        titleReview: "#ccaa55",
+        reviewBorder: "grey"
+
     },
 };
 export default Theme;

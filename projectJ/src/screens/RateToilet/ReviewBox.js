@@ -16,7 +16,9 @@ export default function ReviewBox ({ review }) {
                     borderWidth: 1,
                     margin: 5,
                     padding: 5,
-                    borderRadius: 20
+                    borderRadius: 10,
+                    borderWidth: 2,
+                    borderColor: theme.reviewBorder
                 }}>
                     <View style={{
                         width: "95%",
@@ -25,7 +27,7 @@ export default function ReviewBox ({ review }) {
                         flexDirection: 'row',
                         justifyContent: 'space-between',
                     }}>
-                        <Text style={styles.title}>{review.text}</Text>
+                        <Text style={[styles.title, {color: theme.color}]}>{review.text}</Text>
 
                         <View style={styles.stars}>
                             <StarRating

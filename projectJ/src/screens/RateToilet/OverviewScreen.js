@@ -46,12 +46,14 @@ const OverviewScreen = ({ route, navigation }) => {
                     borderWidth: 1,
                     margin: 5,
                     padding: 5,
-                    borderRadius: 20
+                    borderRadius: 13,
+                    borderColor: theme.reviewBorder,
+                    borderWidth: 2
                 }}><View style={{
                     width: '45%'
                 }}>
-                        <Text style={styles.title}>{toilet.name}</Text>
-                        <Text style={{ fontSize: 10 }}>{toilet.location}</Text>
+                        <Text style={[styles.title, {color: theme.titleReview}]}>{toilet.name}</Text>
+                        <Text style={{ fontSize: 10, color: theme.color }}>{toilet.location}</Text>
                         <View style={styles.stars}>
                             <StarRating
                                 maxStars={5}
@@ -70,7 +72,7 @@ const OverviewScreen = ({ route, navigation }) => {
                         marginRight: '5%'
                     }}>
                         <Text style={{
-                            fontWeight: 'bold'
+                            fontWeight: 'bold', color: theme.titleReview
                         }}>Opening Hours</Text>
                         {
                             Object.entries(toilet.openingHours).map((key) => {
@@ -79,12 +81,13 @@ const OverviewScreen = ({ route, navigation }) => {
                                     flexDirection: 'row',
                                     justifyContent: 'space-between',
                                     width: '100%',
-                                    fontWeight: '20'
+                                    fontWeight: '20',
+                                    
                                 }} key={key}>
-                                    <Text>
+                                    <Text style={{color: theme.color}}>
                                         {key[0] + ': '}
                                     </Text>
-                                    <Text>
+                                    <Text style={{color: theme.color}}>
                                         {key[1]}
                                     </Text>
                                 </View>)
@@ -117,6 +120,7 @@ const OverviewScreen = ({ route, navigation }) => {
                 }}><Text style={{
                     fontSize: 30,
                     fontWeight: 'bold',
+                    color: theme.titleReview
                 }}>
                         Reviews
                     </Text>
