@@ -273,15 +273,15 @@ export default function App() {
             }
           />
           <Stack.Screen
-            name='Outlogged'
+            name='Not logged in'
             component={OutloggedScreen}
-            options={
-              {
-                headerStyle:{
-                  backgroundColor: "#f28d82"
-                }
-              }
-            }
+            options={{
+              headerStyle: {
+                //backgroundColor: "#ae8647"
+                backgroundColor: headColor
+              },
+              headerShown: false,
+            }} 
           />
         </Stack.Navigator>
       </NavigationContainer>

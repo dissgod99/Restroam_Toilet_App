@@ -78,7 +78,7 @@ const styles = StyleSheet.create({
         marginBottom:"65%"
     },
     icon:{
-        marginTop: "30%"
+        marginTop: "50%"
     }
 });
 

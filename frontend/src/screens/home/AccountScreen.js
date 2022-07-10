@@ -25,12 +25,21 @@ const AccountScreen = ({ navigation }) => {
         axios
           .post(BACKEND_ENDPOINT_USERS + 'get-user-data', { token })
           .then((response) => {
-            const { data } = response;
-            set_user_username(data.payload.username);
-            set_user_email(data.payload.email);
-          }).catch(err => console.log(err));
+            // if(token == null) navigation.navigate("Not logged in")
+            
+              const { data } = response;
+              set_user_username(data.payload.username);
+              set_user_email(data.payload.email);
+            
+          }).catch(err => {
+            navigation.navigate("Not logged in")
+            console.log(err)});
       })
-      .catch(err => console.log(err));
+      .catch(err => {
+        navigation.navigate("Not logged in")
+        console.log(err)});
+
+    // if(token == null) navigation.navigate("Not logged in")
   });
 
   const logout = async () => {
