@@ -27,8 +27,6 @@ const TimeSlot = (props) => {
       const arr = props.check;
       useEffect(() => {
         let tmp = {
-          // start: props.data.start,
-          // end: props.data.end,
           start: text,
           end: textEnd,
           days: []
@@ -38,19 +36,11 @@ const TimeSlot = (props) => {
               tmp.days.push(k);
             }
           })
-          // if(text != "<Starting Hour>"){
-          //   tmp.start = text
-          // }
-          // if(textEnd != "<Closing Hour>"){
-          //   tmp.end = textEnd
-          // }
           tmp.start = text;
           tmp.end = textEnd;
           
           
           props.setData(tmp);
-          console.log("Props Data == ", props.data);
-          console.log("ARR == ", arr);
       
       },[dayIsChecked, text, textEnd, changedTime])
 
@@ -67,8 +57,6 @@ const TimeSlot = (props) => {
       const [modeEnd, setModeEnd] = useState('time');
       const [showEnd, setShowEnd] = useState(false);
       const [textEnd, setTextEnd] = useState("<Closing Hour>");
-    
-      const [cd, setDc] = useState(props.check)
 
       const padTo2Digits= (num)=> {
         return String(num).padStart(2, '0');
@@ -122,17 +110,6 @@ const TimeSlot = (props) => {
         console.log("show === " + showEnd)
       };
 
-      // const checker = (day) => {
-      //   let out = false;
-      //   cd.forEach((e) => {
-      //     if(day == e){
-      //       out = true
-      //       return out
-      //     }
-      //   })
-      //   return out
-      // }
-
     return (
         <View style={styles.alignCenter}>
           <View style={styles.alignButtons}>
@@ -176,8 +153,6 @@ const TimeSlot = (props) => {
 
           </View>
 
-
-
           <View style={styles.entireCheckBox}>
             <View style={styles.checkboxes}>
                 <CheckBox  
@@ -191,8 +166,6 @@ const TimeSlot = (props) => {
                     Mon: !dayIsChecked.Mon
                   })
                   }
-                  //disabled={text == "<Starting Hour>" || textEnd == "<Closing Hour>"}
-                  //disabled ={props.check.includes("Mon")}
 
                 />
                 <CheckBox  
@@ -206,10 +179,6 @@ const TimeSlot = (props) => {
                     Tue: !dayIsChecked.Tue
                   })
                   }
-                  //disabled ={props.check["Tue"]}
-                  //disabled ={checker("Tue")}
-                  //disabled={props.check.value.includes("Tue")}
-                  //disabled={text == "<Starting Hour>" || textEnd == "<Closing Hour>"}
                 />
                 <CheckBox  
                   title="Wed"
@@ -224,10 +193,6 @@ const TimeSlot = (props) => {
                   
                   
                   }
-                  //disabled ={props.check["Wed"]}
-                  //disabled ={checker("Wed")}
-                  //disabled={props.check.value.includes("Wed")}
-                  //disabled={text == "<Starting Hour>" || textEnd == "<Closing Hour>"}
                 />
                 
             </View>
@@ -243,10 +208,6 @@ const TimeSlot = (props) => {
                     Thu: !dayIsChecked.Thu
                   })
                   }
-                  //disabled ={props.check["Thu"]}
-                  //disabled ={checker("Thu")}
-                  //disabled={props.check.value.includes("Thu")}
-                  //disabled={text == "<Starting Hour>" || textEnd == "<Closing Hour>"}
                 />
               <CheckBox  
                 title="Fri"
@@ -259,9 +220,6 @@ const TimeSlot = (props) => {
                     Fri: !dayIsChecked.Fri
                   })
                   }
-                  //disabled ={checker("Fri")}
-                  //disabled={props.check.value.includes("Fri")}
-                  //disabled={text == "<Starting Hour>" || textEnd == "<Closing Hour>"}
               />
               <CheckBox  
                 title="Sat"
@@ -274,9 +232,6 @@ const TimeSlot = (props) => {
                     Sat: !dayIsChecked.Sat
                   })
                   }
-                  //disabled ={checker("Sat")}
-                  //disabled={props.check.value.includes("Sat")}
-                  //disabled={text == "<Starting Hour>" || textEnd == "<Closing Hour>"}
               />
               
               
@@ -292,15 +247,10 @@ const TimeSlot = (props) => {
                     Sun: !dayIsChecked.Sun
                   })
                   }
-                  //disabled ={checker("Sun")}
-                  //disabled={props.check.value.includes("Sun")}
-                  //disabled={text == "<Starting Hour>" || textEnd == "<Closing Hour>"}
               />
             </View>
 
           </View>
-
-
     )
 };
 
@@ -379,13 +329,8 @@ const styles = StyleSheet.create({
       alignItems: "center",
       marginBottom: 20,
       paddingVertical: 9,
-      //borderBottomWidth: 2,
-      //shadowColor: "red"  
     },
     marginHours:{
       marginBottom: 3
     }
-
-
-
 })
