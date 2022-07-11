@@ -8,10 +8,10 @@ import ThemeContext from '../../darkMode/ThemeContext';
 
 const DropDown = ({ data }) => {
     const [options, setOptions] = useState(['Toilet1', 'Toilet2', 'Toilet3', 'Toilet4']);
-    const FilterList = ['Distance', 'Rating', 'Price'];
-    const [filter, setFilter] = useState('Distance');
+    const FilterList = ['distance', 'rating', 'price'];
+    const [filter, setFilter] = useState('distance');
     const [toilet, setToilet] = useState(null);
-    const Unit = { Distance: 'KM', Price: '€', Rating: '*' }
+    const Unit = { distance: 'KM', price: '€', rating: '*' }
     const dataTest = [
         {
             Name: 'Toilet1',
@@ -40,11 +40,11 @@ const DropDown = ({ data }) => {
     ]
     useEffect(() => {
         var newOptions = [];
-        dataTest.sort(function (a, b) {
-            return filter != 'Rating' ? parseFloat(a[filter]) - parseFloat(b[filter]) : parseFloat(b[filter]) - parseFloat(a[filter]);
+        data.sort(function (a, b) {
+            return filter != 'rating' ? parseFloat(a[filter]) - parseFloat(b[filter]) : parseFloat(b[filter]) - parseFloat(a[filter]);
         });
-        dataTest.forEach(d => {
-            newOptions.push(d['Name'] + " :" + d[filter] + Unit[filter])
+        data.forEach(d => {
+            newOptions.push(d['name'] + " :" + d[filter] + Unit[filter])
         })
         setOptions(newOptions)
     }, [filter])
@@ -57,17 +57,17 @@ const DropDown = ({ data }) => {
                 setToilet(options[idx])
             }} dropdownStyle={styles.down} showSearch={true} adjustFrame={(s) => {
             }} renderSearch={<TextInput style={styles.inputStyle} placeholder={'search...'} onChangeText={(value) => {
-                var newOptions1 = value == '' ? dataTest : dataTest.filter(o => o.Name.includes(value));
-                var newOptions2 = value == '' ? [] : dataTest.filter(o => !o.Name.includes(value));
+                var newOptions1 = value == '' ? data : data.filter(o => o.Name.includes(value));
+                var newOptions2 = value == '' ? [] : data.filter(o => !o.Name.includes(value));
                 newOptions1.sort(function (a, b) {
-                    return filter != 'Rating' ? parseFloat(a[filter]) - parseFloat(b[filter]) : parseFloat(b[filter]) - parseFloat(a[filter]);
+                    return filter != 'rating' ? parseFloat(a[filter]) - parseFloat(b[filter]) : parseFloat(b[filter]) - parseFloat(a[filter]);
                 });
                 newOptions2.sort(function (a, b) {
-                    return filter != 'Rating' ? parseFloat(a[filter]) - parseFloat(b[filter]) : parseFloat(b[filter]) - parseFloat(a[filter]);
+                    return filter != 'rating' ? parseFloat(a[filter]) - parseFloat(b[filter]) : parseFloat(b[filter]) - parseFloat(a[filter]);
                 });
                 var tmp = []
                 newOptions1.forEach(d => {
-                    tmp.push(d['Name'] + " :" + d[filter] + Unit[filter])
+                    tmp.push(d['name'] + " :" + d[filter] + Unit[filter])
                 })
                 newOptions2.forEach(d => {
                     tmp.push(d['Name'] + " :" + d[filter] + Unit[filter])
