@@ -31,7 +31,10 @@ export default function AddToilet({navigation}) {
         else{ 
           if(counter == 0){
               if(rescue.length > 0){
-              const check = rescue[rescue.length-1].days.every(e => {
+              // const check = rescue[rescue.length-1].days.every(e => {
+              //   return test.days.includes(e);
+              // })
+              const check = rescue[0].days.every(e => {
                 return test.days.includes(e);
               })
               if(check)
@@ -54,7 +57,12 @@ export default function AddToilet({navigation}) {
   }, [test])
 
   useEffect(() => {
-    setRescue(rescue.slice(0, rescue.length-1));
+    if(rescue.length == 1){
+        setRescue(rescue)
+    }
+    else{
+        setRescue(rescue.slice(0, rescue.length-1));
+    }
   }, [deleteItem])
 
   const [hourSlots, setHourSlots] = useState([<View >
@@ -97,7 +105,18 @@ export default function AddToilet({navigation}) {
       </View>
       
 
+
+      <View style={[styles.infos]}>
+        <Text style={{color:theme.color}}>
+        * If you select different opening hours for the same day, only the last one will be taken into consideration. 
+        </Text>
+        <Text style={{color:theme.color}}>
+        ** If you want to edit a previous slot, you need to delete all other slots.
+        </Text>
+      </View>
+
       <View style={[styles.hoursContainer, styles.centerTitle] }>
+      
         <Text style={[styles.openingHoursTxt, {color: theme.color}]}>
           Select opening hours
         </Text>
@@ -272,5 +291,9 @@ alignCenter:{
 },
 marginHours:{
   marginBottom: 3
+},
+infos:{
+  marginTop: 15,
+  paddingHorizontal: 15
 }
 });
