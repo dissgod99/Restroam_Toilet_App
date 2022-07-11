@@ -162,7 +162,15 @@ const AddInfoPage = ({ navigation }) => {
                                     name: address,
                                     price: price,
                                     token: tokenFromStorage,
-                                    openingHours: JSON.stringify({ a: 'aaa' }),
+                                    openingHours: {
+                                        Monday: '10:00-17:00',
+                                        Tuesday: '10:00-17:00',
+                                        Wednesday: '10:00-17:00',
+                                        Thursday: '10:00-17:00',
+                                        Friday: '10:00-17:00',
+                                        Saturday: '10:00-17:00',
+                                        Sunday: '10:00-17:00',
+                                    },
                                     handicapAccess: isEnabled,
                                     details: details
                                 }).then(

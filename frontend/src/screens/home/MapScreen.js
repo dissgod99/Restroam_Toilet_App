@@ -18,7 +18,6 @@ import { BACKEND_ENDPOINT_TOILETS } from '../../constants';
 
 
 export default function MapScreen({ navigation }) {
-    const [latlng, setLatLng] = useState({});
     const [position, setPosition] = useState(null);
     const [toiletsAround, setToiletsAround] = useState([{ latitude: 49.895685, longitude: 8.681163 },
     { latitude: 49.895975, longitude: 8.683416 },
@@ -53,6 +52,13 @@ export default function MapScreen({ navigation }) {
                 latitudeDelta: 0.01,
                 longitudeDelta: 0.01,
             });
+            //console.log(pos.coords.latitude);
+            return {
+                latitude: pos.coords.latitude,
+                longitude: pos.coords.longitude,
+                latitudeDelta: 0.01,
+                longitudeDelta: 0.01,
+            }
 
         }
         catch (err) {
@@ -62,14 +68,15 @@ export default function MapScreen({ navigation }) {
 
     const getToiletsAroundUser = async () => {
         console.log("heree");
-            console.log(position);
+        const p =await getLocation();
+            //console.log(position);
+
             axios.post(`${BACKEND_ENDPOINT_TOILETS}/nearestToilets`, {
-                latitude: position.latitude,
-                longitude: position.longitude
+                latitude: p.latitude,
+                longitude: p.longitude
             }).then(
                 ({ status, data }) => {
                     console.log(data.payload);
-                    //setToiletsAround({latitude:data.latitude, longitude:data.longitude});
                     setToiletsAround(data.payload);
                 }
             )
@@ -83,8 +90,6 @@ export default function MapScreen({ navigation }) {
 
     useEffect(() => {
         checkPermission();
-        getLocation();
-        getCurrentLocation();
         getToiletsAroundUser();
 
     }, [])
@@ -100,7 +105,7 @@ export default function MapScreen({ navigation }) {
     var item = {
         name: "toilet1",
         location: "kethastraße",
-        stars: 2.5,
+        rating: 2.5,
         description: "very good",
         openingHours: {
             Monday: '10:00-17:00',
@@ -114,12 +119,28 @@ export default function MapScreen({ navigation }) {
     }
 
     const [markerclicked, setMarkerlicked] = useState(false);
-    const [marker, setMarker] = useState(null);
+    const [marker, setMarker] = useState({
+        name: "toilet1",
+        location: "kethastraße",
+        rating: 2.5,
+        description: "very good",
+        openingHours: {
+            Monday: '10:00-17:00',
+            Tuesday: '10:00-17:00',
+            Wednesday: '10:00-17:00',
+            Thursday: '10:00-17:00',
+            Friday: '10:00-17:00',
+            Saturday: '10:00-17:00',
+            Sunday: '10:00-17:00',
+        },
+    }
+);
     const [itemclicked, setItemclicked] = useState({});
     const [indexclicked, setIndexclicked] = useState(-1);
     const [vision, setVision] = useState(null);
 
     const markerClick = (item1, index) => {
+        console.log(item1);
         if (indexclicked == -1) {
             setMarkerlicked(!markerclicked);
             setIndexclicked(index);
@@ -143,25 +164,18 @@ export default function MapScreen({ navigation }) {
                 longitudeDelta: 0.01,
             })
         }
+        var found = toiletsAround.find(function (element) {
+            return element > 4;
+        });
         setMarker(item1);
         getToiletsAroundUser();
     }
 
-    async function getCurrentLocation() {
-        await Location.enableNetworkProviderAsync();
-        let pos = await Location.getCurrentPositionAsync({ highAccuracy: true });
-        setPosition({
-            latitude: pos.coords.latitude,
-            longitude: pos.coords.longitude,
-            latitudeDelta: 0.01,
-            longitudeDelta: 0.01,
-        });
-    }
     const theme = useContext(ThemeContext);
     
     return (
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-            <DropDown></DropDown>
+            <DropDown data={toiletsAround}></DropDown>
             <MapView
                 ref={_map}
                 provider={PROVIDER_GOOGLE}
@@ -223,20 +237,20 @@ export default function MapScreen({ navigation }) {
                         <View style={{
                             width: '45%'
                         }}>
-                            <Text style={styles.title}>{item.name}</Text>
-                            <Text style={{ fontSize: 10 }}>{item.location}</Text>
+                            <Text style={styles.title}>{marker.name}</Text>
+                            <Text style={{ fontSize: 10 }}>{marker.location}</Text>
                             <View style={styles.stars}>
                                 <StarRating
                                     maxStars={5}
                                     disabled={true}
-                                    rating={item.stars}
+                                    rating={marker.rating}
                                     selectedStar={(rating) => { }}
                                     fullStarColor={"gold"}
                                     starSize={20}
                                 />
                             </View>
 
-                            <Text style={styles.item}>{item.description}</Text>
+                            <Text style={styles.item}>{marker.description}</Text>
 
                             <View style={{
                                 display: 'flex',
@@ -300,7 +314,7 @@ export default function MapScreen({ navigation }) {
                                     padding: '2%',
                                     width: '32%'
                                 }} onPress={() => {
-                                    navigation.navigate("Rating")
+                                    navigation.navigate("Rating",{toilet: marker})
                                 }
                                 }>
                                     <Icon name="pencil-box-multiple" size={25} color={"black"} />
@@ -317,7 +331,7 @@ export default function MapScreen({ navigation }) {
                                     padding: '2%',
                                     width: '32%'
                                 }} onPress={() => {
-                                    navigation.navigate("WriteReport")
+                                    navigation.navigate("WriteReport",{toilet: marker})
                                 }
                                 }>
                                     <Icon name="alert" size={25} color={"black"} />
@@ -335,7 +349,7 @@ export default function MapScreen({ navigation }) {
                                 fontWeight: 'bold'
                             }}>Opening Hours</Text>
                             {
-                                Object.entries(item.openingHours).map((key) => {
+                                Object.entries(marker.openingHours).map((key) => {
                                     return (<View style={{
                                         display: 'flex',
                                         flexDirection: 'row',
