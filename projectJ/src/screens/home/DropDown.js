@@ -73,7 +73,7 @@ const DropDown = (props) => {
                 setOptions(tmp);
             }}></TextInput>}>
             </ModalDropdown>
-            <ModalDropdown style={styles.drop} options={FilterList} defaultValue='Filter' onSelect={(idx) => {
+            <ModalDropdown style={styles.drop} options={FilterList} defaultValue='Sort by:' onSelect={(idx) => {
                 setFilter(FilterList[idx])
             }} dropdownStyle={styles.down} adjustFrame={(s) => {
             }}>
