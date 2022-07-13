@@ -21,7 +21,8 @@ const Theme = {
          water: "#a6cbe3",
          bottomBar: "white",
          icon: "#f28d82",
-         drop: "white"
+         drop: "white",
+         toilet: "#f36c6c"
      },
     dark:{
         theme: "dark",
@@ -45,7 +46,8 @@ const Theme = {
         water: "#6040bd",
         bottomBar: "#242526",
         icon: "#ccaa55",
-        drop: "#ccaa55"
+        drop: "#ccaa55",
+        toilet: "#a74f7d"
     },
 };
 export default Theme;

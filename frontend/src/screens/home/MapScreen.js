@@ -199,9 +199,12 @@ export default function MapScreen({ navigation }) {
                         //title={marker.title}
                         //description={marker.description}
                         onPress={() => markerClick(item, index)}>
-                        <Image source={require('../../../assets/toiletMarker.png')}
+                        {/* <Image source={require('../../../assets/toiletMarker.png')}
                             style={styles.toiletsAround}
-                            resizeMode="cover" />
+                            resizeMode="cover" /> */}
+                            <Icon name='toilet'
+                                size={35}
+                                color={theme.toilet}/>
                     </MapView.Marker>
                 })}{
                     direction
