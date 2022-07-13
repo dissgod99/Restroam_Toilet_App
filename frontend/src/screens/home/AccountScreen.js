@@ -21,6 +21,8 @@ const AccountScreen = ({ navigation }) => {
   useEffect(() => {
     getAsyncStorageItem('token')
       .then((tokenFromStorage) => {
+        if(tokenFromStorage == null) navigation.navigate("Not logged in");
+        else{
         setToken(tokenFromStorage);
         axios
           .post(BACKEND_ENDPOINT_USERS + 'get-user-data', { token })
@@ -32,12 +34,13 @@ const AccountScreen = ({ navigation }) => {
               set_user_email(data.payload.email);
             
           }).catch(err => {
-            navigation.navigate("Not logged in")
-            console.log(err)});
+            // navigation.navigate("Not logged in")
+            console.log("Fehler 1"+err)});
+          }
       })
       .catch(err => {
-        navigation.navigate("Not logged in")
-        console.log(err)});
+        // navigation.navigate("Not logged in")
+        console.log("Fehler 2"+err)});
 
     // if(token == null) navigation.navigate("Not logged in")
   });
