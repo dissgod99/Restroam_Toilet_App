@@ -1,10 +1,10 @@
-import React, { useState, useContext , useEffect} from "react";
-import { Text, ScrollView, View, StyleSheet, TouchableOpacity } from "react-native"
+import React, { useState, useContext, useEffect } from "react";
+import { Text, ScrollView, View, StyleSheet, TouchableOpacity, ToastAndroid } from "react-native"
 import { TextInput, Switch } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import ThemeContext from "../../darkMode/ThemeContext";
-import {getAsyncStorageItem} from "../../util";
-import {BACKEND_ENDPOINT_TOILETS} from "../../constants"
+import { getAsyncStorageItem } from "../../util";
+import { BACKEND_ENDPOINT_TOILETS } from "../../constants"
 import * as Location from "expo-location"
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
@@ -13,63 +13,118 @@ import axios from "axios";
 import { Image } from "react-native-animatable";
 import Geocoder from "react-native-geocoder"
 
-// change url backend login api (on heroku)
-// for now it is set to the IP address of my machine (192.168.1.100) to test it on yours replace it with your IP
-const baseUrl = BACKEND_ENDPOINT_TOILETS + "addToilet";
+
+const baseUrl = BACKEND_ENDPOINT_TOILETS + "add-toilet";
 
 const AddInfoPage = ({ navigation }) => {
     var numberi = 0;
-    const [price, setPrice] = useState('0,00€');
-    const [address, setAddress] = useState('');
+
+    let initName, initAddress, initDetails, initCurrentLocation;
+    initName = initAddress = initDetails = initCurrentLocation = '';
+    let initPrice = '0,00€';
+    let initIsEnabled = false;
+
+    const [name, setName] = useState(initName);
+
+    const [address, setAddress] = useState(initAddress);
+    const [currentLocation, setCurrentLocation] = useState(initCurrentLocation);
+
+    const [price, setPrice] = useState(initPrice);
+    const [isEnabled, setIsEnabled] = useState(initIsEnabled);
+
     const [details, setDetails] = useState('');
-    const [isEnabled, setIsEnabled] = useState(false);
-    const [currentLocation, setCurrentLocation] = useState("");
+
+    useEffect(() => {
+        getLocation();
+    }, []);
+
+
+    function changeName(v) {
+        setName(v);
+    }
+
+    function changeAddress(v) {
+        setAddress(v);
+    }
+
+    const getLocation = async () => {
+        let coords = await Location.getCurrentPositionAsync();
+        setCurrentLocation(coords)
+    };
+
+    function changePrice(v) {
+        setPrice(v);
+    }
 
     function toggleSwitch() {
         setIsEnabled(!isEnabled);
-    }
-
-    function changePrice(v) {
-        setPrice(v + '€');
-        v = v + '€';
-        console.log(price)
-    }
-    function changeAddress(v) {
-        setAddress(v);
     }
 
     function changeDetails(v) {
         setDetails(v);
     }
 
-    const getLocation = async () => {
-        let coords = await Location.getCurrentPositionAsync();
-        setCurrentLocation(coords)
-        };
-    
-    
-      const fillWithCurrentAddress =  async () =>{
-        
-        setAddress("")
+    const fillWithCurrentAddress = async () => {
+        setAddress('')
         const latitude = currentLocation["coords"]["latitude"]
-        const longitude= currentLocation["coords"]["longitude"]
-    
+        const longitude = currentLocation["coords"]["longitude"]
+
         let response = await Location.reverseGeocodeAsync({
-                 latitude,
-                 longitude
-             });
-    
+            latitude,
+            longitude
+        });
+
         for (let item of response) {
             let addresse = `${item.name}, ${item.street}, ${item.postalCode}, ${item.city}`;
-        setAddress(addresse)
-        console.log(addresse)
-        
-      }}
-      useEffect(() => {
-        getLocation();
-      }, [])
-    
-    
+            setAddress(addresse)
+            console.log(addresse)
+
+        }
+    };
+
+    const handleNextButton = () => {
+        console.log("inside add ");
+        getAsyncStorageItem('token')
+            .then((tokenFromStorage) => {
+                //setToken(tokenFromStorage);
+                axios.post(`${baseUrl}`, {
+                    name: name,
+                    address: address,
+                    price: price,
+                    token: tokenFromStorage,
+                    openingHours: {},
+                    handicapAccess: isEnabled,
+                    details: details
+                })
+                    .then(({ data }) => {
+                        ToastAndroid.showWithGravity(
+                            data.message,
+                            ToastAndroid.LONG,
+                            ToastAndroid.BOTTOM);
+                        resetAllInputs();
+                        navigation.navigate("Upload Image", { toiletId: data.toiletId });
+                    })
+                    .catch(err => {
+                        ToastAndroid.showWithGravity(
+                            err.response.data.message,
+                            ToastAndroid.LONG,
+                            ToastAndroid.BOTTOM);
+
+                    })
+            })
+            .catch(err => console.log(err));
+    };
+
+    const resetAllInputs = () => {
+        setName(initName);
+        setAddress(initAddress);
+        setPrice(initPrice);
+        setIsEnabled(initIsEnabled);
+        setDetails(initDetails);
+    }
+
+
+
     const theme = useContext(ThemeContext);
     return (
         <View style={[styles.container, { backgroundColor: theme.background }]}>
@@ -78,11 +133,21 @@ const AddInfoPage = ({ navigation }) => {
                     <Text style={[styles.title, { color: theme.color }]}>
                         Add more information
                     </Text>
-
-
                     <View>
                         <Text style={[styles.txt, { color: theme.color }]}>
-                            Specify its location
+                            Name your Notice *
+                        </Text>
+                        <TextInput style={styles.box}
+                            mode="outlined"
+                            editable={true}
+                            placeholder="Enter name"
+                            right={<TextInput.Affix text="/100" />}
+                            activeOutlineColor={theme.activeOutColor}
+                            onChangeText={(value) => changeName(value)}
+                            value={name}
+                        />
+                        <Text style={[styles.txt, { color: theme.color }]}>
+                            Location *
                         </Text>
                         <TextInput style={styles.box}
                             mode="outlined"
@@ -95,22 +160,22 @@ const AddInfoPage = ({ navigation }) => {
                             value={address}
                         />
                         <TouchableOpacity onPress={async () => fillWithCurrentAddress()}
-                                        style={[styles.getAddress, {backgroundColor: theme.submitBtn}]}>
+                            style={[styles.getAddress, { backgroundColor: theme.submitBtn }]}>
                             <Text style={styles.getAddressText}>Get current address</Text>
-                            <Icon 
+                            <Icon
                                 name="map-marker"
                                 size={20}
                             />
-
                         </TouchableOpacity>
                     </View>
+
                     <Text style={[styles.details, { color: theme.color }]}>
                         Indicate details
                     </Text>
                     <View style={styles.detailsContainer}>
                         <View style={styles.position}>
                             <Text style={[styles.txt, { color: theme.color }]}>
-                                Specify Price
+                                Price *
                             </Text>
                             <TextInput style={styles.boxPrice}
                                 defaultValue="0,00 €"
@@ -122,7 +187,7 @@ const AddInfoPage = ({ navigation }) => {
                         </View>
                         <View>
                             <Text style={[styles.txt, { color: theme.color }]}>
-                                Handicap Access
+                                Handicap Access *
                             </Text>
                             <Switch
                                 value={isEnabled}
@@ -152,28 +217,7 @@ const AddInfoPage = ({ navigation }) => {
 
                     <TouchableOpacity
                         style={[styles.btn, { backgroundColor: theme.submitBtn }]}
-                        onPress={() => {
-                            console.log("inside add ");
-                            getAsyncStorageItem('token').then(
-                                (tokenFromStorage) => {
-                                //setToken(tokenFromStorage);
-                                axios.post(`${baseUrl}`, {
-                                    address: address,
-                                    name: address,
-                                    price: price,
-                                    token: tokenFromStorage,
-                                    openingHours: JSON.stringify({ a: 'aaa' }),
-                                    handicapAccess: isEnabled,
-                                    details: details
-                                }).then(
-                                    () => navigation.navigate("ThankYou")
-    
-                                ).catch(err => console.log("couldn't add toilet"))
-                                navigation.navigate("Upload Image")
-                              })
-                              .catch(err => console.log(err));
-                            
-                        }}
+                        onPress={handleNextButton}
                     >
                         <Text style={styles.stOfSubmit}>
                             Next
@@ -246,7 +290,7 @@ const styles = StyleSheet.create({
     position: {
         marginRight: 10
     },
-    getAddress:{
+    getAddress: {
         flexDirection: "row",
         marginTop: 8,
         borderRadius: 3,

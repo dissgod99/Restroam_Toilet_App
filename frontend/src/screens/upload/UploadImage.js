@@ -8,12 +8,19 @@ import * as jpeg from 'jpeg-js';
 import { Buffer } from 'buffer';
 import * as mobilenet from '@tensorflow-models/mobilenet';
 import forbidden from '../../../Forbidden.json';
-import { fetch} from '@tensorflow/tfjs-react-native';
+import { fetch } from '@tensorflow/tfjs-react-native';
 import ThemeContext from '../../darkMode/ThemeContext';
+import mime from 'mime';
 
-export default function UploadImage(navigation) {
+import axios from "axios";
+import { BACKEND_ENDPOINT_IMAGES } from '../../constants';
+
+export default function UploadImage({ route, navigation }) {
+
+    const { toiletId } = route.params;
+
     // Dark Mode Variable
-    const theme = useContext(ThemeContext)
+    const theme = useContext(ThemeContext);
 
     const [image1, setImage1] = useState(null);
     const [image2, setImage2] = useState(null);
@@ -63,27 +70,34 @@ export default function UploadImage(navigation) {
         let result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.All,
             allowsEditing: true,
-            base64: true,
+            //base64: true,
             aspect: [4, 3],
             quality: 1,
         });
-        var legit = await classifyImage(result.base64);
 
-        if (!result.cancelled && legit) {
-            for (var i = 0; i < 5; i++) {
-                if (imageArray[i][0] == null) {
-                    imageArray[i][1](result.uri);
-                    break;
-                }
-            }
+        if (!result.cancelled) {
+            // let filename = result.uri.split('/').pop();
+            console.log(result);
+            // result.fileName = filename;
+            setPhoto(result);
         }
-        if (!legit) {
-            setLegitText("This image contains explicit containt and won't be accepted");
-            setTimeout(function () {
-                setLegitText('')
-            }, 30000)
-        }
-        setLoad(false);
+        // var legit = await classifyImage(result.base64);
+
+        // if (!result.cancelled && legit) {
+        //     for (var i = 0; i < 5; i++) {
+        //         if (imageArray[i][0] == null) {
+        //             imageArray[i][1](result.uri);
+        //             break;
+        //         }
+        //     }
+        // }
+        // if (!legit) {
+        //     setLegitText("This image contains explicit containt and won't be accepted");
+        //     setTimeout(function () {
+        //         setLegitText('')
+        //     }, 30000)
+        // }
+        // setLoad(false);
     };
 
     const pickThisImage = async (idx) => {
@@ -128,6 +142,79 @@ export default function UploadImage(navigation) {
         return result
     }
 
+    const createFormData = (photo, body = {}) => {
+        
+        const data = new FormData();
+        const tmp = mime.getType(photo.uri);
+
+        data.append('photo', {
+            name: photo.uri,
+            type: tmp,
+            uri: Platform.OS === 'ios' ? photo.uri.replace('file://', '') : photo.uri,
+        });
+
+        data.append('photoType', tmp);
+
+        Object.keys(body).forEach((key) => {
+            data.append(key, body[key]);
+        });
+        return data;
+    };
+
+    const [photo, setPhoto] = React.useState(null);
+
+    const handleChoosePhoto = () => {
+        launchImageLibrary({ mediaType: 'photo' }, (response) => {
+            // console.log(response);
+            if (response) {
+                setPhoto(response);
+            }
+        });
+    };
+
+    const handleUploadPhoto = () => {
+        let formData = createFormData(photo, { 'toiletId': toiletId });
+        const config = {
+            headers: {
+                'content-type': 'multipart/form-data'
+            }
+        }
+
+        fetch(
+            BACKEND_ENDPOINT_IMAGES + 'upload-file',
+            {
+                method: "POST",
+                body: formData,
+            }
+        )
+            .then(({ status, data }) => {
+                if (status != 200) {
+                    console.log('Refused from server');
+                }
+                else console.log('Success');
+            })
+            .catch((err) => {
+                console.error(err);
+            })
+    };
+
+    return (
+        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+            {photo && (
+                <>
+                    <Image
+                        source={{ uri: photo.uri }}
+                        style={{ width: 300, height: 300 }}
+                    />
+                    <Button title="Upload Photo" onPress={handleUploadPhoto} />
+                </>
+            )}
+            <Button title="Choose Photo" onPress={pickImage} />
+        </View>
+    );
+
+
+    /*
     return (
         <View style={[styles.container, {backgroundColor: theme.background}]}>
             <View style={{ flex: 1, flexWrap: "wrap", flexDirection: "row" }}>
@@ -187,6 +274,7 @@ export default function UploadImage(navigation) {
             </TouchableOpacity>
         </View>
     );
+    */
 }
 
 const styles = StyleSheet.create({

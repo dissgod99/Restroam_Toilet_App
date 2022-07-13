@@ -4,8 +4,13 @@ import TimeSelectArray from "../addPage/TimeSelectArray";
 
 const EditToiletScreen = ({ route, navigation }) => {
 
-    const { originalTitle, originalLocation,
-        originalPrice, originalDetails, originalHandicapAccess } = route.params;
+    const { 
+        token,
+        originalTitle, 
+        originalLocation,
+        originalPrice, 
+        originalDetails, 
+        originalHandicapAccess } = route.params;
 
     const [newOpeningTimes, setNewOpeningTimes] = useState({});
 
@@ -31,6 +36,7 @@ const EditToiletScreen = ({ route, navigation }) => {
                 <TouchableOpacity
                     style={styles.buttonWrapper}
                     onPress={() => navigation.navigate('Edit More Information', {
+                        token,
                         originalTitle,
                         originalLocation,
                         originalPrice,

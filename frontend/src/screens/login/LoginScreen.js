@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView } from "react-native";
+import { View, Text, StyleSheet, TextInput, TouchableOpacity, ScrollView, ToastAndroid } from "react-native";
 import * as Animatable from 'react-native-animatable';
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import Feather from "react-native-vector-icons/Feather";
@@ -20,9 +20,6 @@ const LoginScreen = ({ navigation }) => {
         secureTextEntry: true
     });
 
-    const [message, setMessage] = useState('');
-    const [messageType, setMessageType] = useState('red');
-
     const handleLoginClick = async (event) => {
         event.preventDefault();
         // do some backend logic here
@@ -31,34 +28,32 @@ const LoginScreen = ({ navigation }) => {
         let password = data.password;
         axios
             .post(BACKEND_ENDPOINT_USERS + 'login', { email, password })
-            .then(async (response) => {
-                const { status, data } = response;
+            .then(async ({ status, data }) => {
                 if (status == '200') {
                     // AsyncStorage for phone is the localhost of browser
                     await setAsyncStorageItem('token', data.JWTtoken);
                     console.log(await getAsyncStorageItem('token'));
-                    handleMessage(data.message, 'green');
+                    ToastAndroid.showWithGravity(
+                        data.message,
+                        ToastAndroid.LONG,
+                        ToastAndroid.BOTTOM);
                     // once that is finished navigate to next route
                     clearTimeout();
                     setTimeout(() => {
                         navigation.navigate('Home');
                     }, 3000);
-                } else {
-                    handleMessage(data.message, 'red');
                 }
             })
-            .catch((error) => {
-                if (error.response) {
-                    let serverRes = error.response;
-                    handleMessage(serverRes.data.message, 'red');
+            .catch((err) => {
+                if (err.response) {
+                    ToastAndroid.showWithGravity(
+                        err.response.data.message,
+                        ToastAndroid.LONG,
+                        ToastAndroid.BOTTOM);
                 }
             });
     }
-
-    const handleMessage = (message, type) => {
-        setMessage(message);
-        setMessageType(type);
-    }
+    
 
     const textInputChange = (value) => {
         //let regex_email = new RegExp("[a-zA-Z]+[a-z0-9]+@[a-z]+\.[a-z]{2,5}");
@@ -175,7 +170,6 @@ const LoginScreen = ({ navigation }) => {
                         <TouchableOpacity style={styles.login} onPress={handleLoginClick} >
                             <Text style={{ fontWeight: "bold" }}>Login</Text>
                         </TouchableOpacity>
-                        <Text style={{ color: messageType }}> {message} </Text>
                         <Text>You don't have an Account ? Sign up now</Text>
                         <TouchableOpacity style={styles.reg}
                             onPress={() => navigation.navigate("SignUp")}>

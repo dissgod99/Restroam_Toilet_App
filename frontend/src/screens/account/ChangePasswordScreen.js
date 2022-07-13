@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useContext, useState } from "react";
-import { View, StyleSheet, Text, ScrollView, TouchableOpacity } from "react-native"
+import { View, StyleSheet, Text, ScrollView, TouchableOpacity, ToastAndroid } from "react-native"
 import { TextInput } from "react-native-paper";
 import ThemeContext from "../../darkMode/ThemeContext";
 
@@ -13,9 +13,6 @@ const ChangePasswordScreen = ({ route, navigation }) => {
 
     const theme = useContext(ThemeContext);
 
-    const [message, setMessage] = useState('');
-    const [messageType, setMessageType] = useState('red');
-
     const [data, setData] = useState({
         oldPassword: "",
         newPassword: "",
@@ -26,21 +23,39 @@ const ChangePasswordScreen = ({ route, navigation }) => {
     });
 
     const handleConfirm = (evt) => {
+
         evt.preventDefault();
-        axios
-            .post(BACKEND_ENDPOINT_USERS + 'change-password',
-                { token: token, oldPassword: data.oldPassword, newPassword: data.newPassword })
-            .then(({ status, data }) => {
-                handleMessage(data.message, 'green');
-            })
-            .catch(err => {
-                handleMessage(err.response.data.message, 'red');
-            });
+        try {
+            checkNewPassReenter();
+            console.log(token);
+            console.log(data.oldPassword);
+            console.log(data.newPassword);
+            axios
+                .post(BACKEND_ENDPOINT_USERS + 'change-password',
+                    { token, oldPassword: data.oldPassword, newPassword: data.newPassword })
+                .then(({ data }) => {
+                    ToastAndroid.showWithGravity(
+                        data.message,
+                        ToastAndroid.LONG,
+                        ToastAndroid.BOTTOM);
+                })
+                .catch(err => {
+                    ToastAndroid.showWithGravity(
+                        err.response.data.message,
+                        ToastAndroid.LONG,
+                        ToastAndroid.BOTTOM);
+                });
+        } catch (error) {
+            ToastAndroid.showWithGravity(
+                error.message,
+                ToastAndroid.LONG,
+                ToastAndroid.BOTTOM);
+        }
     }
 
-    const handleMessage = (message, type) => {
-        setMessage(message);
-        setMessageType(type);
+    const checkNewPassReenter = () => {
+        if (data.newPassword !== data.reenterNewPassword)
+            throw new Error('Please make sure noth values for your new password match.');
     }
 
     const enterOldPassword = (value) => {
@@ -180,9 +195,7 @@ const ChangePasswordScreen = ({ route, navigation }) => {
                     <Text style={styles.confirmStyle}>
                         Confirm
                     </Text>
-
                 </TouchableOpacity>
-                <Text style={{ color: messageType }}> {message} </Text> 
             </View>
         </ScrollView>
     );

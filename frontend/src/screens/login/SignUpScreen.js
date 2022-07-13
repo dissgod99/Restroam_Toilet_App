@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, Button, StyleSheet, TextInput, TouchableOpacity, ScrollView } from "react-native";
+import { View, Text, Button, StyleSheet, TextInput, TouchableOpacity, ScrollView, ToastAndroid } from "react-native";
 import * as Animatable from 'react-native-animatable';
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import Feather from "react-native-vector-icons/Feather";
@@ -8,7 +8,7 @@ import axios from "axios";
 
 // change url backend login api (on heroku)
 // for now it is set to the IP address of my machine (192.168.1.100) to test it on yours replace it with your IP
-const BACKEND_ENDPOINT = 'http://192.168.178.61:3000/api/users/signup';
+import { BACKEND_ENDPOINT_USERS } from '../../constants';
 
 
 const LoginScreen = ({ navigation }) => {
@@ -23,9 +23,6 @@ const LoginScreen = ({ navigation }) => {
         secureTextEntry_Reenter: true
     });
 
-    const [message, setMessage] = useState('');
-    const [messageType, setMessageType] = useState('red');
-
     const handleSignUpClick = (event) => {
         event.preventDefault();
         // do some backend logic here
@@ -33,31 +30,28 @@ const LoginScreen = ({ navigation }) => {
         let password = data.password;
         let username = data.username;
         axios
-            .post(BACKEND_ENDPOINT, { email, username, password })
-            .then((response) => {
-                const { status, data } = response;
+            .post(BACKEND_ENDPOINT_USERS + 'signup', { email, username, password })
+            .then(({ status, data }) => {
                 if (status == '201') {
-                    handleMessage(data.message, 'green');
+                    ToastAndroid.showWithGravity(
+                        data.message,
+                        ToastAndroid.LONG,
+                        ToastAndroid.BOTTOM);
                     // once that is finished navigate to next route
                     clearTimeout();
                     setTimeout(() => {
                         navigation.navigate('Home')
                     }, 3000);
-                } else {
-                    handleMessage(data.message, 'red');
                 }
             })
-            .catch((error) => {
-                if (error.response) {
-                    let serverRes = error.response;
-                    handleMessage(serverRes.data.message, 'red');
+            .catch((err) => {
+                if (err.response) {
+                    ToastAndroid.showWithGravity(
+                        err.response.data.message,
+                        ToastAndroid.LONG,
+                        ToastAndroid.BOTTOM);
                 }
             });
-    }
-
-    const handleMessage = (message, type) => {
-        setMessage(message);
-        setMessageType(type);
     }
 
     const textInputChange = (value) => {
@@ -99,15 +93,15 @@ const LoginScreen = ({ navigation }) => {
 
     };
 
-    const usernameChange = (usr) =>{
+    const usernameChange = (usr) => {
         let regex_usr = new RegExp("[A-Za-z0-9]{6,}")
-        if(usr.length != 0 && regex_usr.test(usr)){
+        if (usr.length != 0 && regex_usr.test(usr)) {
             setData({
                 ...data,
                 username: usr,
                 check_username_change: true
             });
-        }else{
+        } else {
             setData({
                 ...data,
                 username: usr,
@@ -115,7 +109,7 @@ const LoginScreen = ({ navigation }) => {
             });
         }
     }
-    
+
 
     const handleEye = () => {
         setData({
@@ -158,109 +152,108 @@ const LoginScreen = ({ navigation }) => {
 
             <Animatable.View style={styles.footer}
                 animation="fadeInUpBig">
-                    <ScrollView>
-                <View style={styles.box}>
-                    <Text style={styles.entry}> Email Address</Text>
-                    <View style={styles.alignBox}>
-                        <FontAwesome name="envelope" size={23} />
-                        <TextInput style={styles.enterInputField}
-                            placeholder="Enter your Email"
-                            autoCapitalize="none"
-                            onChangeText={(value) => textInputChange(value)}
-                        />
-                        {data.check_textInputChange ?
-                            <Animatable.View animation="bounceIn">
-                                <Feather
-                                    name="check-circle"
-                                    color={"green"}
-                                    size={20} />
-                            </Animatable.View>
-                            : null}
-                    </View>
-                </View>
-
-                <View style={styles.box}>
-                    <Text style={styles.entry}> Username</Text>
-                    <View style={styles.alignBox}>
-                        <FontAwesome name="user" size={23} />
-                        <TextInput style={styles.enterInputField}
-                            placeholder="Enter your username"
-                            autoCapitalize="none"
-                            onChangeText={(usr) => usernameChange(usr)}
-                        />
-                        {data.check_username_change ?
-                            <Animatable.View animation="bounceIn">
-
-                                <Feather
-                                    name="check-circle"
-                                    color={"green"}
-                                    size={20} />
-                            </Animatable.View>
-                            : null}
-
+                <ScrollView>
+                    <View style={styles.box}>
+                        <Text style={styles.entry}> Email Address</Text>
+                        <View style={styles.alignBox}>
+                            <FontAwesome name="envelope" size={23} />
+                            <TextInput style={styles.enterInputField}
+                                placeholder="Enter your Email"
+                                autoCapitalize="none"
+                                onChangeText={(value) => textInputChange(value)}
+                            />
+                            {data.check_textInputChange ?
+                                <Animatable.View animation="bounceIn">
+                                    <Feather
+                                        name="check-circle"
+                                        color={"green"}
+                                        size={20} />
+                                </Animatable.View>
+                                : null}
+                        </View>
                     </View>
 
+                    <View style={styles.box}>
+                        <Text style={styles.entry}> Username</Text>
+                        <View style={styles.alignBox}>
+                            <FontAwesome name="user" size={23} />
+                            <TextInput style={styles.enterInputField}
+                                placeholder="Enter your username"
+                                autoCapitalize="none"
+                                onChangeText={(usr) => usernameChange(usr)}
+                            />
+                            {data.check_username_change ?
+                                <Animatable.View animation="bounceIn">
 
-                </View>
+                                    <Feather
+                                        name="check-circle"
+                                        color={"green"}
+                                        size={20} />
+                                </Animatable.View>
+                                : null}
+
+                        </View>
 
 
-                <View style={styles.box}>
-                    <Text style={styles.entry}> Password</Text>
-                    <View style={styles.alignBox}>
-                        <FontAwesome name="lock" size={23} />
-                        <TextInput style={styles.enterInputField}
-                            placeholder="Enter your Password"
-                            autoCapitalize="none"
-                            secureTextEntry={data.secureTextEntry ? true : false}
-                            onChangeText={(value) => handlePassword(value)}
-                        />
-                        <TouchableOpacity
-                            onPress={handleEye}
-                        >
-                            {data.secureTextEntry ?
-                                <Feather
-                                    name="eye-off"
-                                    color={"grey"}
-                                    size={20} />
-                                :
-                                <Feather
-                                    name="eye"
-                                    color={"grey"}
-                                    size={20} />
-                            }
+                    </View>
+
+
+                    <View style={styles.box}>
+                        <Text style={styles.entry}> Password</Text>
+                        <View style={styles.alignBox}>
+                            <FontAwesome name="lock" size={23} />
+                            <TextInput style={styles.enterInputField}
+                                placeholder="Enter your Password"
+                                autoCapitalize="none"
+                                secureTextEntry={data.secureTextEntry ? true : false}
+                                onChangeText={(value) => handlePassword(value)}
+                            />
+                            <TouchableOpacity
+                                onPress={handleEye}
+                            >
+                                {data.secureTextEntry ?
+                                    <Feather
+                                        name="eye-off"
+                                        color={"grey"}
+                                        size={20} />
+                                    :
+                                    <Feather
+                                        name="eye"
+                                        color={"grey"}
+                                        size={20} />
+                                }
+                            </TouchableOpacity>
+                        </View>
+                        <Text style={styles.entry}> Re-enter Password</Text>
+                        <View style={styles.alignBox}>
+                            <FontAwesome name="lock" size={23} />
+                            <TextInput style={styles.enterInputField}
+                                placeholder="Enter your Password"
+                                autoCapitalize="none"
+                                secureTextEntry={data.secureTextEntry_Reenter ? true : false}
+                                onChangeText={(value) => handlePassword(value)}
+                            />
+                            <TouchableOpacity
+                                onPress={handleEye_Reenter} >
+                                {data.secureTextEntry_Reenter ?
+                                    <Feather
+                                        name="eye-off"
+                                        color={"grey"}
+                                        size={20} />
+                                    :
+                                    <Feather
+                                        name="eye"
+                                        color={"grey"}
+                                        size={20} />
+                                }
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                    <View style={styles.buttons}>
+                        <TouchableOpacity style={styles.login} onPress={handleSignUpClick} >
+                            <Text style={{ fontWeight: "bold" }}>Sign up</Text>
                         </TouchableOpacity>
                     </View>
-                    <Text style={styles.entry}> Re-enter Password</Text>
-                    <View style={styles.alignBox}>
-                        <FontAwesome name="lock" size={23} />
-                        <TextInput style={styles.enterInputField}
-                            placeholder="Enter your Password"
-                            autoCapitalize="none"
-                            secureTextEntry={data.secureTextEntry_Reenter ? true : false}
-                            onChangeText={(value) => handlePassword(value)}
-                        />
-                        <TouchableOpacity
-                            onPress={handleEye_Reenter} >
-                            {data.secureTextEntry_Reenter ?
-                                <Feather
-                                    name="eye-off"
-                                    color={"grey"}
-                                    size={20} />
-                                :
-                                <Feather
-                                    name="eye"
-                                    color={"grey"}
-                                    size={20} />
-                            }
-                        </TouchableOpacity>
-                    </View>
-                </View>
-                <View style={styles.buttons}>
-                    <TouchableOpacity style={styles.login} onPress={handleSignUpClick} >
-                        <Text style={{ color: messageType }}> {message} </Text>
-                        <Text style={{ fontWeight: "bold" }}>Sign up</Text>
-                    </TouchableOpacity>
-                </View>
                 </ScrollView>
             </Animatable.View>
         </View>
