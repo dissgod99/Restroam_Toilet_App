@@ -47,7 +47,7 @@ const Theme = {
         bottomBar: "#242526",
         icon: "#ccaa55",
         drop: "#ccaa55",
-        toilet: "#a74f7d"
+        toilet: "#FFD700"
     },
 };
 export default Theme;

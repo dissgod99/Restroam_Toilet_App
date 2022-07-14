@@ -170,6 +170,8 @@ export default function MapScreen({ navigation }) {
     }
 
     const theme = useContext(ThemeContext);
+
+    const toiletIconColor = '#c9ac55';
     
     return (
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
@@ -201,7 +203,7 @@ export default function MapScreen({ navigation }) {
                             resizeMode="cover" /> */}
                             <Icon name='toilet'
                                 size={35}
-                                color={theme.toilet}/>
+                                color={toiletIconColor}/>
                     </MapView.Marker>
                 })}{
                     direction
