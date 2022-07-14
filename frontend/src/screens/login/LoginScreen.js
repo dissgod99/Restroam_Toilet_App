@@ -23,7 +23,7 @@ const LoginScreen = ({ navigation }) => {
     const handleLoginClick = async (event) => {
         event.preventDefault();
         // do some backend logic here
-        console.log(await getAsyncStorageItem('token'));
+        // console.log(await getAsyncStorageItem('token'));
         let email = data.email;
         let password = data.password;
         axios
@@ -32,7 +32,7 @@ const LoginScreen = ({ navigation }) => {
                 if (status == '200') {
                     // AsyncStorage for phone is the localhost of browser
                     await setAsyncStorageItem('token', data.JWTtoken);
-                    console.log(await getAsyncStorageItem('token'));
+                    // console.log(await getAsyncStorageItem('token'));
                     ToastAndroid.showWithGravity(
                         data.message,
                         ToastAndroid.LONG,
