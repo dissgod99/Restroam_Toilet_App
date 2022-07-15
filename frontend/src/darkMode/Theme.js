@@ -20,7 +20,9 @@ const Theme = {
          addMore: "black",
          water: "#a6cbe3",
          bottomBar: "white",
-         icon: "#f28d82"
+         icon: "#f28d82",
+         drop: "white",
+         toilet: "#f36c6c"
      },
     dark:{
         theme: "dark",
@@ -43,7 +45,9 @@ const Theme = {
         addMore: "#d7b604",
         water: "#6040bd",
         bottomBar: "#242526",
-        icon: "#ccaa55"
+        icon: "#ccaa55",
+        drop: "#ccaa55",
+        toilet: "#FFD700"
     },
 };
 export default Theme;

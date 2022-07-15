@@ -1,10 +1,14 @@
 //require('dotenv').config();
 
 const express = require("express");
+const CORS = require('cors');
 const mongoose = require('mongoose');
 const apiRoutes = require('./api/api');
 
 const app = new express();
+app.use(CORS());
+app.set('view engine', 'ejs');
+
 const port = 3000;
 
 const clusterUsername = 'groupJ';

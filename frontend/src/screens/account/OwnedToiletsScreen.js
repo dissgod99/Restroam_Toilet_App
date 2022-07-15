@@ -17,7 +17,7 @@ const OwnedToiletsScreen = ({ route, navigation }) => {
         let isMounted = true;
         axios
             .post(BACKEND_ENDPOINT_TOILETS + 'user-owned-toilets', { token })
-            .then(({ status, data }) => {
+            .then(({ data }) => {
                 if (isMounted) {
                     setToiletItems(data.payload);
                 }
@@ -41,20 +41,21 @@ const OwnedToiletsScreen = ({ route, navigation }) => {
         toiletsCopy.splice(index, 1);
         setToiletItems(toiletsCopy);
         axios
-            .post(BACKEND_ENDPOINT_TOILETS + 'deleteToilet', { name: toiletTbDeleted.name })
+            .post(BACKEND_ENDPOINT_TOILETS + 'delete-toilet', { name: toiletTbDeleted.name })
             .then(({ data }) => {
                 ToastAndroid.showWithGravity(
-                    data.message, 
-                    ToastAndroid.LONG, 
+                    data.message,
+                    ToastAndroid.LONG,
                     ToastAndroid.BOTTOM);
             })
             .catch(err => console.log(err.message));
     };
 
-    const editToilet = (index, { name, address, price, details, handicapAccess }) => {
+    const editToilet = ({ name, address, price, details, handicapAccess }) => {
         navigation.navigate('Edit Toilet',
             {
-                originalTitle: name ,
+                token,
+                originalTitle: name,
                 originalLocation: address,
                 originalPrice: price,
                 originalDetails: details,
@@ -89,11 +90,11 @@ const OwnedToiletsScreen = ({ route, navigation }) => {
             }
         );
 
-    const theme = useContext(ThemeContext)
+    const theme = useContext(ThemeContext);
 
     return (
-        <ScrollView>
-            <View style={[styles.container, { backgroundColor: theme.background }]}>
+        <ScrollView style={{ backgroundColor: theme.background }}>
+            <View style={[styles.container]}>
                 <View style={styles.toiletsWrapper}>
                     <Text style={[styles.headerText, { color: theme.color }]}>
                         Your Owned Toilets:
@@ -109,15 +110,17 @@ const OwnedToiletsScreen = ({ route, navigation }) => {
                                             price={price}
                                         />
                                         <View style={styles.itemRight}>
-                                            <TouchableOpacity 
-                                            onPress={() => editToilet(index, 
-                                                { name, address, price, details, handicapAccess })
-                                                // navigation.navigate('Edit Toilet', {
-                                                //     editTitle: { name },
-                                                //     editLocation: { address },
-                                                //     editPrice: { price }
-                                                // })
-                                            }>
+                                            <TouchableOpacity
+                                                onPress={() =>
+                                                    editToilet(
+                                                        { name, address, price, details, handicapAccess }
+                                                    )
+                                                    // navigation.navigate('Edit Toilet', {
+                                                    //     editTitle: { name },
+                                                    //     editLocation: { address },
+                                                    //     editPrice: { price }
+                                                    // })
+                                                }>
                                                 <FontAwesome name="edit" size={25} />
                                             </TouchableOpacity>
                                             <TouchableOpacity onPress={() => alertConfirmDeleteToilet(index)}>

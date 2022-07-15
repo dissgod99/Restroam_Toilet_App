@@ -6,57 +6,13 @@ import ThemeContext from '../../darkMode/ThemeContext';
 
 const EditToiletScreen = ({ route, navigation }) => {
 
-    const [dayIsChecked, setDayIsChecked] = useState(
-        {
-            Mon:{
-                checked: false,
-                startHour: "<Starting Hour>",
-                endHour: "<Closing Hour>"
-            },
-            Tue:{
-                checked: false,
-                startHour: "<Starting Hour>",
-                endHour: "<Closing Hour>"
-            },
-            Wed:{
-                checked: false,
-                startHour: "<Starting Hour>",
-                endHour: "<Closing Hour>"
-            },
-            Thu:{
-                checked: false,
-                startHour: "<Starting Hour>",
-                endHour: "<Closing Hour>"
-            },
-            Fri:{
-                checked: false,
-                startHour: "<Starting Hour>",
-                endHour: "<Closing Hour>"
-            },
-            Sat:{
-                checked: false,
-                startHour: "<Starting Hour>",
-                endHour: "<Closing Hour>"
-            },
-            Sun:{
-                checked: false,
-                startHour: "<Starting Hour>",
-                endHour: "<Closing Hour>"
-            }
-        }
-    )
-
-    const theme = useContext(ThemeContext)
-
-    const [counter, setCounter] = useState(0);
-
-    const [test, setTest] = useState([null, null, []])
-    const [hourSlots, setHourSlots] = useState([<TimeSlot data={test}/>])
-
-    const MAX_NB_SLOTS = 7;
-
-    const { originalTitle, originalLocation,
-        originalPrice, originalDetails, originalHandicapAccess } = route.params;
+    const { 
+        token,
+        originalTitle, 
+        originalLocation,
+        originalPrice, 
+        originalDetails, 
+        originalHandicapAccess } = route.params;
 
     const [newOpeningTimes, setNewOpeningTimes] = useState({});
 
@@ -122,6 +78,7 @@ const EditToiletScreen = ({ route, navigation }) => {
                 <TouchableOpacity
                     style={[styles.buttonWrapper, {backgroundColor: theme.submitBtn}]}
                     onPress={() => navigation.navigate('Edit More Information', {
+                        token,
                         originalTitle,
                         originalLocation,
                         originalPrice,

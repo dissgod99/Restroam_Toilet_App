@@ -25,28 +25,22 @@ const AccountScreen = ({ navigation }) => {
         else{
         setToken(tokenFromStorage);
         axios
-          .post(BACKEND_ENDPOINT_USERS + 'get-user-data', { token })
+          .post(BACKEND_ENDPOINT_USERS + 'get-user-data', { token: tokenFromStorage })
           .then((response) => {
-            // if(token == null) navigation.navigate("Not logged in")
-            
-              const { data } = response;
-              set_user_username(data.payload.username);
-              set_user_email(data.payload.email);
-            
+            const { data } = response;
+            set_user_username(data.payload.username);
+            set_user_email(data.payload.email);
           }).catch(err => {
-            // navigation.navigate("Not logged in")
-            console.log("Fehler 1"+err)});
-          }
-      })
-      .catch(err => {
-        // navigation.navigate("Not logged in")
-        console.log("Fehler 2"+err)});
-
-    // if(token == null) navigation.navigate("Not logged in")
-  });
+            ToastAndroid.showWithGravity(
+              err.response.data.message,
+              ToastAndroid.LONG,
+              ToastAndroid.BOTTOM);
+          });
+      }})
+      .catch(err => console.log(err));
+  }, []);
 
   const logout = async () => {
-    // console.log("Transition WORKS");
     await setAsyncStorageItem('token', null);
     navigation.navigate("Splash");
   }

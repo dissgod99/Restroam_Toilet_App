@@ -21,6 +21,8 @@ const User = require('../models/user');
 const UserVerification = require('../models/userVerification');
 
 
+const PASSWORD_MIN_LENGTH = 8;
+
 // nodemailer stuff
 const nodeMailerTestASync = async () => {
     const mail = process.env.AUTH_MAIL;
@@ -129,8 +131,9 @@ router.post('/signup', jsonParser, async (req, res, next) => {
                                     message: 'User with this username already exists.'
                                 });
                             } else {
-                                if (password.length < 5) return res.status(400).json({
-                                    message: 'Password too short. Minimum length of 5.'
+                                if (password.length < PASSWORD_MIN_LENGTH) return res.status(400).json({
+                                    message: 'Password too short. It should have a minimum length of '
+                                        + PASSWORD_MIN_LENGTH + ' characters.'
                                 });
                                 bcrypt.hash(
                                     password,
@@ -232,6 +235,7 @@ router.post('/change-password', jsonParser, async (req, res, next) => {
 router.post('/get-user-data', jsonParser, async (req, res, next) => {
     try {
         const { token } = req.body;
+        console.log(token);
         if (!token)
             throw new Error('Missing arugments in request body. Please pass in the token.');
         const decryptedSignature = jwt.verify(token, JWT_SECRET);

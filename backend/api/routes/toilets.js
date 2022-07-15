@@ -1,4 +1,4 @@
-const { checkIfUserIsDeleted ,countAverageRating} = require('./util');
+const { checkIfUserIsDeleted } = require('./util');
 
 const express = require('express');
 
@@ -10,6 +10,7 @@ const mongoose = require('mongoose');
 
 const User = require('../models/user');
 const Toilet = require('../models/toilet');
+const Review = require('../models/review');
 
 const jsonParser = bodyParser.json();
 const NodeGeocoder = require('node-geocoder');
@@ -30,10 +31,12 @@ const options = {
 
 const geocoder = NodeGeocoder(options);
 
-router.post('/addToilet', jsonParser, async (req, res, next) => {
+router.post('/add-toilet', jsonParser, async (req, res, next) => {
+
+    let { name, address, openingHours, price, handicapAccess, details } = req.body;
+
     try {
         const token = req.body.token;
-        console.log(token);
         //if (!token)
         //  throw new Error('Missing arugments in request body. Please pass in the token.');
         const decryptedSignature = jwt.verify(token, JWT_SECRET);
@@ -44,54 +47,59 @@ router.post('/addToilet', jsonParser, async (req, res, next) => {
 
         await checkIfUserIsDeleted(user);
 
-        Toilet.find({ address: req.body.address })
-            .exec()
-            .then(toilet => {
-                if (toilet.length > 0) {
-                    // here we should be able to add more toilets? Imagine a restaurant with more than one toilet
-                    // one for male/female and one with handicap access for example
-                    return res.status(409).json({
-                        message: 'toilet at this location already exists'
-                    });
-                } else {
-                    const toilet = new Toilet({
-                        _id: new mongoose.Types.ObjectId(),
-                        name: req.body.name,
-                        address: req.body.address,
-                        owner: user,
-                        openingHours: req.body.openingHours,
-                        price: req.body.price,
-                        handicapAccess: req.body.handicapAccess,
-                        details: req.body.details
-
-                    });
-                    toilet
-                        .save()
-                        .then(result => {
-                            console.log(result);
-                            return res.status(201).json({
-                                message: 'toilet added',
-                            });
-                        })
-                        .catch(err => {
-                            console.log(err);
-                            return res.status(500).json({
-                                message: err,
-                            });
-                        });
-                }
-
+        // Toilet.find({ address: req.body.address })
+        //     .exec()
+        //     .then(toilet => {
+        //         if (toilet.length > 0) {
+        //             // here we should be able to add more toilets? Imagine a restaurant with more than one toilet
+        //             // one for male/female and one with handicap access for example
+        //             return res.status(409).json({
+        //                 message: 'Toilet at this location already exists.'
+        //             });
+        //         } else {
+        const toilet = new Toilet({
+            _id: new mongoose.Types.ObjectId(),
+            name: name,
+            address: address,
+            owner: user,
+            openingHours: openingHours,
+            price: price,
+            handicapAccess: handicapAccess,
+            details: details,
+        });
+        toilet
+            .save()
+            .then(result => {
+                console.log(result);
+                return res.status(201).json({
+                    message: 'Toilet has been added.',
+                    toiletId: result._id
+                });
             })
-            .catch();
-    } catch (e) {
+            .catch(err => {
+                let status = 500;
+                let message = 'Oops! Something went wrong...';
+                if (err.code === 11000) {
+                    status = 400;
+                    message = 'A toilet with the field ' + Object.keys(err.keyPattern) + ' already exists.';
+                } else if (err instanceof mongoose.Error.ValidationError) {
+                    status = 400;
+                    message = 'Please make sure to fill all required fields.';
+                }
+                return res.status(status).json({
+                    message: message,
+                });
+            });
+
+    }
+    catch (e) {
         res.status(400).json({ message: e.message });
     }
 
 });
 
-
 // also need to pass in the token and check if it matches that of user that created toilet for security layer?
-router.post('/deleteToilet', jsonParser, async (req, res, next) => {
+router.post('/delete-toilet', jsonParser, async (req, res, next) => {
     Toilet.find({ name: req.body.name })
         .exec()
         .then(async (toilet) => {
@@ -114,7 +122,7 @@ router.post('/deleteToilet', jsonParser, async (req, res, next) => {
 
 router.post('/edit-toilet', jsonParser, async (req, res, next) => {
     let { name, newName, newAddress, newPrice, newDetails, newHandicapAccess } = req.body;
-    
+
     let updateObj = {
         name: newName,
         address: newAddress,
@@ -127,7 +135,7 @@ router.post('/edit-toilet', jsonParser, async (req, res, next) => {
     try {
         updatedToilet = await Toilet.findOneAndUpdate({ name }, updateObj, { new: true })
         return res.status(200).json({
-            message: 'Toilet updated successfully to: ' + JSON.stringify(updatedToilet),
+            message: 'Toilet updated successfully',
         });
     }
     catch (err) {
@@ -152,38 +160,63 @@ function distance(lat1, lon1, lat2, lon2, unit) {
     if (unit == "N") { dist = dist * 0.8684 }
     return dist
 }
+const countAverageRating = async (toilet) => {
+    let reviewsTmp = await Review.find();
+    console.log(reviewsTmp);
+    let reviews = []
+    console.log(toilet.address);
+    reviewsTmp.forEach(rev => {
+
+        if (rev.address == toilet.address) reviews.push(rev);
+    });
+    console.log("rev");
+    console.log(reviews);
+    if (reviews.length <= 0) {
+        return 0;
+    }
+    const averageRating = reviews.reduce((a, b) => parseFloat(a) + parseFloat(b)) / reviews.length;
+    console.log("av" + averageRating);
+    return averageRating;
+
+};
 
 router.post('/nearestToilets', jsonParser, async (req, res, next) => {
     Toilet.find({})
-    .exec()
-    .then(async (toilet) => {
-        let toilets = [];
-        for(let i=0;i< toilet.length; i++) {
-            entry=toilet[i];
-            console.log(entry);
-            const result = await geocoder.geocode(entry.address);
-            
-            var dist = distance(result[0].latitude, result[0].longitude, req.body.latitude, req.body.longitude, 'K');
-            console.log(dist);
-            if(dist<2){
-                //console.log(dist);
-                //console.log(entry);
-               // toilets.push(toilet_info);
-               const rate = await countAverageRating(entry);
-               
-               toilets.push( {toilet_details:entry,distance:dist, averageRating:rate, latitude:result[0].latitude,longitude:result[0].longitude }); 
+        .exec()
+        .then(async (toilet) => {
+            let toilets = [];
+            for (let i = 0; i < toilet.length; i++) {
+                entry = toilet[i];
+                const result = await geocoder.geocode(entry.address);
 
+                var dist = distance(result[0].latitude, result[0].longitude, req.body.latitude, req.body.longitude, 'K');
+                console.log(dist);
+                if (dist < 2) {
+                    const rate = await countAverageRating(entry);
+
+                    toilets.push({
+                        location: entry.address,
+                        price: entry.price,
+                        name: entry.name,
+                        handicapAccess: entry.handicapAccess,
+                        distance: dist,
+                        rating: rate,
+                        openingHours: entry.openingHours,
+                        description: entry.details,
+                        latitude: result[0].latitude,
+                        longitude: result[0].longitude
+                    });
+
+                }
             }
-                
-        }
-    console.log(toilets);
-    return res.status(200).json({
-        message: 'Successfully retrieved toilets for current user.',
-        payload: toilets
-    });
-})
-.catch(err => {return res.status(500).send("error occured!")});
-    
+            
+            return res.status(200).json({
+                message: 'Successfully retrieved toilets for current user.',
+                payload: toilets
+            });
+        })
+        .catch(err => { return res.status(500).send("error occured!") });
+
 });
 
 function sortByPrice(arr) {
