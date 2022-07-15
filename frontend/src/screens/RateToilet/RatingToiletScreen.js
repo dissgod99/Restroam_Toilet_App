@@ -21,7 +21,7 @@ const RatingToiletScreen = ({ route, navigation }) => {
     const [starCount3, setStarCount3] = useState(defaultRating)
 
     //Description section
-    const [text, setText] = useState('');
+    const [text, setText] = useState("");
 
     const onStarRatingPress = (rating) => {
         setStarCount1(rating)

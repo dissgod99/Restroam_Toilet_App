@@ -1,11 +1,19 @@
 import axios from "axios";
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { ScrollView, StyleSheet, View, Text, TouchableOpacity, ToastAndroid } from "react-native";
 import { TextInput, Switch } from "react-native-paper";
 import { BACKEND_ENDPOINT_TOILETS } from "../../constants";
 import ThemeContext from "../../darkMode/ThemeContext";
+import { getAsyncStorageItem } from "../../util";
+import * as Location from "expo-location"
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+
 
 const EditInfoScreen = ({ route, navigation }) => {
+
+
+    
+    const baseUrl = BACKEND_ENDPOINT_TOILETS + "edit-toilet";
 
     const { 
         token,
@@ -21,24 +29,164 @@ const EditInfoScreen = ({ route, navigation }) => {
     const [newPrice, setNewPrice] = useState(originalPrice);
     const [newDetails, setNewDetails] = useState(originalDetails);
 
-    function toggleSwitch() {
-        setNewHandicapAccess(!newHandicapAccess);
+    const {timeline} = route.params;
+    var numberi = 0;
+
+    let initName, initAddress, initDetails, initCurrentLocation;
+    initName = initAddress = initDetails = initCurrentLocation = '';
+    let initPrice = '0,00€';
+    let initIsEnabled = false;
+
+    const [name, setName] = useState(initName);
+
+    const [address, setAddress] = useState(initAddress);
+    const [currentLocation, setCurrentLocation] = useState(initCurrentLocation);
+
+    const [price, setPrice] = useState(initPrice);
+    const [isEnabled, setIsEnabled] = useState(initIsEnabled);
+
+    const [details, setDetails] = useState('');
+
+    var times = {
+        Monday: "Closed",
+        Tuesday: "Closed",
+        Wednesday: "Closed",
+        Thursday: "Closed",
+        Friday: "Closed",
+        Saturday: "Closed",
+        Sunday: "Closed"
     }
 
+
+    useEffect(() => {
+        getLocation();
+    }, []);
+
+
     function changeName(v) {
-        setNewName(v);
+        setName(v);
     }
 
     function changeAddress(v) {
-        setNewAddress(v);
+        setAddress(v);
     }
 
+    const getLocation = async () => {
+        let coords = await Location.getCurrentPositionAsync();
+        setCurrentLocation(coords)
+    };
+
     function changePrice(v) {
-        setNewPrice(v);
+        setPrice(v);
+    }
+
+    function toggleSwitch() {
+        setIsEnabled(!isEnabled);
     }
 
     function changeDetails(v) {
-        setNewDetails(v);
+        setDetails(v);
+    }
+
+    const fillWithCurrentAddress = async () => {
+        setAddress('')
+        const latitude = currentLocation["coords"]["latitude"]
+        const longitude = currentLocation["coords"]["longitude"]
+
+        let response = await Location.reverseGeocodeAsync({
+            latitude,
+            longitude
+        });
+
+        for (let item of response) {
+            let addresse = `${item.name}, ${item.street}, ${item.postalCode}, ${item.city}`;
+            setAddress(addresse)
+            console.log(addresse)
+
+        }
+    };
+
+
+    const transformHours = () => {
+        console.log("Timeline == ", timeline)
+        timeline.forEach((obj) => {
+            //console.log("Obj == ", obj.days)
+            //console.log("True or false == ", obj.days.includes("Mon"))
+            if(obj.days.includes("Mon")){
+                const hours_Mon = obj.start + "-" + obj.end
+                //console.log("hourrrrs == ", hours_Mon)
+                //console.log("times in === ", times)
+                times.Monday = hours_Mon;
+                //console.log("times after === ", times)
+            }
+            if(obj.days.includes("Tue")){
+                const hours_Tue = obj.start + "-" + obj.end
+                times.Tuesday = hours_Tue;
+            }
+            if(obj["days"].includes("Wed")){
+                const hours_Wed = obj["start"] + "-" + obj["end"]
+                times.Wednesday = hours_Wed;
+            }
+            if(obj["days"].includes("Thu")){
+                const hours_Thu = obj["start"] + "-" + obj["end"]
+                times.Thursday = hours_Thu;
+            }
+            if(obj["days"].includes("Fri")){
+                const hours_Fri = obj["start"] + "-" + obj["end"]
+                times.Friday = hours_Fri;
+            }
+            if(obj["days"].includes("Sat")){
+                const hours_Sat = obj["start"] + "-" + obj["end"]
+                times.Saturday = hours_Sat;
+            }
+            if(obj["days"].includes("Sun")){
+                const hours_Sun = obj["start"] + "-" + obj["end"]
+                times.Sunday = hours_Sun;
+            }
+        })
+    }
+
+
+    const handleNextButton = () => {
+        console.log("inside add ");
+        getAsyncStorageItem('token')
+            .then((tokenFromStorage) => {
+                //setToken(tokenFromStorage);
+                transformHours();
+                axios.post(`${baseUrl}`, {
+                    name: name,
+                    address: address,
+                    price: price,
+                    token: tokenFromStorage,
+                    openingHours: times,
+                    handicapAccess: isEnabled,
+                    details: details
+                })
+                    .then(({ data }) => {
+                        ToastAndroid.showWithGravity(
+                            data.message,
+                            ToastAndroid.LONG,
+                            ToastAndroid.BOTTOM);
+                        resetAllInputs();
+                        navigation.navigate("Upload Image", { toiletId: data.toiletId });
+                    })
+                    .catch(err => {
+                        ToastAndroid.showWithGravity(
+                            err.response.data.message,
+                            ToastAndroid.LONG,
+                            ToastAndroid.BOTTOM);
+
+                    })
+            })
+            .catch(err => console.log(err));
+    };
+
+    const resetAllInputs = () => {
+        setName(initName);
+        setAddress(initAddress);
+        setPrice(initPrice);
+        setIsEnabled(initIsEnabled);
+        setDetails(initDetails);
     }
 
     const handleSubmit = () => {
@@ -70,94 +218,240 @@ const EditInfoScreen = ({ route, navigation }) => {
     const theme = useContext(ThemeContext);
 
     return (
-        <View style={styles.container}>
+
+        <View style={[styles.container, { backgroundColor: theme.background }]}>
             <ScrollView>
-                <View style={styles.header}>
-                    <Text style={[styles.title, {color: theme.color}]}>
-                        Edit More Information
+                <View style={styles.containerElements}>
+                    <Text style={[styles.title, { color: theme.color }]}>
+                        Add more information
                     </Text>
                     <View>
-                        <Text style={styles.locationHeader}>
-                            Name
+                        <Text style={[styles.txt, { color: theme.color }]}>
+                            Name your Notice *
                         </Text>
-                        <TextInput
-                            style={styles.location}
+                        <TextInput style={styles.box}
+                            mode="outlined"
+                            editable={true}
+                            //placeholder="Enter name"
                             defaultValue={originalTitle}
                             placeholder={originalTitle}
-                            mode="outlined"
-                            // label="Address"
-                            // placeholder="Type Place"
-                            activeOutlineColor={theme.activeOutColor}
                             right={<TextInput.Affix text="/100" />}
-                            onChangeText={changeName}
+                            activeOutlineColor={theme.activeOutColor}
+                            onChangeText={(value) => changeName(value)}
+                            value={name}
                         />
-                        <Text style={styles.locationHeader}>
-                            Location
+                        <Text style={[styles.txt, { color: theme.color }]}>
+                            Location *
                         </Text>
-                        <TextInput
-                            style={styles.location}
+                        <TextInput style={styles.box}
+                            mode="outlined"
+                            editable={true}
+                            //label="Give address"
+                            //placeholder={"Enter address"}
                             defaultValue={originalLocation}
                             placeholder={originalLocation}
-                            mode="outlined"
-                            // label="Address"
-                            activeOutlineColor="#e6697e"
                             right={<TextInput.Affix text="/100" />}
-                            onChangeText={changeAddress}
+                            activeOutlineColor={theme.activeOutColor}
+                            onChangeText={(value) => changeAddress(value)}
+                            value={address}
                         />
-                        
+                        <TouchableOpacity onPress={async () => fillWithCurrentAddress()}
+                            style={[styles.getAddress, { backgroundColor: theme.submitBtn }]}>
+                            <Text style={styles.getAddressText}>Get current address</Text>
+                            <Icon
+                                name="map-marker"
+                                size={20}
+                            />
+                        </TouchableOpacity>
                     </View>
 
+                    <Text style={[styles.details, { color: theme.color }]}>
+                        Indicate details
+                    </Text>
                     <View style={styles.detailsContainer}>
                         <View style={styles.position}>
-                            <Text style={styles.locationHeader}>
-                                Price
+                            <Text style={[styles.txt, { color: theme.color }]}>
+                                Price *
                             </Text>
                             <TextInput style={styles.boxPrice}
                                 defaultValue={originalPrice}
-                                placeholder={originalPrice}
                                 mode="outlined"
-                                // placeholder="Type place"
-                                onChangeText={changePrice}
+                                placeholder="Type price"
                                 activeOutlineColor={theme.activeOutColor}
+                                onChangeText={(value) => changePrice(value)}
                             />
                         </View>
                         <View>
-                            <Text style={[styles.locationHeader, {color: theme.color}]}>
-                                Handicap Access
+                            <Text style={[styles.txt, { color: theme.color }]}>
+                                Handicap Access *
                             </Text>
                             <Switch
-                                value={newHandicapAccess}
+                                value={originalHandicapAccess}
                                 onValueChange={toggleSwitch}
-                                color= {theme.activeOutColor}
+                                color={theme.activeOutColor}
                             />
+
                         </View>
+
+
+
                     </View>
+
                     <View>
-                        <Text style={[styles.locationHeader, {color: theme.color}]}>
-                            More Details
+                        <Text style={[styles.txt, { color: theme.color }]}>
+                            Description
                         </Text>
-                        <TextInput style={styles.location}
-                            defaultValue={originalDetails}
-                            placeholder={originalDetails}
+                        <TextInput style={styles.box}
                             mode="outlined"
-                            // label="Other details"
-                            // placeholder="Type details"
+                            placeholder="Type details"
+                            defaultValue={originalDetails}
                             right={<TextInput.Affix text="/250" />}
                             activeOutlineColor={theme.activeOutColor}
-                            onChangeText={changeDetails}
+                            onChangeText={(value) => changeDetails(value)}
                         />
                     </View>
-                    <TouchableOpacity 
-                        style={[styles.btn, {backgroundColor: theme.submitBtn}]}
-                        onPress={() => handleSubmit()}    
+
+                    <TouchableOpacity
+                        style={[styles.btn, { backgroundColor: theme.submitBtn }]}
+                        onPress={handleNextButton}
                     >
-                        <Text style={styles.submit}>
-                            Submit
+                        <Text style={styles.stOfSubmit}>
+                            Next
                         </Text>
                     </TouchableOpacity>
                 </View>
-        </ScrollView>
+            </ScrollView>
         </View>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        // <View style={styles.container}>
+        //     <ScrollView>
+        //         <View style={styles.header}>
+        //             <Text style={[styles.title, {color: theme.color}]}>
+        //                 Edit More Information
+        //             </Text>
+        //             <View>
+        //                 <Text style={styles.locationHeader}>
+        //                     Name
+        //                 </Text>
+        //                 <TextInput
+        //                     style={styles.location}
+        //                     defaultValue={originalTitle}
+        //                     placeholder={originalTitle}
+        //                     mode="outlined"
+        //                     // label="Address"
+        //                     // placeholder="Type Place"
+        //                     activeOutlineColor={theme.activeOutColor}
+        //                     right={<TextInput.Affix text="/100" />}
+        //                     onChangeText={changeName}
+        //                 />
+        //                 <Text style={styles.locationHeader}>
+        //                     Location
+        //                 </Text>
+        //                 <TextInput
+        //                     style={styles.location}
+        //                     defaultValue={originalLocation}
+        //                     placeholder={originalLocation}
+        //                     mode="outlined"
+        //                     // label="Address"
+        //                     activeOutlineColor="#e6697e"
+        //                     right={<TextInput.Affix text="/100" />}
+        //                     onChangeText={changeAddress}
+        //                 />
+                        
+        //             </View>
+
+        //             <View style={styles.detailsContainer}>
+        //                 <View style={styles.position}>
+        //                     <Text style={styles.locationHeader}>
+        //                         Price
+        //                     </Text>
+        //                     <TextInput style={styles.boxPrice}
+        //                         defaultValue={originalPrice}
+        //                         placeholder={originalPrice}
+        //                         mode="outlined"
+        //                         // placeholder="Type place"
+        //                         onChangeText={changePrice}
+        //                         activeOutlineColor={theme.activeOutColor}
+        //                     />
+        //                 </View>
+        //                 <View>
+        //                     <Text style={[styles.locationHeader, {color: theme.color}]}>
+        //                         Handicap Access
+        //                     </Text>
+        //                     <Switch
+        //                         value={newHandicapAccess}
+        //                         onValueChange={toggleSwitch}
+        //                         color= {theme.activeOutColor}
+        //                     />
+        //                 </View>
+        //             </View>
+        //             <View>
+        //                 <Text style={[styles.locationHeader, {color: theme.color}]}>
+        //                     More Details
+        //                 </Text>
+        //                 <TextInput style={styles.location}
+        //                     defaultValue={originalDetails}
+        //                     placeholder={originalDetails}
+        //                     mode="outlined"
+        //                     // label="Other details"
+        //                     // placeholder="Type details"
+        //                     right={<TextInput.Affix text="/250" />}
+        //                     activeOutlineColor={theme.activeOutColor}
+        //                     onChangeText={changeDetails}
+        //                 />
+        //             </View>
+        //             <TouchableOpacity 
+        //                 style={[styles.btn, {backgroundColor: theme.submitBtn}]}
+        //                 onPress={() => handleSubmit()}    
+        //             >
+        //                 <Text style={styles.submit}>
+        //                     Submit
+        //                 </Text>
+        //             </TouchableOpacity>
+        //         </View>
+        // </ScrollView>
+        // </View>
     );
 
 }
@@ -168,50 +462,147 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: "flex-start",
-        alignItems: "center"
+        alignItems: "center",
+        //backgroundColor: "white"
     },
-    header: {
+    containerElements: {
         justifyContent: "center",
-        alignItems: "center"
+        alignItems: "center",
     },
     title: {
         fontWeight: "bold",
         fontSize: 20,
         marginVertical: 20
     },
-    locationHeader: {
-        marginVertical: 10,
-        fontWeight: "bold"
-    },
-    location: {
+    box: {
         width: 250,
         paddingLeft: 8,
         fontWeight: "bold"
     },
-    details: {
-        marginVertical: 20,
-        fontSize: 20,
-        fontWeight: "bold"
-    },
-    boxPrice: {
-        width: 130
-    },
-    position: {
-        marginRight: 10
-    },
-    detailsContainer: {
-        display: "flex",
-        flexDirection: "row"
-    },
-    btn:{
+    btn: {
+        //backgroundColor: "#e6697e",
         paddingHorizontal: 80,
         paddingVertical: 10,
         borderRadius: 5,
         marginVertical: 35,
         marginHorizontal: 75,
         alignItems: "center"
+
     },
-    submit: {
+    stOfSubmit: {
         fontWeight: "bold"
+    },
+    detailsContainer: {
+        display: "flex",
+        flexDirection: "row"
+    },
+    boxPrice: {
+        width: 130
+
+    },
+    txt: {
+        marginVertical: 10,
+        fontWeight: "bold"
+
+    },
+    details: {
+        marginVertical: 20,
+        fontSize: 20,
+        fontWeight: "bold"
+    },
+    full: {
+        height: "100%"
+    },
+    position: {
+        marginRight: 10
+    },
+    getAddress: {
+        flexDirection: "row",
+        marginTop: 8,
+        borderRadius: 3,
+        width: 185,
+        paddingVertical: 5,
+        paddingHorizontal: 10
+    },
+    getAddressText: {
+        fontWeight: "bold",
+        marginRight: 5
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    // container: {
+    //     flex: 1,
+    //     justifyContent: "flex-start",
+    //     alignItems: "center"
+    // },
+    // header: {
+    //     justifyContent: "center",
+    //     alignItems: "center"
+    // },
+    // title: {
+    //     fontWeight: "bold",
+    //     fontSize: 20,
+    //     marginVertical: 20
+    // },
+    // locationHeader: {
+    //     marginVertical: 10,
+    //     fontWeight: "bold"
+    // },
+    // location: {
+    //     width: 250,
+    //     paddingLeft: 8,
+    //     fontWeight: "bold"
+    // },
+    // details: {
+    //     marginVertical: 20,
+    //     fontSize: 20,
+    //     fontWeight: "bold"
+    // },
+    // boxPrice: {
+    //     width: 130
+    // },
+    // position: {
+    //     marginRight: 10
+    // },
+    // detailsContainer: {
+    //     display: "flex",
+    //     flexDirection: "row"
+    // },
+    // btn:{
+    //     paddingHorizontal: 80,
+    //     paddingVertical: 10,
+    //     borderRadius: 5,
+    //     marginVertical: 35,
+    //     marginHorizontal: 75,
+    //     alignItems: "center"
+    // },
+    // submit: {
+    //     fontWeight: "bold"
+    // }
 });
