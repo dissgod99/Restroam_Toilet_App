@@ -8,7 +8,7 @@ const reviewSchema = new mongoose.Schema({
     waitingtime:{type: Number, required: true},
     security:{type: Number, required: true},
     rating: {type: Number, required: true},
-    description: {type: String, required: true},
+    description: {type: String},
     date: {type: String, required: true},
 });
 

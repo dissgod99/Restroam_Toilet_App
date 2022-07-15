@@ -96,13 +96,13 @@ const AccountScreen = ({ navigation }) => {
             Owned Toilets
           </Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate('Reviews')}>
+        <TouchableOpacity onPress={() => navigation.navigate('Reviews', { token: token })}>
           <Text style={[styles.menu, { color: theme.color, backgroundColor: theme.menuBackground }]}>
             <Icon name="account-star-outline" size={35} color={theme.color} />
             Your Reviews 
           </Text>
         </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate('Reports')}>
+        <TouchableOpacity onPress={() => navigation.navigate('Reports', { token: token })}>
           <Text style={[styles.menu, { color: theme.color, backgroundColor: theme.menuBackground }]}>
             <Icon name="notebook-outline" size={35} color={theme.color} />
             Received complaints 

@@ -12,6 +12,8 @@ import axios from "axios";
 import { BACKEND_ENDPOINT_REVIEWS } from '../../constants';
 
 const RatingToiletScreen = ({ route, navigation }) => {
+    
+    const {toilet} = route.params;
 
     // Stars section
     const defaultRating = 3;
@@ -41,7 +43,6 @@ const RatingToiletScreen = ({ route, navigation }) => {
 
     const handleSubmit = () =>{
         console.log(total);
-        const {toilet} = route.params;
         console.log(toilet);
         console.log("inside review ");
         getAsyncStorageItem('token').then(
@@ -59,7 +60,7 @@ const RatingToiletScreen = ({ route, navigation }) => {
             }).then(
                 () => navigation.navigate("ThankYou")
 
-            ).catch(err => console.log("couldn't add review"))
+            ).catch(err => console.log(err.response.data.message))
             //navigation.navigate("error occured")
             })
             .catch(err => console.log(err));

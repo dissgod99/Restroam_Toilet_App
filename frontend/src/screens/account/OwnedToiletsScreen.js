@@ -48,7 +48,7 @@ const OwnedToiletsScreen = ({ route, navigation }) => {
                     ToastAndroid.LONG,
                     ToastAndroid.BOTTOM);
             })
-            .catch(err => console.log(err.message));
+            .catch(err => console.log(err.response.data.message));
     };
 
     const editToilet = ({ name, address, price, details, handicapAccess }) => {
@@ -94,14 +94,27 @@ const OwnedToiletsScreen = ({ route, navigation }) => {
 
     return (
         <ScrollView style={{ backgroundColor: theme.background }}>
+
             <View style={[styles.container]}>
-                <View style={styles.toiletsWrapper}>
-                    <Text style={[styles.headerText, { color: theme.color }]}>
-                        Your Owned Toilets:
+                <TouchableOpacity
+                    style={[styles.btn, { backgroundColor: theme.submitBtn }]}
+                    onPress={() => navigation.navigate("Add")}
+                >
+                    <Text style={styles.stOfAdd}>
+                        Add Toilet
                     </Text>
-                    <View style={styles.items}>
-                        {
-                            toiletItems.map(({ name, address, price, details, handicapAccess }, index) => {
+                </TouchableOpacity>
+                {toiletItems.length < 1 ?
+                    <View>
+                        <Text>You don't own any toilets yet. You can submit a new toilet by clicking on the button below.</Text>
+                    </View>
+                    :
+                    <View style={styles.toiletsWrapper}>
+                        <Text style={[styles.headerText, { color: theme.color }]}>
+                            Your Owned Toilets:
+                        </Text>
+                        <View style={styles.items}>
+                            {toiletItems.map(({ name, address, price, details, handicapAccess }, index) => {
                                 return (
                                     <View key={index} style={[styles.item, { backgroundColor: theme.backgroundToilet }]}>
                                         <Toilet
@@ -129,13 +142,10 @@ const OwnedToiletsScreen = ({ route, navigation }) => {
                                         </View>
                                     </View>
                                 )
-                            })
-                        }
+                            })}
+                        </View>
                     </View>
-                    {/* <TouchableOpacity onPress={() => updateToilets()}>
-                        <Text>Update</Text>
-                    </TouchableOpacity> */}
-                </View>
+                }
             </View>
         </ScrollView>
     )
@@ -167,7 +177,18 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'space-between',
         marginBottom: 20
-    }
+    },
+    btn: {
+        backgroundColor: "#e6697e",
+        alignItems:'center',
+        paddingVertical: 10,
+        borderRadius: 5,
+        margin: 30,
+        marginBottom: 0
+    },
+    stOfAdd:{
+        fontWeight: "bold"
+    },
 });
 
 export default OwnedToiletsScreen;

@@ -35,7 +35,7 @@ router.post('/addReview', jsonParser, async (req, res, next) => {
         const token = req.body.token;
         console.log(token);
         //if (!token)
-          //  throw new Error('Missing arugments in request body. Please pass in the token.');
+        //  throw new Error('Missing arugments in request body. Please pass in the token.');
         const decryptedSignature = jwt.verify(token, JWT_SECRET);
         // from this point we know that the request is not malformed. JWT has not been tampered with
 
@@ -43,7 +43,7 @@ router.post('/addReview', jsonParser, async (req, res, next) => {
         let user = await User.findById(userId);
 
         await checkIfUserIsDeleted(user);
-   
+
         Review.find({ user: user.username, address: req.body.address })
             .exec()
             .then(review => {
@@ -58,12 +58,12 @@ router.post('/addReview', jsonParser, async (req, res, next) => {
                         _id: new mongoose.Types.ObjectId(),
                         user: user.username,
                         address: req.body.address,
-                        cleanliness:req.body.cleanliness,
-                        waitingtime:req.body.waitingtime,
-                        security:req.body.security,
+                        cleanliness: req.body.cleanliness,
+                        waitingtime: req.body.waitingtime,
+                        security: req.body.security,
                         rating: req.body.rating,
                         description: req.body.description,
-                        date:req.body.date,
+                        date: req.body.date,
                     });
                     review
                         .save()
@@ -89,12 +89,11 @@ router.post('/addReview', jsonParser, async (req, res, next) => {
 
 });
 
-router.delete('/deleteReview', jsonParser, async (req, res, next) => {
+router.post('/deleteReview', jsonParser, async (req, res, next) => {
     try {
         const token = req.body.token;
-        console.log(token);
         //if (!token)
-          //  throw new Error('Missing arugments in request body. Please pass in the token.');
+        //  throw new Error('Missing arugments in request body. Please pass in the token.');
         const decryptedSignature = jwt.verify(token, JWT_SECRET);
         // from this point we know that the request is not malformed. JWT has not been tampered with
 
@@ -106,9 +105,8 @@ router.delete('/deleteReview', jsonParser, async (req, res, next) => {
         Review.find({ user: user.username, address: req.body.address })
             .exec()
             .then(async (review) => {
-                if (review.length > 0) {
-                    console.log(toilet);
-                    await Review.deleteOne({ user: user, address: req.body.address });
+                if (review) {
+                    await Review.deleteOne({ user: user.username, address: req.body.address });
                     return res.status(200).json({
                         message: 'Review deleted successfully',
                     });
@@ -119,9 +117,11 @@ router.delete('/deleteReview', jsonParser, async (req, res, next) => {
                 }
 
             })
-            .catch(err => console.log("error occured while deleting the Review!"));
+            .catch(err => {
+                return res.status(400).json({ message: 'Oops! Smtg went wrong' });
+            });
     } catch (e) {
-        res.status(400).json({ message: e.message });
+        res.status(400).json({ message: 'Oops! Smtg went wrong' });
     }
 
 });
@@ -131,7 +131,7 @@ router.post('/editReview', jsonParser, async (req, res, next) => {
         const token = req.body.token;
         console.log(token);
         //if (!token)
-            //  throw new Error('Missing arugments in request body. Please pass in the token.');
+        //  throw new Error('Missing arugments in request body. Please pass in the token.');
         const decryptedSignature = jwt.verify(token, JWT_SECRET);
         // from this point we know that the request is not malformed. JWT has not been tampered with
 
@@ -166,14 +166,14 @@ router.post('/editReview', jsonParser, async (req, res, next) => {
 });
 
 router.post('/FetchReviewsForToilet', jsonParser, async (req, res, next) => {
-        Review.find({ address: req.body.address })
-            .exec()
-            .then(reviews => {
-                return res.status(200).send(reviews);
-            })
-            .catch(
-                err =>  res.status(400).send( "something went wrong while querying")
-            );
+    Review.find({ address: req.body.address })
+        .exec()
+        .then(reviews => {
+            return res.status(200).send(reviews);
+        })
+        .catch(
+            err => res.status(400).send("something went wrong while querying")
+        );
 
 });
 
@@ -198,7 +198,7 @@ router.post('/userReviews', jsonParser, async (req, res, next) => {
         reviewsTmp.forEach(rev => {
             if (rev.user == user.username) reviews.push(rev);
         });
-        
+
         res.status(200).json({
             message: 'Successfully retrieved reviews for current user.',
             payload: reviews

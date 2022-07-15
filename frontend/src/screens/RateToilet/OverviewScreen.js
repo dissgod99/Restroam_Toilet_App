@@ -113,6 +113,17 @@ const OverviewScreen = ({ route, navigation }) => {
                     </ScrollView>
                 </View>
 
+                <TouchableOpacity
+                    style={[styles.btn, { backgroundColor: theme.submitBtn }]}
+                    onPress={() => {
+                        navigation.navigate("Rating", {toilet})
+                    }}
+                >
+                    <Text style={styles.stOfSubmit}>
+                        Add Review
+                    </Text>
+                </TouchableOpacity>
+
                 <View style={{
                     borderTopWidth: 1,
                     borderColor: "#d3d3d3",
@@ -134,17 +145,6 @@ const OverviewScreen = ({ route, navigation }) => {
                             );
                         })
                     }</View>
-                <TouchableOpacity
-                    style={[styles.btn, { backgroundColor: theme.submitBtn }]}
-                    onPress={() => {
-                        navigation.navigate("Rating")
-                    }}
-                >
-                    <Text style={styles.stOfSubmit}>
-                        Add Review
-
-                    </Text>
-                </TouchableOpacity>
             </ScrollView>
         </View>
     )
