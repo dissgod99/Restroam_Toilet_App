@@ -16,7 +16,8 @@ import Geocoder from "react-native-geocoder"
 
 const baseUrl = BACKEND_ENDPOINT_TOILETS + "add-toilet";
 
-const AddInfoPage = ({ navigation }) => {
+const AddInfoPage = ({ navigation, route }) => {
+    const {timeline} = route.params;
     var numberi = 0;
 
     let initName, initAddress, initDetails, initCurrentLocation;
@@ -33,6 +34,17 @@ const AddInfoPage = ({ navigation }) => {
     const [isEnabled, setIsEnabled] = useState(initIsEnabled);
 
     const [details, setDetails] = useState('');
+
+    var times = {
+        Monday: "Closed",
+        Tuesday: "Closed",
+        Wednesday: "Closed",
+        Thursday: "Closed",
+        Friday: "Closed",
+        Saturday: "Closed",
+        Sunday: "Closed"
+    }
+
 
     useEffect(() => {
         getLocation();
@@ -82,25 +94,59 @@ const AddInfoPage = ({ navigation }) => {
         }
     };
 
+
+    const transformHours = () => {
+        console.log("Timeline == ", timeline)
+        timeline.forEach((obj) => {
+            //console.log("Obj == ", obj.days)
+            //console.log("True or false == ", obj.days.includes("Mon"))
+            if(obj.days.includes("Mon")){
+                const hours_Mon = obj.start + "-" + obj.end
+                //console.log("hourrrrs == ", hours_Mon)
+                //console.log("times in === ", times)
+                times.Monday = hours_Mon;
+                //console.log("times after === ", times)
+            }
+            if(obj.days.includes("Tue")){
+                const hours_Tue = obj.start + "-" + obj.end
+                times.Tuesday = hours_Tue;
+            }
+            if(obj["days"].includes("Wed")){
+                const hours_Wed = obj["start"] + "-" + obj["end"]
+                times.Wednesday = hours_Wed;
+            }
+            if(obj["days"].includes("Thu")){
+                const hours_Thu = obj["start"] + "-" + obj["end"]
+                times.Thursday = hours_Thu;
+            }
+            if(obj["days"].includes("Fri")){
+                const hours_Fri = obj["start"] + "-" + obj["end"]
+                times.Friday = hours_Fri;
+            }
+            if(obj["days"].includes("Sat")){
+                const hours_Sat = obj["start"] + "-" + obj["end"]
+                times.Saturday = hours_Sat;
+            }
+            if(obj["days"].includes("Sun")){
+                const hours_Sun = obj["start"] + "-" + obj["end"]
+                times.Sunday = hours_Sun;
+            }
+        })
+    }
+
+
     const handleNextButton = () => {
         console.log("inside add ");
         getAsyncStorageItem('token')
             .then((tokenFromStorage) => {
                 //setToken(tokenFromStorage);
+                transformHours();
                 axios.post(`${baseUrl}`, {
                     name: name,
                     address: address,
                     price: price,
                     token: tokenFromStorage,
-                    openingHours: {
-                        Monday: '10:00-17:00',
-                        Tuesday: '10:00-17:00',
-                        Wednesday: '10:00-17:00',
-                        Thursday: '10:00-17:00',
-                        Friday: '10:00-17:00',
-                        Saturday: '10:00-17:00',
-                        Sunday: '10:00-17:00',
-                    },
+                    openingHours: times,
                     handicapAccess: isEnabled,
                     details: details
                 })

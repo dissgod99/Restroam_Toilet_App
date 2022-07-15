@@ -62,7 +62,7 @@ const AccountScreen = ({ navigation }) => {
             Toilets visited: 333
           </Text> */}
           <Text style={[styles.data, styles.dataMargin, { color: theme.color }]}>
-            Toilets reviewed: 111
+            Toilets owned: 1
           </Text>
 
           <View style={[styles.alignItems]}>
