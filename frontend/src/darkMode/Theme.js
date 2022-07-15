@@ -22,7 +22,9 @@ const Theme = {
          bottomBar: "white",
          icon: "#f28d82",
          drop: "white",
-         toilet: "#f36c6c"
+         titleReview: "black",
+         reviewBorder: "black"
+
      },
     dark:{
         theme: "dark",
@@ -47,7 +49,8 @@ const Theme = {
         bottomBar: "#242526",
         icon: "#ccaa55",
         drop: "#ccaa55",
-        toilet: "#FFD700"
+        titleReview: "#ccaa55",
+        reviewBorder: "grey"
     },
 };
 export default Theme;

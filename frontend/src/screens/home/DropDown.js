@@ -6,7 +6,7 @@ import ModalDropdown from 'react-native-modal-dropdown';
 import ThemeContext from '../../darkMode/ThemeContext';
 
 
-const DropDown = ({ data }) => {
+const DropDown = (props) => {
     const [options, setOptions] = useState(['Toilet1', 'Toilet2', 'Toilet3', 'Toilet4']);
     const FilterList = ['distance', 'rating', 'price'];
     const [filter, setFilter] = useState('distance');
@@ -76,7 +76,7 @@ const DropDown = ({ data }) => {
                 setOptions(tmp);
             }}></TextInput>}>
             </ModalDropdown>
-            <ModalDropdown style={styles.drop} options={FilterList} defaultValue='Filter' onSelect={(idx) => {
+            <ModalDropdown style={styles.drop} options={FilterList} defaultValue='Sort by:' onSelect={(idx) => {
                 setFilter(FilterList[idx])
             }} dropdownStyle={styles.down} adjustFrame={(s) => {
             }}>

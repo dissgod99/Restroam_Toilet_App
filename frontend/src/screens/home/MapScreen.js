@@ -202,7 +202,7 @@ export default function MapScreen({ navigation }) {
                             style={styles.toiletsAround}
                             resizeMode="cover" /> */}
                             <Icon name='toilet'
-                                size={35}
+                                size={30}
                                 color={toiletIconColor}/>
                     </MapView.Marker>
                 })}{
@@ -321,14 +321,14 @@ export default function MapScreen({ navigation }) {
                                     padding: '2%',
                                     width: '32%'
                                 }} onPress={() => {
-                                    navigation.navigate("Rating",{toilet: marker})
+                                    navigation.navigate("Rating Overview", {toilet: marker})
                                 }
                                 }>
                                     <Icon name="pencil-box-multiple" size={25} color={theme.icon} />
                                     <Text style={{
                                         fontSize: 7.5,
                                         color: theme.icon
-                                    }}>Review</Text>
+                                    }}>Reviews</Text>
                                 </TouchableOpacity>
                                 <TouchableOpacity style={{
                                     display: 'flex',
