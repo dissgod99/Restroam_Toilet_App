@@ -39,6 +39,10 @@ const RatingToiletScreen = ({ route, navigation }) => {
     // Average of all ratings
     const total = parseFloat(((starCount1 + starCount2 + starCount3)/3).toFixed(2));
 
+
+    const datee = new Date();
+    const dateOfSubmission = `${datee.getDate()}/${datee.getMonth() + 1}/${datee.getFullYear()}`; 
+
     const handleSubmit = () =>{
         console.log(total);
         const {toilet} = route.params;
@@ -55,11 +59,14 @@ const RatingToiletScreen = ({ route, navigation }) => {
                 security:starCount3,
                 rating: total,
                 description: text,
-                date: "27.01.2022"
+                date: dateOfSubmission
             }).then(
-                () => navigation.navigate("ThankYou")
+                () => {
+                    console.log("DATE == ", dateOfSubmission)
+                    navigation.navigate("ThankYou")}
 
             ).catch(err => console.log("couldn't add review"))
+            console.log("DATE == ", dateOfSubmission)
             //navigation.navigate("error occured")
             })
             .catch(err => console.log(err));
