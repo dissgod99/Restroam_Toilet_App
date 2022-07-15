@@ -49,12 +49,14 @@ const ReportsScreen = ({route, navigation}) => {
     return (
         <ScrollView style={{backgroundColor: theme.background}}>
             <View>
-            { reports.map(({address,username, description ,date}) => {
+            { reports.map(({address,username, description ,date}, index) => {
                 return (
+                    <View key={index}>
                     <Report title={address}
                         date={date}
                         username= {username}
                         text={description}/>
+                        </View>
                             )
                         }            
                 )}

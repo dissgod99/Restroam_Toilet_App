@@ -33,13 +33,15 @@ const ReviewsScreen = ({route, navigation}) => {
     return (
         <ScrollView style={{backgroundColor: theme.background}}>
             <View>
-           { reviews.map(({address, rating, description ,date}) => {
+           { reviews.map(({address, rating, description ,date}, index) => {
                 return (
-                    <Review  title={address}
-                            date={date}
-                            stars={rating}
-                            text={description}
-                            />
+                    <View key={index}>
+                        <Review  title={address}
+                                date={date}
+                                stars={rating}
+                                text={description}
+                                />
+                    </View>
                             )
                         }            
                 )}
