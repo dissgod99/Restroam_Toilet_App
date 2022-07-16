@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useContext } from 'react';
 import { Button, Text, View, StyleSheet, Image, Platform, TouchableOpacity, ActivityIndicator, ToastAndroid } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
@@ -40,10 +39,10 @@ export default function UploadImage({ route, navigation }) {
                 if (status !== 'granted') {
                     alert('Sorry, we need camera roll permissions to make this work!');
                 }
-                // setLoad(true);
-                // await tf.ready();
-                // setModel(await mobilenet.load());
-                // setLoad(false);
+                setLoad(true);
+                await tf.ready();
+                setModel(await mobilenet.load());
+                setLoad(false);
             }
         })();
     }, []);
@@ -86,24 +85,24 @@ export default function UploadImage({ route, navigation }) {
             console.log('result: ' + result);
             result.fileName = filename;
         }
-        // let legit = await classifyImage(result.base64);
+        let legit = await classifyImage(result.base64);
 
-        // if (!result.cancelled && legit) {
-        for (let i = 0; i < 5; i++) {
-            if (imageArray[i][0] == null) {
-                setImageDataArray(oldArray => [].concat([].concat(oldArray.slice(0, i), [result]), oldArray.slice(i + 1, 5)))
-                imageArray[i][1](result);
-                console.log('imageDataArray: ' + imageDataArray.toString());
-                break;
+        if (!result.cancelled && legit) {
+            for (let i = 0; i < 5; i++) {
+                if (imageArray[i][0] == null) {
+                    setImageDataArray(oldArray => [].concat([].concat(oldArray.slice(0, i), [result]), oldArray.slice(i + 1, 5)))
+                    imageArray[i][1](result);
+                    console.log('imageDataArray: ' + imageDataArray.toString());
+                    break;
+                }
             }
         }
-        // }
-        // if (!legit) {
-        //     setLegitText("This image contains explicit containt and won't be accepted");
-        //     setTimeout(function () {
-        //         setLegitText('')
-        //     }, 30000)
-        // }
+        if (!legit) {
+            setLegitText("This image contains explicit containt and won't be accepted");
+            setTimeout(function () {
+                setLegitText('')
+            }, 30000)
+        }
         setLoad(false);
     };
 
@@ -121,52 +120,52 @@ export default function UploadImage({ route, navigation }) {
             return;
         }
 
-        // let legit = await classifyImage(result.base64);
+        let legit = await classifyImage(result.base64);
 
-        // if (!result.cancelled && legit) {
-        imageArray[idx][1](result);
-        setImageDataArray(oldArray => [].concat([].concat(oldArray.slice(0, idx), [result]), oldArray.slice(idx + 1, 5)))
-        console.log(imageDataArray)
-        // }
-        // if (!legit) {
-        //     setLegitText("This image contains explicit containt and won't be accepted");
-        //     setTimeout(function () {
-        //         setLegitText('')
-        //     }, 30000)
-        // }
+        if (!result.cancelled && legit) {
+            imageArray[idx][1](result);
+            setImageDataArray(oldArray => [].concat([].concat(oldArray.slice(0, idx), [result]), oldArray.slice(idx + 1, 5)))
+            console.log(imageDataArray)
+        }
+        if (!legit) {
+            setLegitText("This image contains explicit containt and won't be accepted");
+            setTimeout(function () {
+                setLegitText('')
+            }, 30000)
+        }
 
         setLoad(false);
     };
 
-    // async function classifyImage(base64) {
-    //     const rawImageData = _base64ToArrayBuffer(base64)
+    async function classifyImage(base64) {
+        const rawImageData = _base64ToArrayBuffer(base64)
 
-    //     const imageTensor = imageToTensor(rawImageData);
-    //     const test = await model.classify(imageTensor);
-    //     var classes = "";
-    //     test.forEach(x => {
-    //         classes += x.className + ',';
-    //     })
-    //     console.log(classes)
-    //     var result = true;
-    //     forbidden.forEach(f => {
-    //         if (classes.includes(f)) {
-    //             result = false
-    //         }
-    //     });
-    //     return result
-    // }
+        const imageTensor = imageToTensor(rawImageData);
+        const test = await model.classify(imageTensor);
+        var classes = "";
+        test.forEach(x => {
+            classes += x.className + ',';
+        })
+        console.log(classes)
+        var result = true;
+        forbidden.forEach(f => {
+            if (classes.includes(f)) {
+                result = false
+            }
+        });
+        return result
+    }
 
     const createFormData = (photo, body = {}) => {
 
         const data = new FormData();
         const tmp = mime.getType(photo.uri);
 
-        data.append('photo', {
+        data.append('photos', [{
             name: photo.uri,
             type: tmp,
             uri: Platform.OS === 'ios' ? photo.uri.replace('file://', '') : photo.uri,
-        });
+        }]);
 
         data.append('photoType', tmp);
 
@@ -176,12 +175,9 @@ export default function UploadImage({ route, navigation }) {
         return data;
     };
 
-    // const [photo, setPhoto] = React.useState(null);
-
     const handleUploadPhoto = (photo, toiletId) => {
         console.log('toiletId: ' + toiletId)
         let formData = createFormData(photo, { 'toiletId': toiletId });
-        // const config = { headers: { 'content-type': 'multipart/form-data' } }
         fetch(
             BACKEND_ENDPOINT_IMAGES + 'upload-file',
             { method: "POST", body: formData }
@@ -231,21 +227,6 @@ export default function UploadImage({ route, navigation }) {
                 navigation.navigate("Home");
             });
     };
-
-    /* return (
-         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-             {photo && (
-                 <>
-                     <Image
-                         source={{ uri: photo.uri }}
-                         style={{ width: 300, height: 300 }}
-                     />
-                     <Button title="Upload Photo" onPress={handleUploadPhoto} />
-                 </>
-             )}
-             <Button title="Choose Photo" onPress={pickImage} />
-         </View>
-     );*/
 
     return (
         <View style={[styles.container, { backgroundColor: theme.background }]}>

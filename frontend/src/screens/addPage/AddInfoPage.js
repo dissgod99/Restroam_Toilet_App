@@ -10,10 +10,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import axios from "axios";
 
 import { Image } from "react-native-animatable";
-import Geocoder from "react-native-geocoder"
-
-
-const baseUrl = BACKEND_ENDPOINT_TOILETS + "add-toilet";
+import Geocoder from "react-native-geocoder";
 
 const AddInfoPage = ({ navigation, route }) => {
     const {timeline} = route.params;
@@ -134,7 +131,7 @@ const AddInfoPage = ({ navigation, route }) => {
     }
 
 
-    const handleNextButton = () => {#
+    const handleNextButton = () => {
 
         transformHours();
 

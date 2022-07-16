@@ -35,7 +35,7 @@ router.post('/upload-file', function (req, res, next) {
     uploadSinglePhoto(req, res, function (err) {
 
         if (err instanceof multer.MulterError) {
-            log('Multer Error');
+            console.log('Multer Error');
         } else {
             let { toiletId, photoType } = req.body;
 
