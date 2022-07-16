@@ -289,7 +289,6 @@ export default function UploadImage({ route, navigation }) {
             </TouchableOpacity>
         </View>
     );
-
 }
 
 const styles = StyleSheet.create({
