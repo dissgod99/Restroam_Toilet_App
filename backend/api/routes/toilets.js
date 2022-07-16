@@ -33,12 +33,10 @@ const geocoder = NodeGeocoder(options);
 
 router.post('/add-toilet', jsonParser, async (req, res, next) => {
 
-    let { name, address, openingHours, price, handicapAccess, details } = req.body;
+    let { token, toiletObj } = req.body;
+    let { name, address, openingHours, price, handicapAccess, details } = toiletObj;
 
     try {
-        const token = req.body.token;
-        //if (!token)
-        //  throw new Error('Missing arugments in request body. Please pass in the token.');
         const decryptedSignature = jwt.verify(token, JWT_SECRET);
         // from this point we know that the request is not malformed. JWT has not been tampered with
 
@@ -69,10 +67,10 @@ router.post('/add-toilet', jsonParser, async (req, res, next) => {
         });
         toilet
             .save()
-            .then(result => {
+            .then(toilet => {
                 return res.status(201).json({
                     message: 'Toilet has been added.',
-                    toiletId: result._id
+                    toiletId: toilet._id
                 });
             })
             .catch(err => {
@@ -202,7 +200,7 @@ router.post('/nearestToilets', jsonParser, async (req, res, next) => {
 
                 }
             }
-            
+
             return res.status(200).json({
                 message: 'Successfully retrieved toilets for current user.',
                 payload: toilets
@@ -241,7 +239,8 @@ router.post('/user-owned-toilets', jsonParser, async (req, res, next) => {
         await checkIfUserIsDeleted(user);
 
 
-        // problem here is if we filter by owner the object can be changed because it includes the user's hashed password which can be changed anytime the user 
+        // problem here is if we filter by owner the object can be changed 
+        // because it includes the user's hashed password which can be changed anytime the user 
         let toiletsTmp = await Toilet.find();
 
         let toilets = []

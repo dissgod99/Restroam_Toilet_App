@@ -4,17 +4,8 @@ import { TextInput, Switch } from "react-native-paper";
 import { SafeAreaView } from "react-native-safe-area-context";
 import ThemeContext from "../../darkMode/ThemeContext";
 import { getAsyncStorageItem } from "../../util";
-import { BACKEND_ENDPOINT_TOILETS } from "../../constants"
 import * as Location from "expo-location"
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-
-import axios from "axios";
-
-import { Image } from "react-native-animatable";
-import Geocoder from "react-native-geocoder"
-
-
-const baseUrl = BACKEND_ENDPOINT_TOILETS + "add-toilet";
 
 const AddInfoPage = ({ navigation }) => {
     var numberi = 0;
@@ -83,42 +74,27 @@ const AddInfoPage = ({ navigation }) => {
     };
 
     const handleNextButton = () => {
-        console.log("inside add ");
+        let toiletTbAdded = {
+            name: name,
+            address: address,
+            price: price,
+            openingHours: {
+                Monday: '10:00-17:00',
+                Tuesday: '10:00-17:00',
+                Wednesday: '10:00-17:00',
+                Thursday: '10:00-17:00',
+                Friday: '10:00-17:00',
+                Saturday: '10:00-17:00',
+                Sunday: '10:00-17:00',
+            },
+            handicapAccess: isEnabled,
+            details: details
+        }
         getAsyncStorageItem('token')
             .then((tokenFromStorage) => {
                 //setToken(tokenFromStorage);
-                axios.post(`${baseUrl}`, {
-                    name: name,
-                    address: address,
-                    price: price,
-                    token: tokenFromStorage,
-                    openingHours: {
-                        Monday: '10:00-17:00',
-                        Tuesday: '10:00-17:00',
-                        Wednesday: '10:00-17:00',
-                        Thursday: '10:00-17:00',
-                        Friday: '10:00-17:00',
-                        Saturday: '10:00-17:00',
-                        Sunday: '10:00-17:00',
-                    },
-                    handicapAccess: isEnabled,
-                    details: details
-                })
-                    .then(({ data }) => {
-                        ToastAndroid.showWithGravity(
-                            data.message,
-                            ToastAndroid.LONG,
-                            ToastAndroid.BOTTOM);
-                        resetAllInputs();
-                        navigation.navigate("Upload Image", { toiletId: data.toiletId });
-                    })
-                    .catch(err => {
-                        ToastAndroid.showWithGravity(
-                            err.response.data.message,
-                            ToastAndroid.LONG,
-                            ToastAndroid.BOTTOM);
-
-                    })
+                resetAllInputs();
+                navigation.navigate("Upload Image", { toiletTbAdded, token: tokenFromStorage });
             })
             .catch(err => console.log(err));
     };

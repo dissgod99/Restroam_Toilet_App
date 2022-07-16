@@ -1,6 +1,6 @@
 
 import React, { useState, useEffect, useContext } from 'react';
-import { Button, Text, View, StyleSheet, Image, Platform, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { Button, Text, View, StyleSheet, Image, Platform, TouchableOpacity, ActivityIndicator, ToastAndroid } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import * as tf from '@tensorflow/tfjs';
@@ -13,11 +13,11 @@ import ThemeContext from '../../darkMode/ThemeContext';
 import mime from 'mime';
 
 import axios from "axios";
-import { BACKEND_ENDPOINT_IMAGES } from '../../constants';
+import { BACKEND_ENDPOINT_IMAGES, BACKEND_ENDPOINT_TOILETS } from '../../constants';
 
 export default function UploadImage({ route, navigation }) {
 
-    const { toiletId } = route.params;
+    const { toiletTbAdded, token } = route.params;
 
     // Dark Mode Variable
     const theme = useContext(ThemeContext);
@@ -40,10 +40,10 @@ export default function UploadImage({ route, navigation }) {
                 if (status !== 'granted') {
                     alert('Sorry, we need camera roll permissions to make this work!');
                 }
-                setLoad(true);
-                await tf.ready();
-                setModel(await mobilenet.load());
-                setLoad(false);
+                // setLoad(true);
+                // await tf.ready();
+                // setModel(await mobilenet.load());
+                // setLoad(false);
             }
         })();
     }, []);
@@ -83,28 +83,27 @@ export default function UploadImage({ route, navigation }) {
         }
         if (!result.cancelled) {
             let filename = result.uri.split('/').pop();
-            console.log(result);
+            console.log('result: ' + result);
             result.fileName = filename;
-            setPhoto(result);
         }
-        var legit = await classifyImage(result.base64);
+        // let legit = await classifyImage(result.base64);
 
-        if (!result.cancelled && legit) {
-            for (var i = 0; i < 5; i++) {
-                if (imageArray[i][0] == null) {
-                    setImageDataArray(oldArray => [].concat([].concat(oldArray.slice(0, i), [result]), oldArray.slice(i + 1, 5)))
-                    imageArray[i][1](result.uri);
-                    console.log(imageDataArray)
-                    break;
-                }
+        // if (!result.cancelled && legit) {
+        for (let i = 0; i < 5; i++) {
+            if (imageArray[i][0] == null) {
+                setImageDataArray(oldArray => [].concat([].concat(oldArray.slice(0, i), [result]), oldArray.slice(i + 1, 5)))
+                imageArray[i][1](result);
+                console.log('imageDataArray: ' + imageDataArray.toString());
+                break;
             }
         }
-        if (!legit) {
-            setLegitText("This image contains explicit containt and won't be accepted");
-            setTimeout(function () {
-                setLegitText('')
-            }, 30000)
-        }
+        // }
+        // if (!legit) {
+        //     setLegitText("This image contains explicit containt and won't be accepted");
+        //     setTimeout(function () {
+        //         setLegitText('')
+        //     }, 30000)
+        // }
         setLoad(false);
     };
 
@@ -121,40 +120,42 @@ export default function UploadImage({ route, navigation }) {
             setLoad(false)
             return;
         }
-        var legit = await classifyImage(result.base64);
-        if (!result.cancelled && legit) {
-            imageArray[idx][1](result.uri);
-            setImageDataArray(oldArray => [].concat([].concat(oldArray.slice(0, idx), [result]), oldArray.slice(idx + 1, 5)))
-            console.log(imageDataArray)
-        }
-        if (!legit) {
-            setLegitText("This image contains explicit containt and won't be accepted");
-            setTimeout(function () {
-                setLegitText('')
-            }, 30000)
-        }
+
+        // let legit = await classifyImage(result.base64);
+
+        // if (!result.cancelled && legit) {
+        imageArray[idx][1](result);
+        setImageDataArray(oldArray => [].concat([].concat(oldArray.slice(0, idx), [result]), oldArray.slice(idx + 1, 5)))
+        console.log(imageDataArray)
+        // }
+        // if (!legit) {
+        //     setLegitText("This image contains explicit containt and won't be accepted");
+        //     setTimeout(function () {
+        //         setLegitText('')
+        //     }, 30000)
+        // }
 
         setLoad(false);
     };
 
-    async function classifyImage(base64) {
-        const rawImageData = _base64ToArrayBuffer(base64)
+    // async function classifyImage(base64) {
+    //     const rawImageData = _base64ToArrayBuffer(base64)
 
-        const imageTensor = imageToTensor(rawImageData);
-        const test = await model.classify(imageTensor);
-        var classes = "";
-        test.forEach(x => {
-            classes += x.className + ',';
-        })
-        console.log(classes)
-        var result = true;
-        forbidden.forEach(f => {
-            if (classes.includes(f)) {
-                result = false
-            }
-        });
-        return result
-    }
+    //     const imageTensor = imageToTensor(rawImageData);
+    //     const test = await model.classify(imageTensor);
+    //     var classes = "";
+    //     test.forEach(x => {
+    //         classes += x.className + ',';
+    //     })
+    //     console.log(classes)
+    //     var result = true;
+    //     forbidden.forEach(f => {
+    //         if (classes.includes(f)) {
+    //             result = false
+    //         }
+    //     });
+    //     return result
+    // }
 
     const createFormData = (photo, body = {}) => {
 
@@ -175,41 +176,60 @@ export default function UploadImage({ route, navigation }) {
         return data;
     };
 
-    const [photo, setPhoto] = React.useState(null);
+    // const [photo, setPhoto] = React.useState(null);
 
-    const handleChoosePhoto = () => {
-        launchImageLibrary({ mediaType: 'photo' }, (response) => {
-            // console.log(response);
-            if (response) {
-                setPhoto(response);
+    const handleUploadPhoto = (photo, toiletId) => {
+        console.log('toiletId: ' + toiletId)
+        let formData = createFormData(photo, { 'toiletId': toiletId });
+        // const config = { headers: { 'content-type': 'multipart/form-data' } }
+        fetch(
+            BACKEND_ENDPOINT_IMAGES + 'upload-file',
+            { method: "POST", body: formData }
+        ).then(({ status }) => {
+            if (status != 200) {
+                throw new Error('Refused from server');
             }
+            else console.log('Success');
+        }).catch((err) => {
+            ToastAndroid.showWithGravity(
+                err.message,
+                ToastAndroid.LONG,
+                ToastAndroid.BOTTOM);
+            return false;
         });
     };
 
-    const handleUploadPhoto = (photo) => {
-        let formData = createFormData(photo, { 'toiletId': toiletId });
-        const config = {
-            headers: {
-                'content-type': 'multipart/form-data'
-            }
-        }
+    const removeSelectedPhoto = (idx) => {
+        setImageDataArray(oldArray => [].concat([].concat(oldArray.slice(0, idx), [null]), oldArray.slice(idx + 1, 5)))
+        imageArray[idx][1](null);
+        console.log('imageDataArray: ' + imageDataArray);
+    };
 
-        fetch(
-            BACKEND_ENDPOINT_IMAGES + 'upload-file',
-            {
-                method: "POST",
-                body: formData,
-            }
-        )
-            .then(({ status, data }) => {
-                if (status != 200) {
-                    console.log('Refused from server');
-                }
-                else console.log('Success');
+    const submitData = () => {
+        //submit all the rest of the data too
+        axios.post(BACKEND_ENDPOINT_TOILETS + "add-toilet", { token, toiletObj: toiletTbAdded })
+            .then(({ data }) => {
+                ToastAndroid.showWithGravity(
+                    data.message,
+                    ToastAndroid.LONG,
+                    ToastAndroid.BOTTOM);
+                let toiletId = data.toiletId;
+                console.log('imageDataArray: ' + imageDataArray);
+                imageDataArray.forEach(d => {
+                    if (d != null) {
+                        if (!handleUploadPhoto(d, toiletId))
+                            navigation.navigate("Home");
+                    }
+                });
+                navigation.navigate('ThankYou');
             })
-            .catch((err) => {
-                console.error(err);
-            })
+            .catch(err => {
+                ToastAndroid.showWithGravity(
+                    err.response.data.message,
+                    ToastAndroid.LONG,
+                    ToastAndroid.BOTTOM);
+                navigation.navigate("Home");
+            });
     };
 
     /* return (
@@ -227,24 +247,16 @@ export default function UploadImage({ route, navigation }) {
          </View>
      );*/
 
-    function submitData() {
-        //submit all the rest of the data too
-        console.log(imageDataArray);
-        imageDataArray.forEach(d => {
-            if (d != null) {
-                handleUploadPhoto(d)
-            }
-
-        })
-    }
-
     return (
         <View style={[styles.container, { backgroundColor: theme.background }]}>
             <View style={{ flex: 1, flexWrap: "wrap", flexDirection: "row" }}>
                 {imageArray.map((img, idx) => {
                     if (img[0] == null)
                         return (
-                            <TouchableOpacity style={{ width: 125, height: 200, backgroundColor: "grey", margin: 5, }} onPress={pickImage} key={idx}>
+                            <TouchableOpacity
+                                style={{ width: 125, height: 200, backgroundColor: "grey", margin: 5, }}
+                                onPress={pickImage} key={idx}>
+
                                 <Icon name="file-plus" size={30} color={"white"} />
                                 <Text style={{
                                     fontSize: 10,
@@ -261,14 +273,11 @@ export default function UploadImage({ route, navigation }) {
                     else
                         return (
                             <TouchableOpacity key={idx} onPress={() => pickThisImage(idx)}>
-                                <TouchableOpacity key={idx} onPress={() => {
-                                    setImageDataArray(oldArray => [].concat([].concat(oldArray.slice(0, idx), [null]), oldArray.slice(idx + 1, 5)))
-                                    imageArray[idx][1](null);
-                                    console.log(imageDataArray)
-                                }} style={{ position: 'absolute', top: 5, left: 100, zIndex: 20 }}>
+                                <TouchableOpacity key={idx} onPress={() => removeSelectedPhoto(idx)}
+                                    style={{ position: 'absolute', top: 5, left: 100, zIndex: 20 }}>
                                     <Icon name="close" size={30} color={"white"} />
                                 </TouchableOpacity>
-                                <Image source={{ uri: img[0] }} style={{ width: 125, height: 200, margin: 5 }} onPress={pickImage} />
+                                <Image source={{ uri: img[0].uri }} style={{ width: 125, height: 200, margin: 5 }} onPress={pickImage} />
                             </TouchableOpacity>
                         )
                 })}
@@ -285,7 +294,6 @@ export default function UploadImage({ route, navigation }) {
                         return;
                     }
                     submitData();
-                    navigation.navigate("ThankYou")
                 }
                 }
             >

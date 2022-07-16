@@ -27,7 +27,7 @@ router.get('/', function (req, res, next) {
 });
 
 
-const uploadSinglePhoto = upload.single("photo");
+const uploadSinglePhoto = upload.array("photos", 5);
 
 // Upload image
 router.post('/upload-file', function (req, res, next) {
@@ -38,39 +38,48 @@ router.post('/upload-file', function (req, res, next) {
             log('Multer Error');
         } else {
             let { toiletId, photoType } = req.body;
+
+            console.log(req.body);
             if (!toiletId || !photoType) {
                 return res.status(400).json({
                     message: 'Please make sure to pass in the body as JSON both toiletId and photoType properties.'
                 });
             }
 
-            let _f = req.file;
-            if (!_f) {
+            console.log(req.files);
+            let _fs = req.files;
+            if (_fs == undefined || _fs == null) {
                 return res.status(400).json({
                     message: 'Please make sure to pass in a file as part of form data.'
                 });
             }
 
-            let newImage = new Image({
-                path: _f.path,
-                img: {
-                    data: fs.readFileSync(path.join('uploads/' + _f.filename)),
-                    contentType: photoType,
-                },
-                originalname: _f.filename,
-                toilet_id: toiletId,
+            let dbImages = []
+            _fs.forEach(_f => {
+                let newImage = {
+                    path: _f.path,
+                    img: {
+                        data: fs.readFileSync(path.join('uploads/' + _f.filename)),
+                        contentType: photoType,
+                    },
+                    originalname: _f.filename,
+                    toilet_id: toiletId,
+                };
+                dbImages.push(newImage); 
             });
 
-            Image.addImage(newImage, function (err) {
+            Image.insertMany(dbImages, function (err) {
+                    
                 if (err) {
+                    console.log('err: ' + err);
                     return res.status(400).json({
                         message: err
                     });
                 }
                 else {
                     return res.status(200).json({
-                        message: 'File successfully saved to the database.'
-                    })
+                        message: 'Files successfully saved to the database.'
+                    });
                 }
             });
         }
