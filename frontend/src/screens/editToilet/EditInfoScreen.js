@@ -21,18 +21,23 @@ const EditInfoScreen = ({ route, navigation }) => {
         originalLocation,
         originalPrice,
         originalDetails,
-        originalHandicapAccess, } = route.params;
+        originalHandicapAccess,
+        rescue 
+    } = route.params;
 
     const [newHandicapAccess, setNewHandicapAccess] = useState(originalHandicapAccess);
     const [newName, setNewName] = useState(originalTitle);
     const [newAddress, setNewAddress] = useState(originalLocation);
     const [newPrice, setNewPrice] = useState(originalPrice);
     const [newDetails, setNewDetails] = useState(originalDetails);
+    // const [newHours, setNewHours] = useState(rescue)
+    
 
-    const {timeline} = route.params;
+    // const {timeline} = route.params.rescue;
     var numberi = 0;
 
     let initName, initAddress, initDetails, initCurrentLocation;
+    // let initHours = []
     initName = initAddress = initDetails = initCurrentLocation = '';
     let initPrice = '0,00€';
     let initIsEnabled = false;
@@ -108,8 +113,8 @@ const EditInfoScreen = ({ route, navigation }) => {
 
 
     const transformHours = () => {
-        console.log("Timeline == ", timeline)
-        timeline.forEach((obj) => {
+        // console.log("TimelineEDIT == ", timeline)
+        rescue.forEach((obj) => {
             //console.log("Obj == ", obj.days)
             //console.log("True or false == ", obj.days.includes("Mon"))
             if(obj.days.includes("Mon")){
@@ -117,7 +122,7 @@ const EditInfoScreen = ({ route, navigation }) => {
                 //console.log("hourrrrs == ", hours_Mon)
                 //console.log("times in === ", times)
                 times.Monday = hours_Mon;
-                //console.log("times after === ", times)
+                console.log("times after edit === ", times)
             }
             if(obj.days.includes("Tue")){
                 const hours_Tue = obj.start + "-" + obj.end
@@ -152,6 +157,7 @@ const EditInfoScreen = ({ route, navigation }) => {
         getAsyncStorageItem('token')
             .then((tokenFromStorage) => {
                 //setToken(tokenFromStorage);
+                console.log("ENTERED SAFE REGION")
                 transformHours();
                 axios.post(`${baseUrl}`, {
                     name: name,
@@ -189,31 +195,31 @@ const EditInfoScreen = ({ route, navigation }) => {
         setDetails(initDetails);
     }
 
-    const handleSubmit = () => {
-        ToastAndroid.showWithGravity(
-            'Please wait until update...',
-            ToastAndroid.SHORT,
-            ToastAndroid.BOTTOM);
+    // const handleSubmit = () => {
+    //     ToastAndroid.showWithGravity(
+    //         'Please wait until update...',
+    //         ToastAndroid.SHORT,
+    //         ToastAndroid.BOTTOM);
 
-        axios.post(BACKEND_ENDPOINT_TOILETS + 'edit-toilet', {
-            name: originalTitle,
-            newName,
-            newAddress,
-            newPrice,
-            newDetails,
-            newHandicapAccess,
-        })
-            .then(({ data }) => {
-                ToastAndroid.showWithGravity(
-                    data.message,
-                    ToastAndroid.LONG,
-                    ToastAndroid.BOTTOM);
-                setTimeout(() => {
-                    navigation.navigate('Profile', { token });
-                }, 3000);
-            })
-            .catch((err) => console.log(err));
-    }
+    //     axios.post(BACKEND_ENDPOINT_TOILETS + 'edit-toilet', {
+    //         name: originalTitle,
+    //         newName,
+    //         newAddress,
+    //         newPrice,
+    //         newDetails,
+    //         newHandicapAccess,
+    //     })
+    //         .then(({ data }) => {
+    //             ToastAndroid.showWithGravity(
+    //                 data.message,
+    //                 ToastAndroid.LONG,
+    //                 ToastAndroid.BOTTOM);
+    //             setTimeout(() => {
+    //                 navigation.navigate('Profile', { token });
+    //             }, 3000);
+    //         })
+    //         .catch((err) => console.log(err));
+    // }
 
     const theme = useContext(ThemeContext);
 

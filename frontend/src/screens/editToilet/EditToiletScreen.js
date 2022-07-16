@@ -174,7 +174,7 @@ const EditToiletScreen = ({ route, navigation }) => {
         <TouchableOpacity 
                 style={[styles.btn, {backgroundColor: theme.submitBtn}]}
                 onPress={() => {                  
-                  console.log("Data just before Next Click == ", rescue);
+                  console.log("DataEDITED just before Next Click == ", rescue);
                 
                   if(rescue.length == 0){
                     Alert.alert(
@@ -207,6 +207,7 @@ const EditToiletScreen = ({ route, navigation }) => {
                                             originalPrice,
                                             originalDetails,
                                             originalHandicapAccess,
+                                            rescue
                                         }                
                     );
                     }else{

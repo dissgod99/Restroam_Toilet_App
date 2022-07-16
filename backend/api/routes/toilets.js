@@ -121,7 +121,7 @@ router.post('/delete-toilet', jsonParser, async (req, res, next) => {
 });
 
 router.post('/edit-toilet', jsonParser, async (req, res, next) => {
-    let { name, newName, newAddress, newPrice, newDetails, newHandicapAccess } = req.body;
+    let { name, newName, newAddress, newPrice, newDetails, newHandicapAccess, newOpeningHours } = req.body;
 
     let updateObj = {
         name: newName,
@@ -129,6 +129,8 @@ router.post('/edit-toilet', jsonParser, async (req, res, next) => {
         price: newPrice,
         details: newDetails,
         handicapAccess: newHandicapAccess,
+        openingHours: newOpeningHours
+
     };
 
     let updatedToilet;
