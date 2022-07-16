@@ -182,7 +182,7 @@ export default function AddToilet({navigation}) {
                               && (obj["end"] != "<Closing Hour>");
                     })
                     if(checkInputs){
-                      navigation.navigate("More Toilet Infomation");
+                      navigation.navigate("More Toilet Infomation", {timeline: rescue});
                     }else{
                       Alert.alert(
                                 "Selected times/days problem",

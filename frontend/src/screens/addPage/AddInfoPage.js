@@ -7,7 +7,16 @@ import { getAsyncStorageItem } from "../../util";
 import * as Location from "expo-location"
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
-const AddInfoPage = ({ navigation }) => {
+import axios from "axios";
+
+import { Image } from "react-native-animatable";
+import Geocoder from "react-native-geocoder"
+
+
+const baseUrl = BACKEND_ENDPOINT_TOILETS + "add-toilet";
+
+const AddInfoPage = ({ navigation, route }) => {
+    const {timeline} = route.params;
     var numberi = 0;
 
     let initName, initAddress, initDetails, initCurrentLocation;
@@ -24,6 +33,17 @@ const AddInfoPage = ({ navigation }) => {
     const [isEnabled, setIsEnabled] = useState(initIsEnabled);
 
     const [details, setDetails] = useState('');
+
+    let times = {
+        Monday: "Closed",
+        Tuesday: "Closed",
+        Wednesday: "Closed",
+        Thursday: "Closed",
+        Friday: "Closed",
+        Saturday: "Closed",
+        Sunday: "Closed"
+    }
+
 
     useEffect(() => {
         getLocation();
@@ -73,20 +93,56 @@ const AddInfoPage = ({ navigation }) => {
         }
     };
 
-    const handleNextButton = () => {
+
+    const transformHours = () => {
+        console.log("Timeline == ", timeline)
+        timeline.forEach((obj) => {
+            //console.log("Obj == ", obj.days)
+            //console.log("True or false == ", obj.days.includes("Mon"))
+            if(obj.days.includes("Mon")){
+                const hours_Mon = obj.start + "-" + obj.end
+                //console.log("hourrrrs == ", hours_Mon)
+                //console.log("times in === ", times)
+                times.Monday = hours_Mon;
+                //console.log("times after === ", times)
+            }
+            if(obj.days.includes("Tue")){
+                const hours_Tue = obj.start + "-" + obj.end
+                times.Tuesday = hours_Tue;
+            }
+            if(obj["days"].includes("Wed")){
+                const hours_Wed = obj["start"] + "-" + obj["end"]
+                times.Wednesday = hours_Wed;
+            }
+            if(obj["days"].includes("Thu")){
+                const hours_Thu = obj["start"] + "-" + obj["end"]
+                times.Thursday = hours_Thu;
+            }
+            if(obj["days"].includes("Fri")){
+                const hours_Fri = obj["start"] + "-" + obj["end"]
+                times.Friday = hours_Fri;
+            }
+            if(obj["days"].includes("Sat")){
+                const hours_Sat = obj["start"] + "-" + obj["end"]
+                times.Saturday = hours_Sat;
+            }
+            if(obj["days"].includes("Sun")){
+                const hours_Sun = obj["start"] + "-" + obj["end"]
+                times.Sunday = hours_Sun;
+            }
+        })
+    }
+
+
+    const handleNextButton = () => {#
+
+        transformHours();
+
         let toiletTbAdded = {
             name: name,
             address: address,
             price: price,
-            openingHours: {
-                Monday: '10:00-17:00',
-                Tuesday: '10:00-17:00',
-                Wednesday: '10:00-17:00',
-                Thursday: '10:00-17:00',
-                Friday: '10:00-17:00',
-                Saturday: '10:00-17:00',
-                Sunday: '10:00-17:00',
-            },
+            openingHours: times,
             handicapAccess: isEnabled,
             details: details
         }
