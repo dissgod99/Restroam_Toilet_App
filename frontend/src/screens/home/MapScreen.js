@@ -9,6 +9,7 @@ import StarRating from 'react-native-star-rating';
 import DropDown from './DropDown';
 import { mapStyleDarkMode } from '../../global/mapStyleDarkMode';
 import ThemeContext from '../../darkMode/ThemeContext';
+import { useIsFocused } from "@react-navigation/core";
 
 const _ = require('lodash');
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
@@ -17,16 +18,11 @@ import axios from "axios";
 import { BACKEND_ENDPOINT_TOILETS } from '../../constants';
 
 
-export default function MapScreen({ navigation }) {
+export default function MapScreen({ navigation ,route}) {
+    const isFocused = useIsFocused();
+  
     const [position, setPosition] = useState(null);
-    const [toiletsAround, setToiletsAround] = useState([{ latitude: 49.895685, longitude: 8.681163 },
-    { latitude: 49.895975, longitude: 8.683416 },
-    { latitude: 49.897620, longitude: 8.681999 },
-    { latitude: 49.897316, longitude: 8.684767 },
-    { latitude: 49.8693297, longitude: 8.6371352 },
-    { latitude: 49.865, longitude: 8.6371350 },
-
-    ]);
+    const [toiletsAround, setToiletsAround] = useState([]);
 
     const checkPermission = async () => {
         const hasPermission = await Location.requestForegroundPermissionsAsync();
@@ -91,7 +87,14 @@ export default function MapScreen({ navigation }) {
         getToiletsAroundUser();
     }, [])
 
-
+    useEffect(() => {
+        if (isFocused) {
+            console.log("rerender")
+            checkPermission();
+            getToiletsAroundUser();
+        }
+      }, [isFocused,navigation,route]);
+    
     const [clicked, setClicked] = useState(false);
 
     const handleSubmit = () => {
