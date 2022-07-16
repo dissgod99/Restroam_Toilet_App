@@ -12,7 +12,10 @@ let storage = multer.diskStorage({
         cb(null, 'uploads/')
     },
     filename: function (req, file, cb) {
-        cb(null, file.originalname + '-' + Date.now());
+        let withoutExtension = file.originalname.split('.');
+        let fileExt = withoutExtension.pop();
+        withoutExtension = withoutExtension.join('.');
+        cb(null, withoutExtension + '-' + Date.now() + '.' + fileExt);
     }
 });
 
@@ -40,7 +43,7 @@ router.post('/upload-file', function (req, res, next) {
             let { toiletId, photoType } = req.body;
             if (!toiletId || !photoType) {
                 return res.status(400).json({
-                    message: 'Please make sure to pass in the body as JSON both toiletId and photoType properties.'
+                    message: 'Please make sure to pass in the body as form data both toiletId and photoType properties.'
                 });
             }
 
@@ -84,7 +87,9 @@ router.get('/get-images', function (req, res) {
     Image.getImages(function (err, images) {
         if (err) {
             console.log(err);
-            res.status(500).send('An error occurred', err);
+            res.status(400).json({
+                message: err
+            });
         }
         else {
             res.render('imagesPage', { items: images });
@@ -93,14 +98,20 @@ router.get('/get-images', function (req, res) {
     });
 });
 
-router.get('/images/:id', function (req, res) {
+router.get('/:id', function (req, res) {
 
     Image.getImageById(req.params.id, function (err, image) {
         if (err) {
-            throw err;
+            console.log(err);
+            res.status(400).json({
+                message: err
+            });
         }
         //res.download(genres.path);
-        res.send(image.path)
+        res.status(200).json({
+            base64Data: image.img.data.toString('base64'),
+            contentType: image.img.contentType
+        });
     });
 });
 

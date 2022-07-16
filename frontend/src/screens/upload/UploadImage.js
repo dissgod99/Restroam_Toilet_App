@@ -65,23 +65,23 @@ export default function UploadImage({ route, navigation }) {
         return tf.tensor3d(buffer, [height, width, 3])
     }
 
-    const pickImage = async () => {
+    const pickImage = async (idx) => {
         setLoad(true);
         let result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.All,
             allowsEditing: true,
-            //base64: true,
+            base64: true,
             aspect: [4, 3],
             quality: 1,
         });
 
         if (!result.cancelled) {
-            // let filename = result.uri.split('/').pop();
-            console.log(result);
-            // result.fileName = filename;
-            setPhoto(result);
+            let filename = result.uri.split('/').pop();
+            result.fileName = filename;
+            (imageArray[idx][1])(result);
         }
-        // var legit = await classifyImage(result.base64);
+
+        let legit = await classifyImage(result.base64);
 
         // if (!result.cancelled && legit) {
         //     for (var i = 0; i < 5; i++) {
@@ -97,7 +97,7 @@ export default function UploadImage({ route, navigation }) {
         //         setLegitText('')
         //     }, 30000)
         // }
-        // setLoad(false);
+        setLoad(false);
     };
 
     const pickThisImage = async (idx) => {
@@ -109,16 +109,16 @@ export default function UploadImage({ route, navigation }) {
             aspect: [4, 3],
             quality: 1,
         });
-        var legit = await classifyImage(result.base64);
-        if (!result.cancelled && legit) {
-            imageArray[idx][1](result.uri);
-        }
-        if (!legit) {
-            setLegitText("This image contains explicit containt and won't be accepted");
-            setTimeout(function () {
-                setLegitText('')
-            }, 30000)
-        }
+        //var legit = await classifyImage(result.base64);
+        // if (!result.cancelled && legit) {
+        //     imageArray[idx][1](result.uri);
+        // }
+        // if (!legit) {
+        //     setLegitText("This image contains explicit containt and won't be accepted");
+        //     setTimeout(function () {
+        //         setLegitText('')
+        //     }, 30000)
+        // }
 
         setLoad(false);
     };
@@ -143,7 +143,7 @@ export default function UploadImage({ route, navigation }) {
     }
 
     const createFormData = (photo, body = {}) => {
-        
+
         const data = new FormData();
         const tmp = mime.getType(photo.uri);
 
@@ -163,11 +163,11 @@ export default function UploadImage({ route, navigation }) {
 
     const [photo, setPhoto] = React.useState(null);
 
-    const handleChoosePhoto = () => {
+    const handleChoosePhoto = (idx) => {
         launchImageLibrary({ mediaType: 'photo' }, (response) => {
             // console.log(response);
             if (response) {
-                setPhoto(response);
+                (imageArray[idx][1])(response);
             }
         });
     };
@@ -198,30 +198,30 @@ export default function UploadImage({ route, navigation }) {
             })
     };
 
-    return (
-        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-            {photo && (
-                <>
-                    <Image
-                        source={{ uri: photo.uri }}
-                        style={{ width: 300, height: 300 }}
-                    />
-                    <Button title="Upload Photo" onPress={handleUploadPhoto} />
-                </>
-            )}
-            <Button title="Choose Photo" onPress={pickImage} />
-        </View>
-    );
+    // return (
+    //     <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+    //         {photo && (
+    //             <>
+    //                 <Image
+    //                     source={{ uri: photo.uri }}
+    //                     style={{ width: 300, height: 300 }}
+    //                 />
+    //                 <Button title="Upload Photo" onPress={handleUploadPhoto} />
+    //             </>
+    //         )}
+    //         <Button title="Choose Photo" onPress={pickImage} />
+    //     </View>
+    // );
 
 
-    /*
     return (
-        <View style={[styles.container, {backgroundColor: theme.background}]}>
+        <View style={[styles.container, { backgroundColor: theme.background }]}>
             <View style={{ flex: 1, flexWrap: "wrap", flexDirection: "row" }}>
                 {imageArray.map((img, idx) => {
                     if (img[0] == null)
                         return (
-                            <TouchableOpacity style={{ width: 125, height: 200, backgroundColor: "grey", margin: 5, }} onPress={pickImage} key={idx}>
+                            <TouchableOpacity style={{ width: 125, height: 200, backgroundColor: "grey", margin: 5, }}
+                                onPress={() => pickImage(idx)} key={idx}>
                                 <Icon name="file-plus" size={30} color={"white"} />
                                 <Text style={{
                                     fontSize: 10,
@@ -237,13 +237,13 @@ export default function UploadImage({ route, navigation }) {
                         );
                     else
                         return (
-                            <TouchableOpacity key={idx} onPress={() => pickThisImage(idx)}>
-                                <TouchableOpacity key={idx} onPress={() => {
+                            <TouchableOpacity key={idx} onPress={() => pickImage(idx)}>
+                                <TouchableOpacity onPress={() => {
                                     imageArray[idx][1](null);
                                 }} style={{ position: 'absolute', top: 5, left: 100, zIndex: 20 }}>
                                     <Icon name="close" size={30} color={"white"} />
                                 </TouchableOpacity>
-                                <Image source={{ uri: img[0] }} style={{ width: 125, height: 200, margin: 5 }} onPress={pickImage} />
+                                <Image source={{ uri: img[0].uri }} style={{ width: 125, height: 200, margin: 5 }} />
                             </TouchableOpacity>
                         )
                 })}
@@ -254,7 +254,7 @@ export default function UploadImage({ route, navigation }) {
                 </Text>
             </View>
             <TouchableOpacity
-                style={[styles.btn, {backgroundColor: theme.submitBtn}]}
+                style={[styles.btn, { backgroundColor: theme.submitBtn }]}
                 onPress={() => {
                     if (load) {
                         return;
@@ -274,7 +274,6 @@ export default function UploadImage({ route, navigation }) {
             </TouchableOpacity>
         </View>
     );
-    */
 }
 
 const styles = StyleSheet.create({
