@@ -10,7 +10,7 @@ const ThankYou = ({ navigation }) => {
 
     const handleGoBack = () => {
         // Should go back to Map in Home
-        navigation.navigate("Home")
+        navigation.navigate("Map",{rerender: true})
     }
 
     const theme = useContext(ThemeContext);

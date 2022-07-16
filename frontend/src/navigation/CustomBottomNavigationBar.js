@@ -63,6 +63,7 @@ const screenOpts = ({ route }) => ({
 // new tab options
 const materialScreenOpts = ({route}) => ({
   // tabBarColor must be changed (Dark Mode)
+  unmountOnBlur: true,
   tabBarColor: Theme.light.bottomBar,
   tabBarIcon: ({ focused, color, size }) => {
     let iconName; let rn = route.name;
@@ -80,6 +81,7 @@ const materialScreenOpts = ({route}) => ({
 
 const materialScreenOptsDark = ({route}) => ({
   // tabBarColor must be changed (Dark Mode)
+  unmountOnBlur: true,
   tabBarColor: Theme.dark.bottomBar,
   tabBarIcon: ({ focused, color, size }) => {
     let iconName; let rn = route.name;
@@ -95,14 +97,15 @@ const materialScreenOptsDark = ({route}) => ({
   },
 });
 
-export default function CustomButtonNavigationBar() {
+export default function CustomButtonNavigationBar({navigation, route}) {
 
   const theme = useContext(ThemeContext);
   
   return (
     <MaterialTab.Navigator
       initialRouteName={mapName}
-      screenOptions={theme.theme == "light" ? materialScreenOpts : materialScreenOptsDark}
+      //screenOptions={{ unmountOnBlur: true }}
+      screenOptions={theme.theme == "light" ? materialScreenOpts : materialScreenOptsDark }
       backBehavior='none'
       shifting={true}
       barStyle={{ backgroundColor: "#FFFFFF", }}
@@ -110,9 +113,9 @@ export default function CustomButtonNavigationBar() {
       //active Color must be changed (Dark Mode)
       activeColor={theme.theme == "light" ? "#f28d82": "#ccaa55"}
     >
-      <MaterialTab.Screen name={mapName} component={MapScreen} />
+      <MaterialTab.Screen name={mapName} component={MapScreen} options={{ unmountOnBlur: true }}/>
       <MaterialTab.Screen name={addName} component={AddScreen} />
-      <MaterialTab.Screen name={accountName} component={AccountScreen} />
+      <MaterialTab.Screen name={accountName} component={AccountScreen} options={{ unmountOnBlur: true }}/>
     </MaterialTab.Navigator>
   )
 }

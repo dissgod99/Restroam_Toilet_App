@@ -51,7 +51,7 @@ export default function App() {
 
     <ThemeContext.Provider value={mode == true ? Theme.dark : Theme.light}>
       <NavigationContainer >
-        <Stack.Navigator initialRouteName='Splash' >
+        <Stack.Navigator initialRouteName='Splash'  screenOptions={{ unmountOnBlur: true }}>
           <Stack.Screen
             name="Splash"
             component={SplashScreen}
@@ -70,7 +70,9 @@ export default function App() {
                 backgroundColor: headColor
               },
               headerShown: false,
-            }} />
+              unmountOnBlur: true,
+            }}
+             />
           <Stack.Screen
             name="Rating"
             component={RatingToiletScreen}

@@ -17,7 +17,7 @@ import axios from "axios";
 import { BACKEND_ENDPOINT_TOILETS } from '../../constants';
 
 
-export default function MapScreen({ navigation }) {
+export default function MapScreen({ navigation ,route}) {
     const [position, setPosition] = useState(null);
     const [toiletsAround, setToiletsAround] = useState([{ latitude: 49.895685, longitude: 8.681163 },
     { latitude: 49.895975, longitude: 8.683416 },
@@ -91,7 +91,11 @@ export default function MapScreen({ navigation }) {
         getToiletsAroundUser();
     }, [])
 
-
+    useEffect(() => {
+        console.log("rerender")
+        checkPermission();
+        getToiletsAroundUser();
+    }, [route])
     const [clicked, setClicked] = useState(false);
 
     const handleSubmit = () => {
