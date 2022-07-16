@@ -46,6 +46,8 @@ const AccountScreen = ({ navigation }) => {
   useEffect(() => {
     getAsyncStorageItem('token')
       .then((tokenFromStorage) => {
+        if(tokenFromStorage == null) navigation.navigate("Not logged in");
+        else{
         setToken(tokenFromStorage);
         axios
           .post(BACKEND_ENDPOINT_USERS + 'get-user-data', { token: tokenFromStorage })
@@ -59,7 +61,7 @@ const AccountScreen = ({ navigation }) => {
               ToastAndroid.LONG,
               ToastAndroid.BOTTOM);
           });
-      })
+      }})
       .catch(err => console.log(err));
   }, []);
 

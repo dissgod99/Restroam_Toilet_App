@@ -6,6 +6,7 @@ import AddToilet from '../addPage/AddToilet';
 
 
 export default function AddScreen({ navigation }) {
+    
     return(
         
         <View style= {styles.container}>
