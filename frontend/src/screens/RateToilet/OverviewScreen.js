@@ -1,41 +1,45 @@
-import React, { useState, useContext } from "react";
+import React, { useState, useContext, useEffect } from "react";
 import { View, Text, Button, StyleSheet, TouchableOpacity, ScrollView, SafeAreaView, Image } from "react-native";
 import ThemeContext from "../../darkMode/ThemeContext";
 import StarRating from 'react-native-star-rating';
 import ReviewBox from "./ReviewBox";
+import axios from "axios";
 
+import { BACKEND_ENDPOINT_REVIEWS } from '../../constants';
 
 const OverviewScreen = ({ route, navigation }) => {
     // Themes (Dark Mode / Default Mode)
     const theme = useContext(ThemeContext);
     const { toilet } = route.params;
-    const reviews = [
-        {
-            text: "really goood toiletreally goood toiletreally goood toiletreally goood toiletreally goood toiletreally goood toiletreally goood toilet",
-            stars: 5
 
-        },
-        {
-            text: "really bad toilet",
-            stars: 3
+    const [reviews, setReviews] = useState([])
 
-        },
-        {
-            text: "This toilet is discusting",
-            stars: 1
+    useEffect(() => {
+        async function getReviews() {
+            let res = axios.post(BACKEND_ENDPOINT_REVIEWS + 'FetchReviewsForToilet', { address: toilet.location })
+            res = res.then(({ status, data }) => {
+                console.log(data)
+                let tmp = data.map(rev => {
+                    return {
+                        text: rev.description,
+                        rating: rev.rating,
+                        waitingTime: rev.waitingtime,
+                        cleanliness: rev.cleanliness,
+                        security: rev.security,
+                    }
+                })
+                console.log(tmp)
+                setReviews(tmp)
+            }).catch(err => console.log(err));
+        }
 
-        },
-        {
-            text: "I almost pukes but it did the job",
-            stars: 2
+        getReviews();
 
-        },
-        {
-            text: "Never to be done again",
-            stars: 1.5
+        return () => {
+            setReviews([])
+        }
+    }, [])
 
-        },
-    ]
     return (
         <View style={{ backgroundColor: theme.background, height: "100%" }}>
             <ScrollView >
@@ -52,13 +56,13 @@ const OverviewScreen = ({ route, navigation }) => {
                 }}><View style={{
                     width: '45%'
                 }}>
-                        <Text style={[styles.title, {color: theme.titleReview}]}>{toilet.name}</Text>
+                        <Text style={[styles.title, { color: theme.titleReview }]}>{toilet.name}</Text>
                         <Text style={{ fontSize: 10, color: theme.color }}>{toilet.location}</Text>
                         <View style={styles.stars}>
                             <StarRating
                                 maxStars={5}
                                 disabled={true}
-                                rating={toilet.stars}
+                                rating={toilet.rating}
                                 selectedStar={(rating) => { }}
                                 fullStarColor={"gold"}
                                 starSize={20}
@@ -82,12 +86,12 @@ const OverviewScreen = ({ route, navigation }) => {
                                     justifyContent: 'space-between',
                                     width: '100%',
                                     fontWeight: '20',
-                                    
+
                                 }} key={key}>
-                                    <Text style={{color: theme.color}}>
+                                    <Text style={{ color: theme.color }}>
                                         {key[0] + ': '}
                                     </Text>
-                                    <Text style={{color: theme.color}}>
+                                    <Text style={{ color: theme.color }}>
                                         {key[1]}
                                     </Text>
                                 </View>)
@@ -116,7 +120,7 @@ const OverviewScreen = ({ route, navigation }) => {
                 <TouchableOpacity
                     style={[styles.btn, { backgroundColor: theme.submitBtn }]}
                     onPress={() => {
-                        navigation.navigate("Rating", {toilet})
+                        navigation.navigate("Rating", { toilet })
                     }}
                 >
                     <Text style={styles.stOfSubmit}>
@@ -136,9 +140,9 @@ const OverviewScreen = ({ route, navigation }) => {
                         Reviews
                     </Text>
                     {
-                        reviews.map(r => {
+                        reviews.map((r, idx) => {
                             return (
-                                <View key={r.stars}>
+                                <View key={idx}>
                                     <ReviewBox review={r} >
                                     </ReviewBox>
                                 </View>
@@ -176,12 +180,12 @@ const styles = StyleSheet.create({
         width: 100,
         margin: 2
     },
-    stOfSubmit:{
+    stOfSubmit: {
         fontWeight: "bold"
     },
     btn: {
         backgroundColor: "#e6697e",
-        alignItems:'center',
+        alignItems: 'center',
         paddingVertical: 10,
         borderRadius: 5,
         margin: 30

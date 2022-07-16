@@ -88,7 +88,7 @@ const DropDown = ({ data }) => {
 const styles = StyleSheet.create({
     container: {
         position: 'absolute',
-        top: 20,
+        top: 75,
         zIndex: 300,
         justifyContent: 'space-between',
         flex: 1,
@@ -107,7 +107,7 @@ const styles = StyleSheet.create({
         width: 188,
         position: 'absolute',
         left: 112,
-        top: 101,
+        top: 67.5,
     },
     inputStyle: {
         borderWidth: 0.5,

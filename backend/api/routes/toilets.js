@@ -70,7 +70,6 @@ router.post('/add-toilet', jsonParser, async (req, res, next) => {
         toilet
             .save()
             .then(result => {
-                console.log(result);
                 return res.status(201).json({
                     message: 'Toilet has been added.',
                     toiletId: result._id
@@ -104,7 +103,6 @@ router.post('/delete-toilet', jsonParser, async (req, res, next) => {
         .exec()
         .then(async (toilet) => {
             if (toilet.length > 0) {
-                console.log(toilet);
                 await Toilet.deleteOne({ "name": req.body.name });
                 return res.status(200).json({
                     message: 'Toilet deleted successfully',
@@ -162,15 +160,11 @@ function distance(lat1, lon1, lat2, lon2, unit) {
 }
 const countAverageRating = async (toilet) => {
     let reviewsTmp = await Review.find();
-    console.log(reviewsTmp);
     let reviews = []
-    console.log(toilet.address);
     reviewsTmp.forEach(rev => {
 
-        if (rev.address == toilet.address) reviews.push(rev);
+        if (rev.address == toilet.address) reviews.push(rev.rating);
     });
-    console.log("rev");
-    console.log(reviews);
     if (reviews.length <= 0) {
         return 0;
     }
@@ -190,7 +184,6 @@ router.post('/nearestToilets', jsonParser, async (req, res, next) => {
                 const result = await geocoder.geocode(entry.address);
 
                 var dist = distance(result[0].latitude, result[0].longitude, req.body.latitude, req.body.longitude, 'K');
-                console.log(dist);
                 if (dist < 2) {
                     const rate = await countAverageRating(entry);
 

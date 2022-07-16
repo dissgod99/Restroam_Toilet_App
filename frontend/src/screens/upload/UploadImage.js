@@ -31,6 +31,7 @@ export default function UploadImage({ route, navigation }) {
     const imageArray = [[image1, setImage1], [image2, setImage2], [image3, setImage3], [image4, setImage4], [image5, setImage5]];
     const [model, setModel] = useState(null);
     const [legitText, setLegitText] = useState("");
+    const [imageDataArray, setImageDataArray] = useState(Array(5).fill(null));
 
     useEffect(() => {
         (async () => {
@@ -39,8 +40,10 @@ export default function UploadImage({ route, navigation }) {
                 if (status !== 'granted') {
                     alert('Sorry, we need camera roll permissions to make this work!');
                 }
+                setLoad(true);
                 await tf.ready();
                 setModel(await mobilenet.load());
+                setLoad(false);
             }
         })();
     }, []);
@@ -70,34 +73,39 @@ export default function UploadImage({ route, navigation }) {
         let result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.All,
             allowsEditing: true,
-            //base64: true,
+            base64: true,
             aspect: [4, 3],
             quality: 1,
-        });
-
+        }).catch(e => console.log(e));
+        if (result.cancelled) {
+            setLoad(false)
+            return;
+        }
         if (!result.cancelled) {
-            // let filename = result.uri.split('/').pop();
+            let filename = result.uri.split('/').pop();
             console.log(result);
-            // result.fileName = filename;
+            result.fileName = filename;
             setPhoto(result);
         }
-        // var legit = await classifyImage(result.base64);
+        var legit = await classifyImage(result.base64);
 
-        // if (!result.cancelled && legit) {
-        //     for (var i = 0; i < 5; i++) {
-        //         if (imageArray[i][0] == null) {
-        //             imageArray[i][1](result.uri);
-        //             break;
-        //         }
-        //     }
-        // }
-        // if (!legit) {
-        //     setLegitText("This image contains explicit containt and won't be accepted");
-        //     setTimeout(function () {
-        //         setLegitText('')
-        //     }, 30000)
-        // }
-        // setLoad(false);
+        if (!result.cancelled && legit) {
+            for (var i = 0; i < 5; i++) {
+                if (imageArray[i][0] == null) {
+                    setImageDataArray(oldArray => [].concat([].concat(oldArray.slice(0, i), [result]), oldArray.slice(i + 1, 5)))
+                    imageArray[i][1](result.uri);
+                    console.log(imageDataArray)
+                    break;
+                }
+            }
+        }
+        if (!legit) {
+            setLegitText("This image contains explicit containt and won't be accepted");
+            setTimeout(function () {
+                setLegitText('')
+            }, 30000)
+        }
+        setLoad(false);
     };
 
     const pickThisImage = async (idx) => {
@@ -108,10 +116,16 @@ export default function UploadImage({ route, navigation }) {
             base64: true,
             aspect: [4, 3],
             quality: 1,
-        });
+        }).catch(e => console.log(e));
+        if (result.cancelled) {
+            setLoad(false)
+            return;
+        }
         var legit = await classifyImage(result.base64);
         if (!result.cancelled && legit) {
             imageArray[idx][1](result.uri);
+            setImageDataArray(oldArray => [].concat([].concat(oldArray.slice(0, idx), [result]), oldArray.slice(idx + 1, 5)))
+            console.log(imageDataArray)
         }
         if (!legit) {
             setLegitText("This image contains explicit containt and won't be accepted");
@@ -143,7 +157,7 @@ export default function UploadImage({ route, navigation }) {
     }
 
     const createFormData = (photo, body = {}) => {
-        
+
         const data = new FormData();
         const tmp = mime.getType(photo.uri);
 
@@ -172,7 +186,7 @@ export default function UploadImage({ route, navigation }) {
         });
     };
 
-    const handleUploadPhoto = () => {
+    const handleUploadPhoto = (photo) => {
         let formData = createFormData(photo, { 'toiletId': toiletId });
         const config = {
             headers: {
@@ -198,25 +212,34 @@ export default function UploadImage({ route, navigation }) {
             })
     };
 
-    return (
-        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-            {photo && (
-                <>
-                    <Image
-                        source={{ uri: photo.uri }}
-                        style={{ width: 300, height: 300 }}
-                    />
-                    <Button title="Upload Photo" onPress={handleUploadPhoto} />
-                </>
-            )}
-            <Button title="Choose Photo" onPress={pickImage} />
-        </View>
-    );
+    /* return (
+         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
+             {photo && (
+                 <>
+                     <Image
+                         source={{ uri: photo.uri }}
+                         style={{ width: 300, height: 300 }}
+                     />
+                     <Button title="Upload Photo" onPress={handleUploadPhoto} />
+                 </>
+             )}
+             <Button title="Choose Photo" onPress={pickImage} />
+         </View>
+     );*/
 
+    function submitData() {
+        //submit all the rest of the data too
+        console.log(imageDataArray);
+        imageDataArray.forEach(d => {
+            if (d != null) {
+                handleUploadPhoto(d)
+            }
 
-    /*
+        })
+    }
+
     return (
-        <View style={[styles.container, {backgroundColor: theme.background}]}>
+        <View style={[styles.container, { backgroundColor: theme.background }]}>
             <View style={{ flex: 1, flexWrap: "wrap", flexDirection: "row" }}>
                 {imageArray.map((img, idx) => {
                     if (img[0] == null)
@@ -239,7 +262,9 @@ export default function UploadImage({ route, navigation }) {
                         return (
                             <TouchableOpacity key={idx} onPress={() => pickThisImage(idx)}>
                                 <TouchableOpacity key={idx} onPress={() => {
+                                    setImageDataArray(oldArray => [].concat([].concat(oldArray.slice(0, idx), [null]), oldArray.slice(idx + 1, 5)))
                                     imageArray[idx][1](null);
+                                    console.log(imageDataArray)
                                 }} style={{ position: 'absolute', top: 5, left: 100, zIndex: 20 }}>
                                     <Icon name="close" size={30} color={"white"} />
                                 </TouchableOpacity>
@@ -254,11 +279,12 @@ export default function UploadImage({ route, navigation }) {
                 </Text>
             </View>
             <TouchableOpacity
-                style={[styles.btn, {backgroundColor: theme.submitBtn}]}
+                style={[styles.btn, { backgroundColor: theme.submitBtn }]}
                 onPress={() => {
                     if (load) {
                         return;
                     }
+                    submitData();
                     navigation.navigate("ThankYou")
                 }
                 }
@@ -274,7 +300,7 @@ export default function UploadImage({ route, navigation }) {
             </TouchableOpacity>
         </View>
     );
-    */
+
 }
 
 const styles = StyleSheet.create({

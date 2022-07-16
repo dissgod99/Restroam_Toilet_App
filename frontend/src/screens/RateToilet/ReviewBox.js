@@ -28,17 +28,53 @@ export default function ReviewBox ({ review }) {
                         justifyContent: 'space-between',
                     }}>
                         <Text style={[styles.title, {color: theme.color}]}>{review.text}</Text>
-
+                    <View>
                         <View style={styles.stars}>
+                            <Text>Overall rating:</Text>
                             <StarRating
                                 maxStars={5}
                                 disabled={true}
-                                rating={review.stars}
+                                rating={review.rating}
                                 selectedStar={(rating) => { }}
                                 fullStarColor={"gold"}
                                 starSize={20}
                             />
                         </View>
+                        <View style={styles.stars}>
+                            <Text>Cleanliness:</Text>
+                            <StarRating
+                                maxStars={5}
+                                disabled={true}
+                                rating={review.cleanliness}
+                                selectedStar={(rating) => { }}
+                                fullStarColor={"gold"}
+                                starSize={20}
+                            />
+                        </View>
+                        <View style={styles.stars}>
+                            <Text>Security:</Text>
+                            <StarRating
+                                maxStars={5}
+                                disabled={true}
+                                rating={review.security}
+                                selectedStar={(rating) => { }}
+                                fullStarColor={"gold"}
+                                starSize={20}
+                            />
+                        </View>
+                        <View style={styles.stars}>
+                            <Text>Waiting Time:</Text>
+                            <StarRating
+                                maxStars={5}
+                                disabled={true}
+                                rating={review.waitingTime}
+                                selectedStar={(rating) => { }}
+                                fullStarColor={"gold"}
+                                starSize={20}
+                            />
+                        </View>
+                    </View>
+                        
                     </View>
 
                     <View style={{
@@ -80,8 +116,7 @@ const styles = StyleSheet.create({
     stars: {
         flexDirection: 'row',
         alignItems: 'center',
-
-
+        justifyContent: 'space-between',
     },
     image: {
         height: 200,

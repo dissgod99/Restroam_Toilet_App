@@ -33,7 +33,6 @@ const geocoder = NodeGeocoder(options);
 router.post('/addReview', jsonParser, async (req, res, next) => {
     try {
         const token = req.body.token;
-        console.log(token);
         //if (!token)
         //  throw new Error('Missing arugments in request body. Please pass in the token.');
         const decryptedSignature = jwt.verify(token, JWT_SECRET);
@@ -68,7 +67,6 @@ router.post('/addReview', jsonParser, async (req, res, next) => {
                     review
                         .save()
                         .then(result => {
-                            console.log(result);
                             return res.status(201).json({
                                 message: 'review added',
                             });
@@ -129,7 +127,6 @@ router.post('/deleteReview', jsonParser, async (req, res, next) => {
 router.post('/editReview', jsonParser, async (req, res, next) => {
     try {
         const token = req.body.token;
-        console.log(token);
         //if (!token)
         //  throw new Error('Missing arugments in request body. Please pass in the token.');
         const decryptedSignature = jwt.verify(token, JWT_SECRET);
@@ -144,7 +141,6 @@ router.post('/editReview', jsonParser, async (req, res, next) => {
             .exec()
             .then(async (review) => {
                 if (review.length > 0) {
-                    console.log(toilet);
                     await Review.updateOne(
                         { user: user.username, address: req.body.address },
                         { $set: req.body.update });
