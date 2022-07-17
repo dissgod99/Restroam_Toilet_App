@@ -5,6 +5,8 @@ import StarRating from 'react-native-star-rating';
 import ReviewBox from "./ReviewBox";
 import axios from "axios";
 
+import { useIsFocused } from "@react-navigation/core";
+
 import { BACKEND_ENDPOINT_REVIEWS } from '../../constants';
 
 const OverviewScreen = ({ route, navigation }) => {
@@ -14,6 +16,7 @@ const OverviewScreen = ({ route, navigation }) => {
 
     const [reviews, setReviews] = useState([])
 
+    const isFocused = useIsFocused();
     useEffect(() => {
         async function getReviews() {
             let res = axios.post(BACKEND_ENDPOINT_REVIEWS + 'FetchReviewsForToilet', { address: toilet.location })
@@ -38,7 +41,7 @@ const OverviewScreen = ({ route, navigation }) => {
         return () => {
             setReviews([])
         }
-    }, [])
+    }, [isFocused])
 
     return (
         <View style={{ backgroundColor: theme.background, height: "100%" }}>

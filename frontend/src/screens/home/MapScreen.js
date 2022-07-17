@@ -71,6 +71,7 @@ export default function MapScreen({ navigation ,route}) {
                 longitude: p.longitude
             }).then(
                 ({ status, data }) => {
+                    console.log(data.payload);
                     setToiletsAround(data.payload);
                 }
             )
@@ -94,30 +95,7 @@ export default function MapScreen({ navigation ,route}) {
             getToiletsAroundUser();
         }
       }, [isFocused,navigation,route]);
-    
-    const [clicked, setClicked] = useState(false);
 
-    const handleSubmit = () => {
-        setClicked(!clicked);
-
-    }
-
-    var item = {
-        name: "toilet1",
-        location: "kethastraße",
-        rating: 2.5,
-        description: "very good",
-        openingHours: {
-            Monday: '10:00-17:00',
-            Tuesday: '10:00-17:00',
-            Wednesday: '10:00-17:00',
-            Thursday: '10:00-17:00',
-            Friday: '10:00-17:00',
-            Saturday: '10:00-17:00',
-            Sunday: '10:00-17:00',
-            
-        },
-    }
 
     const [markerclicked, setMarkerlicked] = useState(false);
     const [marker, setMarker] = useState({
@@ -165,11 +143,7 @@ export default function MapScreen({ navigation ,route}) {
                 longitudeDelta: 0.01,
             })
         }
-        var found = toiletsAround.find(function (element) {
-            return element > 4;
-        });
         setMarker(item1);
-        getToiletsAroundUser();
     }
 
     const theme = useContext(ThemeContext);
