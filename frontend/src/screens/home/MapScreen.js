@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect , useContext} from 'react';
+import React, { useState, useRef, useEffect, useContext } from 'react';
 import { Text, Image, ScrollView, Fragment, FlatList, TouchableOpacity, View, StyleSheet, ActivityIndicator } from 'react-native';
 import MapView, { PROVIDER_GOOGLE } from 'react-native-maps';
 import { mapStyle } from '../../global/mapStyle';
@@ -18,11 +18,12 @@ import axios from "axios";
 import { BACKEND_ENDPOINT_TOILETS } from '../../constants';
 
 
-export default function MapScreen({ navigation ,route}) {
+export default function MapScreen({ navigation, route }) {
     const isFocused = useIsFocused();
-  
+
     const [position, setPosition] = useState(null);
     const [toiletsAround, setToiletsAround] = useState([]);
+    const [directionClick, setDirectionClick] = useState(false);
 
     const checkPermission = async () => {
         const hasPermission = await Location.requestForegroundPermissionsAsync();
@@ -63,20 +64,20 @@ export default function MapScreen({ navigation ,route}) {
     }
 
     const getToiletsAroundUser = async () => {
-        const p =await getLocation();
-            //console.log(position);
+        const p = await getLocation();
+        //console.log(position);
 
-            axios.post(`${BACKEND_ENDPOINT_TOILETS}/nearestToilets`, {
-                latitude: p.latitude,
-                longitude: p.longitude
-            }).then(
-                ({ status, data }) => {
-                    console.log(data.payload);
-                    setToiletsAround(data.payload);
-                }
-            )
+        axios.post(`${BACKEND_ENDPOINT_TOILETS}/nearestToilets`, {
+            latitude: p.latitude,
+            longitude: p.longitude
+        }).then(
+            ({ status, data }) => {
+                console.log(data.payload);
+                setToiletsAround(data.payload);
+            }
+        )
             .catch(err => console.log("error"));
-        
+
     }
 
     const _map = useRef(1);
@@ -94,7 +95,7 @@ export default function MapScreen({ navigation ,route}) {
             checkPermission();
             getToiletsAroundUser();
         }
-      }, [isFocused,navigation,route]);
+    }, [isFocused, navigation, route]);
 
 
     const [markerclicked, setMarkerlicked] = useState(false);
@@ -113,7 +114,7 @@ export default function MapScreen({ navigation ,route}) {
             Sunday: '10:00-17:00',
         },
     }
-);
+    );
     const [itemclicked, setItemclicked] = useState({});
     const [indexclicked, setIndexclicked] = useState(-1);
     const [vision, setVision] = useState(null);
@@ -131,10 +132,14 @@ export default function MapScreen({ navigation ,route}) {
             })
         }
         else if (indexclicked == index) {
+            setDirection(<View></View>);
+            setDirectionClick(false);
             setMarkerlicked(!markerclicked);
             setIndexclicked(-1);
         }
         else {
+            setDirection(<View></View>);
+            setDirectionClick(false);
             setIndexclicked(index);
             setVision({
                 latitude: toiletsAround[index].latitude,
@@ -149,7 +154,7 @@ export default function MapScreen({ navigation ,route}) {
     const theme = useContext(ThemeContext);
 
     const toiletIconColor = '#c9ac55';
-    
+
     return (
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
             <DropDown data={toiletsAround}></DropDown>
@@ -178,9 +183,9 @@ export default function MapScreen({ navigation ,route}) {
                         {/* <Image source={require('../../../assets/toiletMarker.png')}
                             style={styles.toiletsAround}
                             resizeMode="cover" /> */}
-                            <Icon name='toilet'
-                                size={30}
-                                color={toiletIconColor}/>
+                        <Icon name='toilet'
+                            size={30}
+                            color={toiletIconColor} />
                     </MapView.Marker>
                 })}{
                     direction
@@ -208,8 +213,8 @@ export default function MapScreen({ navigation ,route}) {
                     </TouchableOpacity>
                 </View> */}
             {renderIf(markerclicked)(
-                <View style={[styles.bottom, {backgroundColor: theme.background}]}>
-                    
+                <View style={[styles.bottom, { backgroundColor: theme.background }]}>
+
                     <View style={{
                         display: 'flex',
                         flexDirection: 'row',
@@ -218,7 +223,7 @@ export default function MapScreen({ navigation ,route}) {
                         <View style={{
                             width: '45%'
                         }}>
-                            <Text style={[styles.title, {color: theme.icon}]}>{marker.name}</Text>
+                            <Text style={[styles.title, { color: theme.icon }]}>{marker.name}</Text>
                             <Text style={{ fontSize: 10, color: theme.color }}>{marker.location}</Text>
                             <View style={styles.stars}>
                                 <StarRating
@@ -231,7 +236,7 @@ export default function MapScreen({ navigation ,route}) {
                                 />
                             </View>
 
-                            <Text style={[styles.item, {color: theme.color}]}>{marker.description}</Text>
+                            <Text style={[styles.item, { color: theme.color }]}>{marker.description}</Text>
 
                             <View style={{
                                 display: 'flex',
@@ -249,21 +254,27 @@ export default function MapScreen({ navigation ,route}) {
                                     padding: '2%',
                                     width: '32%'
                                 }} onPress={() => {
-                                    setDirection(
-                                        <MapViewDirections
-                                            origin={position}
-                                            destination={marker != null ? marker : position}
+                                    setDirectionClick(!directionClick)
+                                    if (directionClick) {
+                                        setDirection(<View></View>)
+                                    } else {
+                                        setDirection(
+                                            <MapViewDirections
+                                                origin={position}
+                                                destination={marker != null ? marker : position}
 
-                                            apikey={"AIzaSyCFbwdnUJoJA5FD6NiAwFevhUnU5jHWycA"}
-                                            strokeWidth={3}
-                                            strokeColor="#222"
-                                        />)
+                                                apikey={"AIzaSyCFbwdnUJoJA5FD6NiAwFevhUnU5jHWycA"}
+                                                strokeWidth={3}
+                                                strokeColor={toiletIconColor}
+                                            />)
+                                    }
+
                                     var big = [0, 0]
                                     var small = [0, 0]
                                     if (position.latitude > marker.latitude) {
                                         big[0] = position.latitude;
                                         small[0] = marker.latitude
-                                    } else { 
+                                    } else {
                                         big[0] = marker.latitude;
                                         small[0] = position.latitude
                                     }
@@ -271,7 +282,7 @@ export default function MapScreen({ navigation ,route}) {
                                     if (position.longitude > marker.longitude) {
                                         big[1] = position.longitude;
                                         small[1] = marker.longitude
-                                    } else { 
+                                    } else {
                                         big[1] = marker.longitude;
                                         small[1] = position.longitude
                                     }
@@ -298,7 +309,7 @@ export default function MapScreen({ navigation ,route}) {
                                     padding: '2%',
                                     width: '32%'
                                 }} onPress={() => {
-                                    navigation.navigate("Rating Overview", {toilet: marker})
+                                    navigation.navigate("Rating Overview", { toilet: marker })
                                 }
                                 }>
                                     <Icon name="pencil-box-multiple" size={25} color={theme.icon} />
@@ -317,7 +328,7 @@ export default function MapScreen({ navigation ,route}) {
                                     padding: '2%',
                                     width: '32%'
                                 }} onPress={() => {
-                                    navigation.navigate("WriteReport",{toilet: marker})
+                                    navigation.navigate("WriteReport", { toilet: marker })
                                 }
                                 }>
                                     <Icon name="alert" size={25} color={theme.icon} />
@@ -345,10 +356,10 @@ export default function MapScreen({ navigation ,route}) {
                                         width: '100%',
                                         fontWeight: '20'
                                     }} key={key}>
-                                        <Text style={{color: theme.color}}>
+                                        <Text style={{ color: theme.color }}>
                                             {key[0] + ': '}
                                         </Text>
-                                        <Text style={{color: theme.color}}>
+                                        <Text style={{ color: theme.color }}>
                                             {key[1]}
                                         </Text>
                                     </View>)
@@ -358,9 +369,9 @@ export default function MapScreen({ navigation ,route}) {
                     </View>
 
 
-                    
+
                 </View>)}
-                
+
         </View>
     )
 }

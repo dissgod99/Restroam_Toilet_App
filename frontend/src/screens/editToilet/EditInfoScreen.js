@@ -11,10 +11,6 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const EditInfoScreen = ({ route, navigation }) => {
 
-
-    
-    const baseUrl = BACKEND_ENDPOINT_TOILETS + "edit-toilet";
-
     const { 
         token,
         originalTitle,
@@ -157,7 +153,7 @@ const EditInfoScreen = ({ route, navigation }) => {
         getAsyncStorageItem('token')
             .then((tokenFromStorage) => {
                 //setToken(tokenFromStorage);
-                console.log("ENTERED SAFE REGION")
+                console.log("ENTERED SAFE REGION");
                 transformHours();
                 axios.post(`${baseUrl}`, {
                     name: name,
