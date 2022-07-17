@@ -129,7 +129,7 @@ router.post('/edit-toilet', jsonParser, async (req, res, next) => {
         price: newPrice,
         details: newDetails,
         handicapAccess: newHandicapAccess,
-        openingHours: newOpeningHours
+        openingHours: newOpeningHours,
 
     };
 

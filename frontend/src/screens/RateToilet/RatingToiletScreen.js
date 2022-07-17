@@ -1,4 +1,4 @@
-import React, {useState, useContext} from "react";
+import React, {useState, useContext, useEffect} from "react";
 import { View, Text, Button, StyleSheet, TouchableOpacity, ScrollView, SafeAreaView } from "react-native";
 import * as Animatable from 'react-native-animatable';
 import FontAwesome from "react-native-vector-icons/FontAwesome";
@@ -7,12 +7,56 @@ import { TextInput } from 'react-native-paper';
 import ThemeContext from "../../darkMode/ThemeContext";
 import {getAsyncStorageItem} from "../../util";
 
+import { useIsFocused } from "@react-navigation/core";
 import axios from "axios";
 
 import { BACKEND_ENDPOINT_REVIEWS } from '../../constants';
 
 const RatingToiletScreen = ({ route, navigation }) => {
     
+
+    // const [token, setToken] = useState();
+
+    //     useEffect(() => {
+    //         getAsyncStorageItem('token')
+    //         .then((tokenFromStorage) => {
+    //             if(tokenFromStorage == null) navigation.navigate("Not logged in");
+    //             else setToken(tokenFromStorage);
+    //         }).catch(err => console.log(err));
+    //     }, []);
+
+
+    const isFocused = useIsFocused();
+        useEffect(() => {
+            if (isFocused) {
+            console.log("HELLO ADD");
+            getAsyncStorageItem('token')
+            .then((tokenFromStorage) => {
+                if(tokenFromStorage == null){
+                navigation.navigate("Not logged in");
+                }else{
+                setToken(tokenFromStorage);
+                // axios
+                //   .post(BACKEND_ENDPOINT_USERS + 'get-user-data', { token: tokenFromStorage })
+                //   .then((response) => {
+                //     const { data } = response;
+                //     set_user_username(data.payload.username);
+                //     set_user_email(data.payload.email);
+                //   }).catch(err => {
+                //     ToastAndroid.showWithGravity(
+                //       err.response.data.message,
+                //       ToastAndroid.LONG,
+                //       ToastAndroid.BOTTOM);
+                //   });
+                }
+            })
+            .catch(err => console.log(err));
+            }
+        }, [isFocused]);
+
+
+
+
     const {toilet} = route.params;
 
     // Stars section

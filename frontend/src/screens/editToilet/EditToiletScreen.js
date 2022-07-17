@@ -14,13 +14,6 @@ const EditToiletScreen = ({ route, navigation }) => {
         originalDetails, 
         originalHandicapAccess } = route.params;
 
-    const [newOpeningTimes, setNewOpeningTimes] = useState({});
-
-    const updateOpeningTimes = (someObj) => {
-        console.log('inside EditToiletScreen updating to:' + JSON.stringify(someObj));
-        setNewOpeningTimes(someObj);
-    };
-
     const theme = useContext(ThemeContext)
   
   const [counter, setCounter] = useState(0);
@@ -43,9 +36,6 @@ const EditToiletScreen = ({ route, navigation }) => {
         else{ 
           if(counter == 0){
               if(rescue.length > 0){
-              // const check = rescue[rescue.length-1].days.every(e => {
-              //   return test.days.includes(e);
-              // })
               const check = rescue[0].days.every(e => {
                 return test.days.includes(e);
               })
@@ -83,12 +73,24 @@ const EditToiletScreen = ({ route, navigation }) => {
   const MAX_NB_SLOTS = 7;
 
   const addOneMoreTimeSlot =  () =>{
-    if(hourSlots.length < MAX_NB_SLOTS){
+    if(hourSlots.length < MAX_NB_SLOTS && rescue.length!=0){
         setCounter(counter + 1)
         setHourSlots([...hourSlots, <TimeSlot data={test}/>])
         setPart([...part, test])
       }
         else{
+          Alert.alert(
+            "Please fill the 1st time slot",
+            "The 1st timeslot needs to be filled",
+            [
+              {  
+                text: 'Cancel',  
+                onPress: () => console.log('Cancel Pressed'),  
+                style: 'cancel',  
+            },  
+            {text: 'OK', onPress: () => console.log('OK Pressed')},  
+            ]
+          )
           return;
         }
   }
@@ -239,68 +241,6 @@ const EditToiletScreen = ({ route, navigation }) => {
         
             </ScrollView>
     </View >
-    
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-        // <View style={styles.container}>
-        //     <ScrollView>
-        //         <View style={styles.header}>
-        //             <Text style={styles.title}>
-        //                 Edit Toilet
-        //             </Text>
-        //         </View>
-        //         <View style={styles.timeSelect}>
-        //             <Text style={styles.timeSelectHeader}>
-        //                 Opening Hours
-        //             </Text>
-        //             <TimeSelectArray tempOpeningTimes={newOpeningTimes} updateOpeningTimes={updateOpeningTimes}></TimeSelectArray>
-        //         </View>
-        //         <TouchableOpacity
-        //             style={styles.buttonWrapper}
-        //             onPress={() => navigation.navigate('Edit More Information', {
-        //                 token,
-        //                 originalTitle,
-        //                 originalLocation,
-        //                 originalPrice,
-        //                 originalDetails,
-        //                 originalHandicapAccess,
-        //             })}
-        //         >
-        //             <Text style={styles.button}>
-        //                 Next
-        //             </Text>
-        //         </TouchableOpacity>
-        //     </ScrollView>
-        // </View>
     )
 }
 
@@ -387,43 +327,6 @@ const styles = StyleSheet.create({
       paddingHorizontal: 15
     }
 
-
-
-
-    // container: {
-    //     flex: 1,
-    //     backgroundColor: '#FFF',
-    //     justifyContent: 'flex-start'
-    // },
-    // timeSelect: {
-    //     alignItems: "center",
-    //     marginVertical: 20,
-    //     marginTop: 10
-    // },
-    // timeSelectHeader: {
-    //     fontWeight: "bold",
-    //     fontSize: 18
-    // },
-    // buttonWrapper: {
-    //     backgroundColor: "#e6697e",
-    //     paddingHorizontal: 100,
-    //     paddingVertical: 10,
-    //     borderRadius: 5,
-    //     marginVertical: 5,
-    //     marginHorizontal: 75,
-    //     alignItems: "center"
-    // },
-    // button: {
-    //     fontWeight: "bold"
-    // },
-    // header: {
-    //     alignItems: "center",
-    //     marginVertical: 20
-    // },
-    // title: {
-    //     fontSize: 20,
-    //     fontWeight: "bold"
-    // }
 });
 
 export default EditToiletScreen;

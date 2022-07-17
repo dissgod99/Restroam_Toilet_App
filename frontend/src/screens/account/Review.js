@@ -45,9 +45,9 @@ const Review = (props) => {
                 </Text>
             </View>
             <View style={styles.toolbar}>
-                <TouchableOpacity onPress={edit()}>
+                {/* <TouchableOpacity onPress={edit()}>
                     <FontAwesome name="edit" size={25}/>
-                </TouchableOpacity>
+                </TouchableOpacity> */}
                 <TouchableOpacity onPress={deleteReview()}>
                     <FontAwesome name="trash-o" size={25}/>
                 </TouchableOpacity>
