@@ -8,7 +8,8 @@ const BACKEND_ENDPOINT_USERS    =   'http://' + HOST_IP_ADDRESS + ':' + PORT_NR 
 const BACKEND_ENDPOINT_TOILETS  =   'http://' + HOST_IP_ADDRESS + ':' + PORT_NR + '/api/toilets/';
 const BACKEND_ENDPOINT_REVIEWS  =   'http://' + HOST_IP_ADDRESS + ':' + PORT_NR + '/api/reviews/';
 const BACKEND_ENDPOINT_REPORTS  =   'http://' + HOST_IP_ADDRESS + ':' + PORT_NR + '/api/reports/';
-const BACKEND_ENDPOINT_IMAGES   =   'http://' + HOST_IP_ADDRESS + ':' + PORT_NR + '/api/images/';
+const BACKEND_ENDPOINT_IMAGES   =   'http://' + HOST_IP_ADDRESS + ':' + PORT_NR + '/api/toilet-images/';
+const BACKEND_ENDPOINT_REV_IMAGES   =   'http://' + HOST_IP_ADDRESS + ':' + PORT_NR + '/api/rev-images/';
 
 
 module.exports = { 
@@ -16,5 +17,6 @@ module.exports = {
     BACKEND_ENDPOINT_TOILETS, 
     BACKEND_ENDPOINT_REVIEWS, 
     BACKEND_ENDPOINT_REPORTS, 
-    BACKEND_ENDPOINT_IMAGES 
+    BACKEND_ENDPOINT_IMAGES,
+    BACKEND_ENDPOINT_REV_IMAGES,
 };

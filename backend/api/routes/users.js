@@ -223,7 +223,7 @@ router.post('/change-password', jsonParser, async (req, res, next) => {
             }
         );
         res.status(200).json({
-            message: 'Successfully changed your password to: ' + newPassword
+            message: 'Successfully changed your password'
         });
 
 

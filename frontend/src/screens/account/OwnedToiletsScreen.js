@@ -41,7 +41,7 @@ const OwnedToiletsScreen = ({ route, navigation }) => {
         toiletsCopy.splice(index, 1);
         setToiletItems(toiletsCopy);
         axios
-            .post(BACKEND_ENDPOINT_TOILETS + 'delete-toilet', { name: toiletTbDeleted.name })
+            .post(BACKEND_ENDPOINT_TOILETS + 'delete-toilet', { address: toiletTbDeleted.address })
             .then(({ data }) => {
                 ToastAndroid.showWithGravity(
                     data.message,

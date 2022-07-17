@@ -5,22 +5,36 @@ import StarRating from 'react-native-star-rating';
 import ReviewBox from "./ReviewBox";
 import axios from "axios";
 
-import { BACKEND_ENDPOINT_REVIEWS } from '../../constants';
+import { BACKEND_ENDPOINT_REVIEWS, BACKEND_ENDPOINT_IMAGES } from '../../constants';
 
 const OverviewScreen = ({ route, navigation }) => {
     // Themes (Dark Mode / Default Mode)
     const theme = useContext(ThemeContext);
     const { toilet } = route.params;
 
-    const [reviews, setReviews] = useState([])
+    const [reviews, setReviews] = useState([]);
+    const [toiletImgsSrcs, setToiletImgsSrcs] = useState([]);
 
     useEffect(() => {
+        async function getToiletImages() {
+            axios.post(BACKEND_ENDPOINT_IMAGES + 'get-images-base64', { toiletAddr: toilet.location })
+                .then(({ data }) => {
+                    setToiletImgsSrcs(data.payload);
+                })
+                .catch(err => {
+                    console.log('OverviewScreen---getToiletImages---err: ' + err);
+                });
+        }
+
+        getToiletImages();
+
         async function getReviews() {
-            let res = axios.post(BACKEND_ENDPOINT_REVIEWS + 'FetchReviewsForToilet', { address: toilet.location })
-            res = res.then(({ status, data }) => {
+            let res = axios.post(BACKEND_ENDPOINT_REVIEWS + 'FetchReviewsForToilet', { address: toilet.location });
+            res.then(({ data }) => {
                 console.log(data)
                 let tmp = data.map(rev => {
                     return {
+                        _id: rev._id,
                         text: rev.description,
                         rating: rev.rating,
                         waitingTime: rev.waitingtime,
@@ -104,16 +118,14 @@ const OverviewScreen = ({ route, navigation }) => {
                         margin: 5,
                         padding: 5,
                     }}>
-                        <Image source={require('../../../assets/code.png')} style={styles.image}>
-                        </Image>
-                        <Image source={require('../../../assets/code.png')} style={styles.image}>
-                        </Image>
-                        <Image source={require('../../../assets/code.png')} style={styles.image}>
-                        </Image>
-                        <Image source={require('../../../assets/code.png')} style={styles.image}>
-                        </Image>
-                        <Image source={require('../../../assets/code.png')} style={styles.image}>
-                        </Image>
+                        {
+                            toiletImgsSrcs.map((imgSrc, idx) => {
+                                // console.log('(idx, imgSrc): ' + `(${idx}, ${imgSrc})`);
+                                return (
+                                    <Image key={idx} source={{ uri: imgSrc }} style={ styles.image } />
+                                );
+                            })
+                        }
                     </ScrollView>
                 </View>
 
@@ -177,8 +189,7 @@ const styles = StyleSheet.create({
     },
     image: {
         height: 200,
-        width: 100,
-        margin: 2
+        width: 180,
     },
     stOfSubmit: {
         fontWeight: "bold"

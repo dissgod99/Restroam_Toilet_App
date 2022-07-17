@@ -97,11 +97,11 @@ router.post('/add-toilet', jsonParser, async (req, res, next) => {
 
 // also need to pass in the token and check if it matches that of user that created toilet for security layer?
 router.post('/delete-toilet', jsonParser, async (req, res, next) => {
-    Toilet.find({ name: req.body.name })
+    Toilet.find({ address: req.body.address })
         .exec()
         .then(async (toilet) => {
             if (toilet.length > 0) {
-                await Toilet.deleteOne({ "name": req.body.name });
+                await Toilet.deleteOne({ address: req.body.address });
                 return res.status(200).json({
                     message: 'Toilet deleted successfully',
                 });
@@ -117,7 +117,7 @@ router.post('/delete-toilet', jsonParser, async (req, res, next) => {
 });
 
 router.post('/edit-toilet', jsonParser, async (req, res, next) => {
-    let { name, newName, newAddress, newPrice, newDetails, newHandicapAccess, newOpeningHours } = req.body;
+    let { address, newName, newAddress, newPrice, newDetails, newHandicapAccess, newOpeningHours } = req.body;
 
     let updateObj = {
         name: newName,
@@ -131,7 +131,7 @@ router.post('/edit-toilet', jsonParser, async (req, res, next) => {
 
     let updatedToilet;
     try {
-        updatedToilet = await Toilet.findOneAndUpdate({ name }, updateObj, { new: true })
+        updatedToilet = await Toilet.findOneAndUpdate({ address }, updateObj, { new: true })
         return res.status(200).json({
             message: 'Toilet updated successfully',
         });
@@ -169,7 +169,7 @@ const countAverageRating = async (toilet) => {
         return 0;
     }
     const averageRating = reviews.reduce((a, b) => parseFloat(a) + parseFloat(b)) / reviews.length;
-    console.log("av" + averageRating);
+    // console.log("av" + averageRating);
     return averageRating;
 
 };
@@ -188,6 +188,7 @@ router.post('/nearestToilets', jsonParser, async (req, res, next) => {
                     const rate = await countAverageRating(entry);
 
                     toilets.push({
+                        _id: entry._id,
                         location: entry.address,
                         price: entry.price,
                         name: entry.name,

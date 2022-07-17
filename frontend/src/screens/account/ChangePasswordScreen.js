@@ -5,6 +5,7 @@ import { TextInput } from "react-native-paper";
 import ThemeContext from "../../darkMode/ThemeContext";
 
 import { BACKEND_ENDPOINT_USERS } from '../../constants';
+import { NavigationHelpersContext } from "@react-navigation/native";
 
 
 const ChangePasswordScreen = ({ route, navigation }) => {
@@ -38,6 +39,7 @@ const ChangePasswordScreen = ({ route, navigation }) => {
                         data.message,
                         ToastAndroid.LONG,
                         ToastAndroid.BOTTOM);
+                        NavigationHelpersContext('Home');
                 })
                 .catch(err => {
                     ToastAndroid.showWithGravity(

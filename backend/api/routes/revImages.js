@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const multer = require('multer');
-const Image = require('../models/image');
+const RevImage = require('../models/revImage');
 const bodyParser = require('body-parser');
 
 const fs = require('fs');
@@ -11,7 +11,7 @@ const jsonParser = bodyParser.json();
 
 let storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, 'uploads/toilet_images');
+        cb(null, 'uploads/rev_images');
     },
     filename: function (req, file, cb) {
         console.log('file: ' + JSON.stringify(file));
@@ -26,14 +26,15 @@ let upload = multer({
     storage: storage
 });
 
+
 router.post('/get-images', jsonParser, async function (req, res, next) {
-    let { toiletAddr } = req.body;
-    if (toiletAddr == undefined)
-        return res.status(400).json({ message: 'Missing toiletAddr parameter' });
-    let images = await Image.find({ toilet_address: toiletAddr });
-    let message = 'Images for the toilet retrieved successfully';
+    let { revId } = req.body;
+    if (revId == undefined)
+        return res.status(400).json({ message: 'Missing revId parameter' });
+    let images = await RevImage.find({ review_id: revId });
+    let message = 'Images for the review retrieved successfully';
     if (!images) {
-        message = 'No images for the given toilet';
+        message = 'No images for the given review';
         images = [];
     }
     return res.status(200).json({
@@ -43,13 +44,13 @@ router.post('/get-images', jsonParser, async function (req, res, next) {
 });
 
 router.post('/get-images-base64', jsonParser, async function (req, res, next) {
-    let { toiletAddr } = req.body;
-    if (toiletAddr == undefined)
-        return res.status(400).json({ message: 'Missing toiletAddr parameter' });
-    let images = await Image.find({ toilet_address: toiletAddr });
-    let message = 'Images for the toilet retrieved successfully';
+    let { revId } = req.body;
+    if (revId == undefined)
+        return res.status(400).json({ message: 'Missing revId parameter' });
+    let images = await RevImage.find({ review_id: revId });
+    let message = 'Images for the review retrieved successfully';
     if (!images) {
-        message = 'No images for the given toilet';
+        message = 'No images for the given review';
         images = [];
     }
     let result = images.map(image => `data:${image.img.contentType};base64,${image.img.data.toString('base64')}`);
@@ -69,12 +70,12 @@ router.post('/upload-files', jsonParser, function (req, res, next) {
         if (err instanceof multer.MulterError) {
             console.log('Multer Error');
         } else {
-            let { toiletAddr } = req.body;
+            let { revId } = req.body;
 
             console.log(req.body);
-            if (!toiletAddr) {
+            if (!revId) {
                 return res.status(400).json({
-                    message: 'Please make sure to pass in the body as form data toiletAddr property.'
+                    message: 'Please make sure to pass in the body as form data revId property.'
                 });
             }
 
@@ -91,16 +92,16 @@ router.post('/upload-files', jsonParser, function (req, res, next) {
                 let newImage = {
                     path: _f.path,
                     img: {
-                        data: fs.readFileSync(path.join('uploads/toilet_images/' + _f.filename)),
+                        data: fs.readFileSync(path.join('uploads/rev_images/' + _f.filename)),
                         contentType: _f.mimetype,
                     },
                     originalname: _f.filename,
-                    toilet_address: toiletAddr,
+                    review_id: revId,
                 };
                 dbImages.push(newImage);
             });
 
-            Image.insertMany(dbImages, function (err) {
+            RevImage.insertMany(dbImages, function (err) {
 
                 if (err) {
                     console.log('err: ' + err);

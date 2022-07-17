@@ -14,23 +14,23 @@ let imageSchema = mongoose.Schema({
         type: String,
         required: true
     },
-    toilet_address: {
-        type: String,
+    review_id: {
+        type: mongoose.Types.ObjectId,
         required: true
     }
 });
 
-let Image = module.exports = mongoose.model('Image', imageSchema);
+let RevImage = module.exports = mongoose.model('RevImage', imageSchema);
 
 
-module.exports.getImages = function (callback) {
-    Image.find(callback);
+module.exports.getRevImages = function (callback) {
+    RevImage.find(callback);
 }
 
 
-module.exports.getImageById = function (id, callback) {
+module.exports.getRevImageById = function (id, callback) {
 
-    Image.findById(id, callback);
+    RevImage.findById(id, callback);
 
 }
 

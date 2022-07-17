@@ -1,15 +1,37 @@
-import React, { useState, useContext } from "react";
-import { View, Text, Button, StyleSheet, Image } from "react-native";
+import React, { useState, useContext, useEffect } from "react";
+import { View, Text, Button, StyleSheet, Image, ScrollView } from "react-native";
 import ThemeContext from "../../darkMode/ThemeContext";
 import StarRating from 'react-native-star-rating';
 
+import { BACKEND_ENDPOINT_REV_IMAGES } from "../../constants";
+import axios from "axios";
 
-export default function ReviewBox ({ review }) {
+
+export default function ReviewBox({ review }) {
+
     // Themes (Dark Mode / Default Mode)
     const theme = useContext(ThemeContext);
+
+    const [revImgs, setRevImgs] = useState([]);
+
+
+    useEffect(() => {
+        console.log(review._id);
+        axios.post(BACKEND_ENDPOINT_REV_IMAGES + 'get-images-base64', {
+            revId: review._id
+        })
+            .then(({ data }) => {
+                console.log('getToiletImages: ');
+                setRevImgs(data.payload);
+                console.log(data.payload.length);
+            })
+            .catch(err => console.log('---ReviewBox---useEffect: ' + err));
+    }, []);
+
+
     return (
         <View>
-            <View style={{ backgroundColor: theme.background}}>
+            <View style={{ backgroundColor: theme.background }}>
                 <View style={{
                     display: 'flex',
                     alignItems: "center",
@@ -27,69 +49,72 @@ export default function ReviewBox ({ review }) {
                         flexDirection: 'row',
                         justifyContent: 'space-between',
                     }}>
-                        <Text style={[styles.title, {color: theme.color}]}>{review.text}</Text>
-                    <View>
-                        <View style={styles.stars}>
-                            <Text>Overall rating:</Text>
-                            <StarRating
-                                maxStars={5}
-                                disabled={true}
-                                rating={review.rating}
-                                selectedStar={(rating) => { }}
-                                fullStarColor={"gold"}
-                                starSize={20}
-                            />
+                        <Text style={[styles.title, { color: theme.color }]}>{review.text}</Text>
+                        <View>
+                            <View style={styles.stars}>
+                                <Text>Overall rating:</Text>
+                                <StarRating
+                                    maxStars={5}
+                                    disabled={true}
+                                    rating={review.rating}
+                                    selectedStar={(rating) => { }}
+                                    fullStarColor={"gold"}
+                                    starSize={20}
+                                />
+                            </View>
+                            <View style={styles.stars}>
+                                <Text>Cleanliness:</Text>
+                                <StarRating
+                                    maxStars={5}
+                                    disabled={true}
+                                    rating={review.cleanliness}
+                                    selectedStar={(rating) => { }}
+                                    fullStarColor={"gold"}
+                                    starSize={20}
+                                />
+                            </View>
+                            <View style={styles.stars}>
+                                <Text>Security:</Text>
+                                <StarRating
+                                    maxStars={5}
+                                    disabled={true}
+                                    rating={review.security}
+                                    selectedStar={(rating) => { }}
+                                    fullStarColor={"gold"}
+                                    starSize={20}
+                                />
+                            </View>
+                            <View style={styles.stars}>
+                                <Text>Waiting Time:</Text>
+                                <StarRating
+                                    maxStars={5}
+                                    disabled={true}
+                                    rating={review.waitingTime}
+                                    selectedStar={(rating) => { }}
+                                    fullStarColor={"gold"}
+                                    starSize={20}
+                                />
+                            </View>
                         </View>
-                        <View style={styles.stars}>
-                            <Text>Cleanliness:</Text>
-                            <StarRating
-                                maxStars={5}
-                                disabled={true}
-                                rating={review.cleanliness}
-                                selectedStar={(rating) => { }}
-                                fullStarColor={"gold"}
-                                starSize={20}
-                            />
-                        </View>
-                        <View style={styles.stars}>
-                            <Text>Security:</Text>
-                            <StarRating
-                                maxStars={5}
-                                disabled={true}
-                                rating={review.security}
-                                selectedStar={(rating) => { }}
-                                fullStarColor={"gold"}
-                                starSize={20}
-                            />
-                        </View>
-                        <View style={styles.stars}>
-                            <Text>Waiting Time:</Text>
-                            <StarRating
-                                maxStars={5}
-                                disabled={true}
-                                rating={review.waitingTime}
-                                selectedStar={(rating) => { }}
-                                fullStarColor={"gold"}
-                                starSize={20}
-                            />
-                        </View>
-                    </View>
-                        
+
                     </View>
 
-                    <View style={{
+                    <ScrollView horizontal={true} style={{
                         display: 'flex',
                         flexDirection: 'row',
                         margin: 5,
                         padding: 5,
                     }}>
-                        <Image source={require('../../../assets/code.png')} style={styles.image}>
-                        </Image>
-                        <Image source={require('../../../assets/code.png')} style={styles.image}>
-                        </Image>
-                        <Image source={require('../../../assets/code.png')} style={styles.image}>
-                        </Image>
-                    </View>
+                        {
+                            revImgs.map((revImg, idx) => {
+                                // console.log('(idx, imgSrc): ' + `(${idx}, ${imgSrc})`);
+                                return (
+                                    <Image key={idx} source={{ uri: revImg }} style={ styles.image } />
+                                );
+                            })
+                        }
+
+                    </ScrollView>
 
                 </View>
 

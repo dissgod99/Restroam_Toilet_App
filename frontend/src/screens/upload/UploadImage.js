@@ -16,7 +16,7 @@ import { BACKEND_ENDPOINT_IMAGES, BACKEND_ENDPOINT_TOILETS } from '../../constan
 
 export default function UploadImage({ route, navigation }) {
 
-    const { toiletTbAdded, token } = route.params;
+    const { toiletOrReview, toiletTbAdded, token } = route.params;
 
     // Dark Mode Variable
     const theme = useContext(ThemeContext);
@@ -40,8 +40,8 @@ export default function UploadImage({ route, navigation }) {
                     alert('Sorry, we need camera roll permissions to make this work!');
                 }
                 setLoad(true);
-                await tf.ready();
-                setModel(await mobilenet.load());
+                // await tf.ready();
+                // setModel(await mobilenet.load());
                 setLoad(false);
             }
         })();
@@ -51,28 +51,28 @@ export default function UploadImage({ route, navigation }) {
         return Buffer.from(base64, 'base64');
     }
 
-    function imageToTensor(rawImageData) {
-        const TO_UINT8ARRAY = true
-        const { width, height, data } = jpeg.decode(rawImageData, TO_UINT8ARRAY)
-        // Drop the alpha channel info for mobilenet
-        const buffer = new Uint8Array(width * height * 3)
-        let offset = 0 // offset into original data
-        for (let i = 0; i < buffer.length; i += 3) {
-            buffer[i] = data[offset]
-            buffer[i + 1] = data[offset + 1]
-            buffer[i + 2] = data[offset + 2]
+    // function imageToTensor(rawImageData) {
+    //     const TO_UINT8ARRAY = true
+    //     const { width, height, data } = jpeg.decode(rawImageData, TO_UINT8ARRAY)
+    //     // Drop the alpha channel info for mobilenet
+    //     const buffer = new Uint8Array(width * height * 3)
+    //     let offset = 0 // offset into original data
+    //     for (let i = 0; i < buffer.length; i += 3) {
+    //         buffer[i] = data[offset]
+    //         buffer[i + 1] = data[offset + 1]
+    //         buffer[i + 2] = data[offset + 2]
 
-            offset += 4
-        }
-        return tf.tensor3d(buffer, [height, width, 3])
-    }
+    //         offset += 4
+    //     }
+    //     return tf.tensor3d(buffer, [height, width, 3])
+    // }
 
     const pickImage = async () => {
         setLoad(true);
         let result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.All,
             allowsEditing: true,
-            base64: true,
+            // base64: true,
             aspect: [4, 3],
             quality: 1,
         }).catch(e => console.log(e));
@@ -85,24 +85,24 @@ export default function UploadImage({ route, navigation }) {
             console.log('result: ' + result);
             result.fileName = filename;
         }
-        let legit = await classifyImage(result.base64);
+        // let legit = await classifyImage(result.base64);
 
-        if (!result.cancelled && legit) {
-            for (let i = 0; i < 5; i++) {
-                if (imageArray[i][0] == null) {
-                    setImageDataArray(oldArray => [].concat([].concat(oldArray.slice(0, i), [result]), oldArray.slice(i + 1, 5)))
-                    imageArray[i][1](result);
-                    console.log('imageDataArray: ' + imageDataArray.toString());
-                    break;
-                }
+        // if (!result.cancelled && legit) {
+        for (let i = 0; i < 5; i++) {
+            if (imageArray[i][0] == null) {
+                setImageDataArray(oldArray => [].concat([].concat(oldArray.slice(0, i), [result]), oldArray.slice(i + 1, 5)))
+                imageArray[i][1](result);
+                console.log('imageDataArray: ' + imageDataArray.toString());
+                break;
             }
         }
-        if (!legit) {
-            setLegitText("This image contains explicit containt and won't be accepted");
-            setTimeout(function () {
-                setLegitText('')
-            }, 30000)
-        }
+        // }
+        // if (!legit) {
+        //     setLegitText("This image contains explicit containt and won't be accepted");
+        //     setTimeout(function () {
+        //         setLegitText('')
+        //     }, 30000)
+        // }
         setLoad(false);
     };
 
@@ -156,18 +156,19 @@ export default function UploadImage({ route, navigation }) {
         return result
     }
 
-    const createFormData = (photo, body = {}) => {
+    const createFormData = (photos, body = {}) => {
 
         const data = new FormData();
-        const tmp = mime.getType(photo.uri);
 
-        data.append('photos', [{
-            name: photo.uri,
-            type: tmp,
-            uri: Platform.OS === 'ios' ? photo.uri.replace('file://', '') : photo.uri,
-        }]);
-
-        data.append('photoType', tmp);
+        photos.forEach((photo) => {
+            console.log('photo: ' + JSON.stringify(photo));
+            if (photo)
+                data.append('photos', {
+                    name: photo.uri,
+                    type: mime.getType(photo.uri),
+                    uri: Platform.OS === 'ios' ? photo.uri.replace('file://', '') : photo.uri,
+                });
+        });
 
         Object.keys(body).forEach((key) => {
             data.append(key, body[key]);
@@ -175,11 +176,13 @@ export default function UploadImage({ route, navigation }) {
         return data;
     };
 
-    const handleUploadPhoto = (photo, toiletId) => {
-        console.log('toiletId: ' + toiletId)
-        let formData = createFormData(photo, { 'toiletId': toiletId });
+    const handleUploadPhotos = (photos, toiletId) => {
+        console.log('toiletId: ' + toiletId);
+        let formData = createFormData(photos, { 'toiletId': toiletId });
+
+        console.log('formData: ' + formData);
         fetch(
-            BACKEND_ENDPOINT_IMAGES + 'upload-file',
+            BACKEND_ENDPOINT_IMAGES + 'upload-files',
             { method: "POST", body: formData }
         ).then(({ status }) => {
             if (status != 200) {
@@ -201,25 +204,31 @@ export default function UploadImage({ route, navigation }) {
         console.log('imageDataArray: ' + imageDataArray);
     };
 
+    const deleteToiletWithId = async (toiletId) => {
+        axios.post(BACKEND_ENDPOINT_TOILETS + "delete-toilet", { toiletId })
+    }
+
     const submitData = () => {
         //submit all the rest of the data too
         axios.post(BACKEND_ENDPOINT_TOILETS + "add-toilet", { token, toiletObj: toiletTbAdded })
             .then(({ data }) => {
+
                 ToastAndroid.showWithGravity(
                     data.message,
                     ToastAndroid.LONG,
                     ToastAndroid.BOTTOM);
                 let toiletId = data.toiletId;
                 console.log('imageDataArray: ' + imageDataArray);
-                imageDataArray.forEach(d => {
-                    if (d != null) {
-                        if (!handleUploadPhoto(d, toiletId))
-                            navigation.navigate("Home");
-                    }
-                });
+                
+                if (!handleUploadPhotos(imageDataArray, toiletId)) {
+                    deleteToiletWithId(toiletId);
+                    navigation.navigate("Home");
+                }
+                    
                 navigation.navigate('ThankYou');
             })
             .catch(err => {
+                console.log(err);
                 ToastAndroid.showWithGravity(
                     err.response.data.message,
                     ToastAndroid.LONG,
