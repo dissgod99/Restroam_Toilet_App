@@ -11,8 +11,6 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const EditInfoScreen = ({ route, navigation }) => {
 
-
-    
     const baseUrl = BACKEND_ENDPOINT_TOILETS + "edit-toilet";
 
     const { 
@@ -25,19 +23,7 @@ const EditInfoScreen = ({ route, navigation }) => {
         rescue 
     } = route.params;
 
-    const [newHandicapAccess, setNewHandicapAccess] = useState(originalHandicapAccess);
-    const [newName, setNewName] = useState(originalTitle);
-    const [newAddress, setNewAddress] = useState(originalLocation);
-    const [newPrice, setNewPrice] = useState(originalPrice);
-    const [newDetails, setNewDetails] = useState(originalDetails);
-    // const [newHours, setNewHours] = useState(rescue)
-    
-
-    // const {timeline} = route.params.rescue;
-    var numberi = 0;
-
     let initName, initAddress, initDetails, initCurrentLocation;
-    // let initHours = []
     initName = initAddress = initDetails = initCurrentLocation = '';
     let initPrice = '0,00€';
     let initIsEnabled = false;
@@ -125,14 +111,9 @@ const EditInfoScreen = ({ route, navigation }) => {
 
 
     const transformHours = () => {
-        // console.log("TimelineEDIT == ", timeline)
         rescue.forEach((obj) => {
-            //console.log("Obj == ", obj.days)
-            //console.log("True or false == ", obj.days.includes("Mon"))
             if(obj.days.includes("Mon")){
                 const hours_Mon = obj.start + "-" + obj.end
-                //console.log("hourrrrs == ", hours_Mon)
-                //console.log("times in === ", times)
                 times.Monday = hours_Mon;
                 console.log("times after edit === ", times)
             }
@@ -168,7 +149,6 @@ const EditInfoScreen = ({ route, navigation }) => {
         console.log("inside add ");
         getAsyncStorageItem('token')
             .then((tokenFromStorage) => {
-                //setToken(tokenFromStorage);
                 console.log("ENTERED SAFE REGION")
                 transformHours();
                 console.log("TIMES AFTER TRANSFORMATION == ", times);
@@ -180,14 +160,15 @@ const EditInfoScreen = ({ route, navigation }) => {
                 
 
                 axios.post(`${baseUrl}`, {
-                    name: name,
-                    address: address,
-                    price: price,
-                    token: tokenFromStorage,
-                    openingHours: times,
-                    handicapAccess: isEnabled,
-                    details: details
-                })
+                    name: originalTitle,
+                    newName: name,
+                    newAddress: address,
+                    newPrice: price,
+                    newDetails: details,
+                    newHandicapAccess: isEnabled,
+                    newOpeningHours: times,
+                    address: originalLocation
+                        })
                     .then(({ data }) => {
                         ToastAndroid.showWithGravity(
                             data.message,
@@ -233,32 +214,6 @@ const EditInfoScreen = ({ route, navigation }) => {
         setOpeningH(initTimes)
     }
 
-    // const handleSubmit = () => {
-    //     ToastAndroid.showWithGravity(
-    //         'Please wait until update...',
-    //         ToastAndroid.SHORT,
-    //         ToastAndroid.BOTTOM);
-
-    //     axios.post(BACKEND_ENDPOINT_TOILETS + 'edit-toilet', {
-    //         name: originalTitle,
-    //         newName,
-    //         newAddress,
-    //         newPrice,
-    //         newDetails,
-    //         newHandicapAccess,
-    //     })
-    //         .then(({ data }) => {
-    //             ToastAndroid.showWithGravity(
-    //                 data.message,
-    //                 ToastAndroid.LONG,
-    //                 ToastAndroid.BOTTOM);
-    //             setTimeout(() => {
-    //                 navigation.navigate('Profile', { token });
-    //             }, 3000);
-    //         })
-    //         .catch((err) => console.log(err));
-    // }
-
     const theme = useContext(ThemeContext);
 
     return (
@@ -276,9 +231,6 @@ const EditInfoScreen = ({ route, navigation }) => {
                         <TextInput style={styles.box}
                             mode="outlined"
                             editable={true}
-                            // //placeholder="Enter name"
-                            // defaultValue={originalTitle}
-                            // placeholder={originalTitle}
                             right={<TextInput.Affix text="/100" />}
                             activeOutlineColor={theme.activeOutColor}
                             onChangeText={(value) => changeName(value)}
@@ -289,17 +241,13 @@ const EditInfoScreen = ({ route, navigation }) => {
                         </Text>
                         <TextInput style={styles.box}
                             mode="outlined"
-                            editable={true}
-                            //label="Give address"
-                            // //placeholder={"Enter address"}
-                            // defaultValue={originalLocation}
-                            // placeholder={originalLocation}
                             right={<TextInput.Affix text="/100" />}
                             activeOutlineColor={theme.activeOutColor}
                             onChangeText={(value) => changeAddress(value)}
                             value={address}
                         />
-                        <TouchableOpacity onPress={async () => fillWithCurrentAddress()}
+                        <TouchableOpacity                         
+                        onPress={async () => fillWithCurrentAddress()}
                             style={[styles.getAddress, { backgroundColor: theme.submitBtn }]}>
                             <Text style={styles.getAddressText}>Get current address</Text>
                             <Icon

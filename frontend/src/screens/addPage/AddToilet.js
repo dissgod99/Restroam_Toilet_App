@@ -6,6 +6,9 @@ import Theme from '../../darkMode/Theme';
 import ThemeContext from '../../darkMode/ThemeContext';
 import { CheckBox } from "@rneui/base";
 import TimeSlot from './TimeSlot';
+import {getAsyncStorageItem} from  "../../util"
+import { useIsFocused } from "@react-navigation/core";
+
 
 export default function AddToilet({navigation}) {
   
@@ -19,6 +22,25 @@ export default function AddToilet({navigation}) {
     days: []
   })
 
+   const [token, setToken] = useState();
+
+  const isFocused = useIsFocused();
+  useEffect(() => {
+    if (isFocused) {
+      console.log("HELLO ADD");
+      getAsyncStorageItem('token')
+      .then((tokenFromStorage) => {
+        if(tokenFromStorage == null){
+          navigation.navigate("Not logged in");
+        }else{
+        setToken(tokenFromStorage);
+          }
+      })
+      .catch(err => console.log(err));
+    }
+  }, [isFocused]);
+
+
   const [part, setPart] = useState([])
   const [rescue, setRescue] = useState([])
     useEffect(() => {
@@ -31,9 +53,6 @@ export default function AddToilet({navigation}) {
         else{ 
           if(counter == 0){
               if(rescue.length > 0){
-              // const check = rescue[rescue.length-1].days.every(e => {
-              //   return test.days.includes(e);
-              // })
               const check = rescue[0].days.every(e => {
                 return test.days.includes(e);
               })
