@@ -11,7 +11,7 @@ const DropDown = ({ data }) => {
     const FilterList = ['distance', 'rating', 'price'];
     const [filter, setFilter] = useState('distance');
     const [toilet, setToilet] = useState(null);
-    const Unit = { distance: 'KM', price: '€', rating: '*' }
+    const Unit = { distance: ' KM', price: '€', rating: '*' }
     const dataTest = [
         {
             Name: 'Toilet1',

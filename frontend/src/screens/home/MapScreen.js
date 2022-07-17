@@ -230,6 +230,14 @@ export default function MapScreen({ navigation ,route}) {
                                     starSize={20}
                                 />
                             </View>
+                            {marker.handicapAccess ?
+                            <Icon name="wheelchair-accessibility" 
+                                    size={25}
+                                    color={theme.icon}
+                                    />
+                                :
+                                <></>
+                                }
 
                             <Text style={[styles.item, {color: theme.color}]}>{marker.description}</Text>
 

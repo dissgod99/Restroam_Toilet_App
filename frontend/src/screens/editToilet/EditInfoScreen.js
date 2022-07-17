@@ -44,7 +44,7 @@ const EditInfoScreen = ({ route, navigation }) => {
     const [currentLocation, setCurrentLocation] = useState(initCurrentLocation);
 
     const [price, setPrice] = useState(originalPrice);
-    const [isEnabled, setIsEnabled] = useState(originalHandicapAccess);
+    const [isEnabled, setIsEnabled] = useState(false);
 
     const [details, setDetails] = useState(originalDetails);
 
