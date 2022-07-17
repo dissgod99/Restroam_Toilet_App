@@ -79,7 +79,7 @@ router.post('/upload-files', jsonParser, function (req, res, next) {
         } else {
             let { toiletAddr } = req.body;
 
-            console.log(req.body);
+            console.log(JSON.stringify(req.body));
             if (!toiletAddr) {
                 console.log('error in toiletAddr');
                 return res.status(400).json({
