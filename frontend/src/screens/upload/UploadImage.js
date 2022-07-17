@@ -230,7 +230,7 @@ export default function UploadImage({ route, navigation }) {
                 if (handleUploadPhotos(imageDataArray, toiletAddr) != true) {
                     deleteToilet(toiletAddr);
                     console.log('deleted');
-                    //navigation.navigate("Home");
+                    navigation.navigate("Home");
                 } else {
                     navigation.navigate('ThankYou');
                 }
