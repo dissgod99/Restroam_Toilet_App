@@ -256,7 +256,7 @@ export default function MapScreen({ navigation ,route}) {
 
                                             apikey={"AIzaSyCFbwdnUJoJA5FD6NiAwFevhUnU5jHWycA"}
                                             strokeWidth={3}
-                                            strokeColor="#222"
+                                            strokeColor= {toiletIconColor}
                                         />)
                                     var big = [0, 0]
                                     var small = [0, 0]
