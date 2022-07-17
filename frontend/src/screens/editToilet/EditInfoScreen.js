@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useState, useContext, useEffect } from "react";
-import { ScrollView, StyleSheet, View, Text, TouchableOpacity, ToastAndroid } from "react-native";
+import { ScrollView, StyleSheet, View, Text, TouchableOpacity, ToastAndroid, Alert } from "react-native";
 import { TextInput, Switch } from "react-native-paper";
 import { BACKEND_ENDPOINT_TOILETS } from "../../constants";
 import ThemeContext from "../../darkMode/ThemeContext";
@@ -42,15 +42,27 @@ const EditInfoScreen = ({ route, navigation }) => {
     let initPrice = '0,00€';
     let initIsEnabled = false;
 
-    const [name, setName] = useState(initName);
+    let initTimes = {
+        Monday: "Closed",
+        Tuesday: "Closed",
+        Wednesday: "Closed",
+        Thursday: "Closed",
+        Friday: "Closed",
+        Saturday: "Closed",
+        Sunday: "Closed"
+    }
 
-    const [address, setAddress] = useState(initAddress);
+    const [name, setName] = useState(originalTitle);
+
+    const [address, setAddress] = useState(originalLocation);
     const [currentLocation, setCurrentLocation] = useState(initCurrentLocation);
 
-    const [price, setPrice] = useState(initPrice);
-    const [isEnabled, setIsEnabled] = useState(initIsEnabled);
+    const [price, setPrice] = useState(originalPrice);
+    const [isEnabled, setIsEnabled] = useState(originalHandicapAccess);
 
-    const [details, setDetails] = useState('');
+    const [details, setDetails] = useState(originalDetails);
+
+    const [openingH, setOpeningH] = useState(initTimes)
 
     var times = {
         Monday: "Closed",
@@ -159,6 +171,14 @@ const EditInfoScreen = ({ route, navigation }) => {
                 //setToken(tokenFromStorage);
                 console.log("ENTERED SAFE REGION")
                 transformHours();
+                console.log("TIMES AFTER TRANSFORMATION == ", times);
+                console.log("name == ", name);
+                console.log("Address == ", address)
+                console.log("price == ", price);
+                console.log("handicapAccess == ", isEnabled);
+                console.log("details == ", details);
+                
+
                 axios.post(`${baseUrl}`, {
                     name: name,
                     address: address,
@@ -174,7 +194,24 @@ const EditInfoScreen = ({ route, navigation }) => {
                             ToastAndroid.LONG,
                             ToastAndroid.BOTTOM);
                         resetAllInputs();
-                        navigation.navigate("Upload Image", { toiletId: data.toiletId });
+
+                        if(name!="" && price!=""){
+
+                        navigation.navigate("Upload Image", { toiletId: data.toiletId });}
+                        else{
+                            Alert.alert(
+                                "ERROR",
+                                "Please fill all mandatory inputs",
+                                [
+                                  {  
+                                    text: 'Cancel',  
+                                    onPress: () => console.log('Cancel ERROR Pressed'),  
+                                    style: 'cancel',  
+                                },  
+                                {text: 'OK', onPress: () => console.log('OK ERROR Pressed')},  
+                                ]
+                              )
+                        }
                     })
                     .catch(err => {
                         ToastAndroid.showWithGravity(
@@ -193,6 +230,7 @@ const EditInfoScreen = ({ route, navigation }) => {
         setPrice(initPrice);
         setIsEnabled(initIsEnabled);
         setDetails(initDetails);
+        setOpeningH(initTimes)
     }
 
     // const handleSubmit = () => {
@@ -238,9 +276,9 @@ const EditInfoScreen = ({ route, navigation }) => {
                         <TextInput style={styles.box}
                             mode="outlined"
                             editable={true}
-                            //placeholder="Enter name"
-                            defaultValue={originalTitle}
-                            placeholder={originalTitle}
+                            // //placeholder="Enter name"
+                            // defaultValue={originalTitle}
+                            // placeholder={originalTitle}
                             right={<TextInput.Affix text="/100" />}
                             activeOutlineColor={theme.activeOutColor}
                             onChangeText={(value) => changeName(value)}
@@ -253,9 +291,9 @@ const EditInfoScreen = ({ route, navigation }) => {
                             mode="outlined"
                             editable={true}
                             //label="Give address"
-                            //placeholder={"Enter address"}
-                            defaultValue={originalLocation}
-                            placeholder={originalLocation}
+                            // //placeholder={"Enter address"}
+                            // defaultValue={originalLocation}
+                            // placeholder={originalLocation}
                             right={<TextInput.Affix text="/100" />}
                             activeOutlineColor={theme.activeOutColor}
                             onChangeText={(value) => changeAddress(value)}

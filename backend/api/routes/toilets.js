@@ -132,6 +132,7 @@ router.post('/edit-toilet', jsonParser, async (req, res, next) => {
     let updatedToilet;
     try {
         updatedToilet = await Toilet.findOneAndUpdate({ name }, updateObj, { new: true })
+        console.log("Updated toilet == ", updatedToilet)
         return res.status(200).json({
             message: 'Toilet updated successfully',
         });

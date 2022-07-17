@@ -83,12 +83,25 @@ const EditToiletScreen = ({ route, navigation }) => {
   const MAX_NB_SLOTS = 7;
 
   const addOneMoreTimeSlot =  () =>{
-    if(hourSlots.length < MAX_NB_SLOTS){
+    if(hourSlots.length < MAX_NB_SLOTS && rescue.length!=0){
         setCounter(counter + 1)
         setHourSlots([...hourSlots, <TimeSlot data={test}/>])
         setPart([...part, test])
       }
         else{
+          console.log("NO Addition")
+          Alert.alert(
+            "Please fill the 1st time slot",
+            "The 1st timeslot needs to be filled",
+            [
+              {  
+                text: 'Cancel',  
+                onPress: () => console.log('Cancel Pressed'),  
+                style: 'cancel',  
+            },  
+            {text: 'OK', onPress: () => console.log('OK Pressed')},  
+            ]
+          )
           return;
         }
   }
