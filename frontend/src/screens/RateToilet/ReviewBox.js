@@ -45,14 +45,14 @@ export default function ReviewBox({ review }) {
                     <View style={{
                         width: "95%",
                         margin: 5,
-                        display: 'flex',
-                        flexDirection: 'row',
+                        //display: 'flex',
+                        //flexDirection: 'row',
                         justifyContent: 'space-between',
                     }}>
-                        <Text style={[styles.title, { color: theme.color }]}>{review.text}</Text>
-                        <View>
+                        
+                        <View >
                             <View style={styles.stars}>
-                                <Text>Overall rating:</Text>
+                                <Text style={[styles.bold ,{color: theme.icon}]}>Overall rating:</Text>
                                 <StarRating
                                     maxStars={5}
                                     disabled={true}
@@ -63,7 +63,7 @@ export default function ReviewBox({ review }) {
                                 />
                             </View>
                             <View style={styles.stars}>
-                                <Text>Cleanliness:</Text>
+                                <Text style={{color: theme.color}}>Cleanliness:</Text>
                                 <StarRating
                                     maxStars={5}
                                     disabled={true}
@@ -74,7 +74,7 @@ export default function ReviewBox({ review }) {
                                 />
                             </View>
                             <View style={styles.stars}>
-                                <Text>Security:</Text>
+                                <Text style={{color: theme.color}}>Security:</Text>
                                 <StarRating
                                     maxStars={5}
                                     disabled={true}
@@ -85,7 +85,7 @@ export default function ReviewBox({ review }) {
                                 />
                             </View>
                             <View style={styles.stars}>
-                                <Text>Waiting Time:</Text>
+                                <Text style={{color: theme.color}}>Waiting Time:</Text>
                                 <StarRating
                                     maxStars={5}
                                     disabled={true}
@@ -95,6 +95,12 @@ export default function ReviewBox({ review }) {
                                     starSize={20}
                                 />
                             </View>
+                        </View>
+
+
+                        <View style={styles.txt}>
+                            <Text style={[styles.bold ,{color: theme.icon}]}>Description</Text>
+                            <Text style={[styles.title, { color: theme.color }]}>{review.text}</Text>
                         </View>
 
                     </View>
@@ -135,7 +141,7 @@ const styles = StyleSheet.create({
     },
     title: {
         fontSize: 15,
-        width: '50%'
+        width: '90%'
 
     },
     stars: {
@@ -147,5 +153,12 @@ const styles = StyleSheet.create({
         height: 200,
         width: 100,
         margin: 2
+    },
+    txt: {
+        marginTop: "5%",
+        //width: "100%"
+    },
+    bold: {
+        fontWeight: "bold"
     }
 });
