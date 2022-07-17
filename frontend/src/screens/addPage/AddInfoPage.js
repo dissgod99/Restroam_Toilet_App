@@ -147,7 +147,7 @@ const AddInfoPage = ({ navigation, route }) => {
             .then((tokenFromStorage) => {
                 //setToken(tokenFromStorage);
                 resetAllInputs();
-                navigation.navigate("Upload Image", { toiletTbAdded, token: tokenFromStorage });
+                navigation.navigate("Upload Image", { toiletOrReview: true, toiletTbAdded, token: tokenFromStorage });
             })
             .catch(err => console.log(err));
     };

@@ -69,6 +69,7 @@ router.post('/addReview', jsonParser, async (req, res, next) => {
                         .then(result => {
                             return res.status(201).json({
                                 message: 'review added',
+                                reviewId: result._id
                             });
                         })
                         .catch(err => {

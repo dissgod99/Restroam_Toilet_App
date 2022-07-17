@@ -1,23 +1,23 @@
-import React, {useState, useContext} from "react";
+import React, { useState, useContext } from "react";
 import { View, Text, Button, StyleSheet, TouchableOpacity, ScrollView, SafeAreaView } from "react-native";
 import * as Animatable from 'react-native-animatable';
 import FontAwesome from "react-native-vector-icons/FontAwesome";
 import StarRating from 'react-native-star-rating';
 import { TextInput } from 'react-native-paper';
 import ThemeContext from "../../darkMode/ThemeContext";
-import {getAsyncStorageItem} from "../../util";
+import { getAsyncStorageItem } from "../../util";
 
 import axios from "axios";
 
 import { BACKEND_ENDPOINT_REVIEWS } from '../../constants';
 
 const RatingToiletScreen = ({ route, navigation }) => {
-    
-    const {toilet} = route.params;
+
+    const { toilet } = route.params;
 
     // Stars section
     const defaultRating = 3;
-    const maxRating = 5; 
+    const maxRating = 5;
     const [starCount1, setStarCount1] = useState(defaultRating)
     const [starCount2, setStarCount2] = useState(defaultRating)
     const [starCount3, setStarCount3] = useState(defaultRating)
@@ -39,36 +39,40 @@ const RatingToiletScreen = ({ route, navigation }) => {
     }
 
     // Average of all ratings
-    const total = parseFloat(((starCount1 + starCount2 + starCount3)/3).toFixed(2));
+    const total = parseFloat(((starCount1 + starCount2 + starCount3) / 3).toFixed(2));
 
 
     const datee = new Date();
-    const dateOfSubmission = `${datee.getDate()}/${datee.getMonth() + 1}/${datee.getFullYear()}`; 
+    const dateOfSubmission = `${datee.getDate()}/${datee.getMonth() + 1}/${datee.getFullYear()}`;
 
-    const handleSubmit = () =>{
+    const handleSubmit = () => {
         console.log(total);
         console.log(toilet);
         console.log("inside review ");
-        getAsyncStorageItem('token').then(
-            (tokenFromStorage) => {
-            //setToken(tokenFromStorage);
-            axios.post(BACKEND_ENDPOINT_REVIEWS+'addReview', {
-                token: tokenFromStorage,
-                address: toilet.location,
-                cleanliness:starCount1,
-                waitingtime:starCount2,
-                security:starCount3,
-                rating: total,
-                description: text,
-                date: dateOfSubmission
-            }).then(
-                () => {
-                    console.log("DATE == ", dateOfSubmission)
-                    navigation.navigate("ThankYou")}
+        getAsyncStorageItem('token')
+            .then((tokenFromStorage) => {
+                //setToken(tokenFromStorage);
+                let revTbAdded = {
+                    address: toilet.location,
+                    cleanliness: starCount1,
+                    waitingtime: starCount2,
+                    security: starCount3,
+                    rating: total,
+                    description: text,
+                    date: dateOfSubmission
+                };
 
-            ).catch(err => console.log(err.response.data.message))
-            console.log("DATE == ", dateOfSubmission)
-            //navigation.navigate("error occured")
+                navigation.navigate("Upload Image", { toiletOrReview: false, revTbAdded, token: tokenFromStorage });
+
+                // axios.post(BACKEND_ENDPOINT_REVIEWS + 'addReview',).then(
+                //     () => {
+                //         console.log("DATE == ", dateOfSubmission)
+                //         navigation.navigate("ThankYou")
+                //     }
+
+                // ).catch(err => console.log(err.response.data.message))
+                // console.log("DATE == ", dateOfSubmission)
+                // //navigation.navigate("error occured")
             })
             .catch(err => console.log(err));
     }
@@ -77,84 +81,84 @@ const RatingToiletScreen = ({ route, navigation }) => {
     const theme = useContext(ThemeContext);
 
     return (
-        <SafeAreaView style= {{backgroundColor: theme.background, height: "100%"}}>
-        <ScrollView >
-            <View style={styles.container}>
-                <Text style={[styles.rateToilet, {color: theme.color}]}>Rate Toilet : </Text> 
-                <View style={styles.center}>
-                    <Text style={[styles.smallMargin, {color: theme.color}]}>
-                        Cleanliness {starCount1} / {maxRating}
-                    </Text>
-                    <StarRating 
-                        maxStars={maxRating}
-                        disabled={false}
-                        rating={starCount1}
-                        selectedStar={(rating) => onStarRatingPress(rating)}
-                        fullStarColor={"gold"}
-                    />
-                </View>
+        <SafeAreaView style={{ backgroundColor: theme.background, height: "100%" }}>
+            <ScrollView >
+                <View style={styles.container}>
+                    <Text style={[styles.rateToilet, { color: theme.color }]}>Rate Toilet : </Text>
+                    <View style={styles.center}>
+                        <Text style={[styles.smallMargin, { color: theme.color }]}>
+                            Cleanliness {starCount1} / {maxRating}
+                        </Text>
+                        <StarRating
+                            maxStars={maxRating}
+                            disabled={false}
+                            rating={starCount1}
+                            selectedStar={(rating) => onStarRatingPress(rating)}
+                            fullStarColor={"gold"}
+                        />
+                    </View>
 
-                <View style={styles.center}>
-                    <Text style={[styles.smallMargin, {color: theme.color}]}>
-                        Waiting time {starCount2} / {maxRating}
-                    </Text>
-                    <StarRating 
-                        maxStars={maxRating}
-                        disabled={false}
-                        rating={starCount2}
-                        selectedStar={(rating) => onStarRatingPress_wt(rating)}
-                        fullStarColor={"gold"}
-                    />
-                </View>
-                <View style={styles.center}>
-                    <Text style={[styles.smallMargin, {color: theme.color}]}>
-                        Security {starCount3} / {maxRating}
-                    </Text>
-                    <StarRating 
-                        maxStars={maxRating}
-                        disabled={false}
-                        rating={starCount3}
-                        selectedStar={(rating) => onStarRatingPress_sec(rating)}
-                        fullStarColor={"gold"}
-                    />
-                </View>
+                    <View style={styles.center}>
+                        <Text style={[styles.smallMargin, { color: theme.color }]}>
+                            Waiting time {starCount2} / {maxRating}
+                        </Text>
+                        <StarRating
+                            maxStars={maxRating}
+                            disabled={false}
+                            rating={starCount2}
+                            selectedStar={(rating) => onStarRatingPress_wt(rating)}
+                            fullStarColor={"gold"}
+                        />
+                    </View>
+                    <View style={styles.center}>
+                        <Text style={[styles.smallMargin, { color: theme.color }]}>
+                            Security {starCount3} / {maxRating}
+                        </Text>
+                        <StarRating
+                            maxStars={maxRating}
+                            disabled={false}
+                            rating={starCount3}
+                            selectedStar={(rating) => onStarRatingPress_sec(rating)}
+                            fullStarColor={"gold"}
+                        />
+                    </View>
 
-                <View style={styles.center}>
-                    <Text style={[styles.smallMargin, {color: theme.color}]}>
-                        Total {total} / {maxRating}
-                    </Text>
-                    <StarRating 
-                        maxStars={maxRating}
-                        disabled={true}
-                        rating={total}
-                        fullStarColor={"gold"}
-                    />
-                </View>
+                    <View style={styles.center}>
+                        <Text style={[styles.smallMargin, { color: theme.color }]}>
+                            Total {total} / {maxRating}
+                        </Text>
+                        <StarRating
+                            maxStars={maxRating}
+                            disabled={true}
+                            rating={total}
+                            fullStarColor={"gold"}
+                        />
+                    </View>
 
-                <View style={styles.description}>
-                    
-                <TextInput style={styles.box}
-                    mode="outlined"
-                    label="Description"
-                    placeholder="Type something"
-                    right={<TextInput.Affix text="/250" />}
-                    activeOutlineColor={theme.activeOutColor}
-                    onChangeText={(value) => changeDetails(value)}
-                />
-                </View>
-                <TouchableOpacity 
-                    style={[styles.btn, {backgroundColor: theme.submitBtn}]}
-                    onPress={handleSubmit}
+                    <View style={styles.description}>
+
+                        <TextInput style={styles.box}
+                            mode="outlined"
+                            label="Description"
+                            placeholder="Type something"
+                            right={<TextInput.Affix text="/250" />}
+                            activeOutlineColor={theme.activeOutColor}
+                            onChangeText={(value) => changeDetails(value)}
+                        />
+                    </View>
+                    <TouchableOpacity
+                        style={[styles.btn, { backgroundColor: theme.submitBtn }]}
+                        onPress={handleSubmit}
                     >
-                    <Text style={styles.stOfSubmit}>
+                        <Text style={styles.stOfSubmit}>
                             Submit
 
-                    </Text>
-                </TouchableOpacity>
-            </View>
+                        </Text>
+                    </TouchableOpacity>
+                </View>
 
-        </ScrollView>
-        </SafeAreaView>      
+            </ScrollView>
+        </SafeAreaView>
     )
 }
 
@@ -166,18 +170,18 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         justifyContent: 'center',
     },
-    rateBlock:{
+    rateBlock: {
         marginVertical: 10
     },
-    center:{
+    center: {
         alignItems: "center"
     },
-    rateToilet:{
+    rateToilet: {
         marginVertical: 35,
         fontWeight: "bold",
         fontSize: 20
     },
-    smallMargin:{
+    smallMargin: {
         marginVertical: 10,
         fontWeight: "bold",
     },
@@ -189,18 +193,18 @@ const styles = StyleSheet.create({
         marginVertical: 30
 
     },
-    stOfSubmit:{
+    stOfSubmit: {
         fontWeight: "bold"
     },
-    box:{
+    box: {
         width: 250,
         paddingLeft: 8,
         fontWeight: "bold"
     },
-    description:{
+    description: {
         marginVertical: 10
     },
-    descriptionTxt:{
+    descriptionTxt: {
         fontWeight: "bold",
         marginBottom: 10
     }

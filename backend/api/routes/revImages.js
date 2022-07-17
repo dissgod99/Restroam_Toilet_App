@@ -120,4 +120,22 @@ router.post('/upload-files', jsonParser, function (req, res, next) {
 
 });
 
+router.post('/delete-images-for-review', jsonParser, function (req, res, next) {
+
+    let { revId } = req.body;
+
+    Image.deleteMany({ review_id: revId })
+        .then(result => {
+            return res.status(200).json({
+                message: 'images for review deleted successfully'
+            });
+        })
+        .catch(err => {
+            return res.status(400).json({
+                message: `error occured: ${err}` 
+            });
+        })
+
+});
+
 module.exports = router;

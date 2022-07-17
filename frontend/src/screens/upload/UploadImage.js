@@ -12,11 +12,11 @@ import ThemeContext from '../../darkMode/ThemeContext';
 import mime from 'mime';
 
 import axios from "axios";
-import { BACKEND_ENDPOINT_IMAGES, BACKEND_ENDPOINT_TOILETS } from '../../constants';
+import { BACKEND_ENDPOINT_IMAGES, BACKEND_ENDPOINT_REVIEWS, BACKEND_ENDPOINT_REV_IMAGES, BACKEND_ENDPOINT_TOILETS } from '../../constants';
 
 export default function UploadImage({ route, navigation }) {
 
-    const { toiletOrReview, toiletTbAdded, token } = route.params;
+    const { toiletOrReview, revTbAdded, toiletTbAdded, token } = route.params;
 
     // Dark Mode Variable
     const theme = useContext(ThemeContext);
@@ -176,30 +176,42 @@ export default function UploadImage({ route, navigation }) {
         return data;
     };
 
-    const handleUploadPhotos = async (photos, toiletAddr) => {
+    const handleUploadPhotos = async (photos, toiletAddr, revId) => {
         console.log('toiletId: ' + toiletAddr);
-        let formData = createFormData(photos, { 'toiletAddr': toiletAddr });
+        console.log('revId: ' + revId);
+        let formData;
+        if (toiletOrReview) {
+            formData = createFormData(photos, { 'toiletAddr': toiletAddr });
+        } else {
+            formData = createFormData(photos, { 'revId': revId });
+        }
 
         console.log('formData: ' + formData);
-        
-        let trueOrF = await fetch(
-            BACKEND_ENDPOINT_IMAGES + 'upload-files',
-            { method: "POST", body: formData }
-        ).then(({ status }) => {
-            if (status != 200) {
-                throw new Error('Refused from server');
-            }
-            else {
-                console.log('handleUploadPhotos Success');
-                return true;
-            }
-        }).catch((err) => {
-            ToastAndroid.showWithGravity(
-                err.message,
-                ToastAndroid.LONG,
-                ToastAndroid.BOTTOM);
-            return false;
-        });
+
+        let endpoint;
+
+        if (toiletOrReview) {
+            endpoint = BACKEND_ENDPOINT_IMAGES + 'upload-files';
+        } else {
+            endpoint = BACKEND_ENDPOINT_REV_IMAGES + 'upload-files';
+        }
+
+        let trueOrF = await fetch(endpoint, { method: "POST", body: formData })
+            .then(({ status }) => {
+                if (status != 200) {
+                    throw new Error('Refused from server');
+                }
+                else {
+                    console.log('handleUploadPhotos Success');
+                    return true;
+                }
+            }).catch((err) => {
+                ToastAndroid.showWithGravity(
+                    err.message,
+                    ToastAndroid.LONG,
+                    ToastAndroid.BOTTOM);
+                return false;
+            });
         console.log('trueOrF: ' + trueOrF);
         return trueOrF;
     };
@@ -210,26 +222,53 @@ export default function UploadImage({ route, navigation }) {
         console.log('imageDataArray: ' + imageDataArray);
     };
 
-    const deleteToilet = async (toiletAddr) => {
-        axios.post(BACKEND_ENDPOINT_TOILETS + "delete-toilet", { address: toiletAddr })
-            .then()
-            .catch(err => console.log('Something went terribly wrong: ' + err));
-    }
-
     const submitData = () => {
         //submit all the rest of the data too
-        axios.post(BACKEND_ENDPOINT_TOILETS + "add-toilet", { token, toiletObj: toiletTbAdded })
+
+        let endpoint;
+        let reqBody;
+
+        if (toiletOrReview) {
+            endpoint = BACKEND_ENDPOINT_TOILETS + "add-toilet";
+            reqBody = { token, toiletObj: toiletTbAdded };
+        } else {
+            endpoint = BACKEND_ENDPOINT_REVIEWS + "addReview";
+            reqBody = {
+                token,
+                address: revTbAdded.address,
+                cleanliness: revTbAdded.cleanliness,
+                waitingtime: revTbAdded.waitingtime,
+                security: revTbAdded.security,
+                rating: revTbAdded.rating,
+                description: revTbAdded.description,
+                date: revTbAdded.date,
+            };
+        }
+
+        axios.post(endpoint, reqBody)
             .then(({ data }) => {
 
                 ToastAndroid.showWithGravity(
                     data.message,
                     ToastAndroid.LONG,
                     ToastAndroid.BOTTOM);
-                let toiletAddr = data.toiletAddr;
                 console.log('imageDataArray: ' + imageDataArray);
-                
-                if (!handleUploadPhotos(imageDataArray, toiletAddr)) {
-                    deleteToilet(toiletAddr);
+
+                let uploadWasSuccess;
+                if (toiletOrReview) {
+                    uploadWasSuccess = handleUploadPhotos(imageDataArray, data.toiletAddr, undefined);
+                } else {
+                    uploadWasSuccess = handleUploadPhotos(imageDataArray, undefined, data.reviewId);
+                }
+
+                if (!uploadWasSuccess) {
+                    if (toiletOrReview) {
+                        deleteToilet(data.toiletAddr);
+                        deleteToiletImgs(data.toiletAddr);
+                    } else {
+                        deleteReview(revTbAdded.address);
+                        deleteReviewImgs(data.reviewId);
+                    }
                     navigation.navigate("Home");
                 } else {
                     navigation.navigate('ThankYou');
@@ -244,6 +283,30 @@ export default function UploadImage({ route, navigation }) {
                 navigation.navigate("Home");
             });
     };
+
+    const deleteToilet = async (toiletAddr) => {
+        axios.post(BACKEND_ENDPOINT_TOILETS + "delete-toilet", { address: toiletAddr })
+            .then()
+            .catch(err => console.log('Something went terribly wrong: ' + err));
+    };
+
+    const deleteReview = async (toiletAddr) => {
+        axios.post(BACKEND_ENDPOINT_REV_IMAGES + "deleteReview", { token, address: toiletAddr})
+            .then()
+            .catch(err => console.log('Something went terribly wrong: ' + err));
+    };
+
+    const deleteToiletImgs = (toiletAddr) => {
+        axios.post(BACKEND_ENDPOINT_IMAGES + "delete-images-for-toilet", { address: toiletAddr })
+            .then()
+            .catch(err => console.log('Something went terribly wrong: ' + err));
+    }
+
+    const deleteReviewImgs = (revId) => {
+        axios.post(BACKEND_ENDPOINT_REV_IMAGES + "delete-images-for-review", { revId })
+            .then()
+            .catch(err => console.log('Something went terribly wrong: ' + err));
+    }
 
     return (
         <View style={[styles.container, { backgroundColor: theme.background }]}>

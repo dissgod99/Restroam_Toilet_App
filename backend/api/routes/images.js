@@ -132,4 +132,22 @@ router.post('/upload-files', jsonParser, function (req, res, next) {
 
 });
 
+router.post('/delete-images-for-toilet', jsonParser, function (req, res, next) {
+
+    let { toiletAddr } = req.body;
+
+    Image.deleteMany({ toilet_address: toiletAddr })
+        .then(result => {
+            return res.status(200).json({
+                message: 'images for toilet deleted successfully'
+            });
+        })
+        .catch(err => {
+            return res.status(400).json({
+                message: `error occured: ${err}` 
+            });
+        })
+
+});
+
 module.exports = router;
