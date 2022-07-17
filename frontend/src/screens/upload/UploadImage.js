@@ -200,7 +200,14 @@ export default function UploadImage({ route, navigation }) {
             return false;
         });
         console.log('trueOrF: ' + trueOrF);
-        return trueOrF;
+
+        if (!trueOrF) {
+            deleteToilet(toiletAddr);
+            console.log('deleted');
+            navigation.navigate("Home");
+        } else {
+            navigation.navigate('ThankYou');
+        }
     };
 
     const removeSelectedPhoto = (idx) => {
@@ -226,14 +233,7 @@ export default function UploadImage({ route, navigation }) {
                     ToastAndroid.BOTTOM);
                 let toiletAddr = data.toiletAddr;
                 console.log('imageDataArray: ' + imageDataArray);
-
-                if (handleUploadPhotos(imageDataArray, toiletAddr) != true) {
-                    deleteToilet(toiletAddr);
-                    console.log('deleted');
-                    navigation.navigate("Home");
-                } else {
-                    navigation.navigate('ThankYou');
-                }
+                handleUploadPhotos(imageDataArray, toiletAddr)
             })
             .catch(err => {
                 console.log(err);

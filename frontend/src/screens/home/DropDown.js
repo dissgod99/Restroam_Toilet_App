@@ -6,75 +6,60 @@ import ModalDropdown from 'react-native-modal-dropdown';
 import ThemeContext from '../../darkMode/ThemeContext';
 
 
-const DropDown = ({ data }) => {
-    const [options, setOptions] = useState(['Toilet1', 'Toilet2', 'Toilet3', 'Toilet4']);
+const DropDown = ({ data, setMarker, markerClick }) => {
+    const [options, setOptions] = useState(data);
     const FilterList = ['distance', 'rating', 'price'];
     const [filter, setFilter] = useState('distance');
     const [toilet, setToilet] = useState(null);
     const Unit = { distance: 'KM', price: '€', rating: '*' }
-    const dataTest = [
-        {
-            Name: 'Toilet1',
-            Distance: 2,
-            Rating: 4.5,
-            Price: 7
-        },
-        {
-            Name: 'Toilet2',
-            Distance: 0.2,
-            Rating: 3,
-            Price: 2
-        },
-        {
-            Name: 'Toilet3',
-            Distance: 5,
-            Rating: 5,
-            Price: 1
-        },
-        {
-            Name: 'Toilet42',
-            Distance: 6,
-            Rating: 2,
-            Price: 0
-        }
-    ]
+    useEffect(() => {
+        console.log(options)
+    }, [options])
     useEffect(() => {
         var newOptions = [];
         data.sort(function (a, b) {
             return filter != 'rating' ? parseFloat(a[filter]) - parseFloat(b[filter]) : parseFloat(b[filter]) - parseFloat(a[filter]);
         });
         data.forEach(d => {
-            newOptions.push(d['name'] + " :" + d[filter] + Unit[filter])
+            newOptions.push(d['name'] + " :" + d[filter].toString().substring(0, 5) + Unit[filter])
         })
         setOptions(newOptions)
-    }, [filter])
+    }, [filter, data])
 
     const theme = useContext(ThemeContext)
 
     return (
-        <View style={[styles.container, {backgroundColor: theme.drop}]}>
+        <View style={[styles.container, { backgroundColor: theme.drop }]}>
             <ModalDropdown style={styles.drop} options={options} defaultValue='Toilet list' onSelect={(idx) => {
-                setToilet(options[idx])
-            }} dropdownStyle={styles.down} showSearch={true} adjustFrame={(s) => {
-            }} renderSearch={<TextInput style={styles.inputStyle} placeholder={'search...'} onChangeText={(value) => {
-                var newOptions1 = value == '' ? data : data.filter(o => o.Name.includes(value));
-                var newOptions2 = value == '' ? [] : data.filter(o => !o.Name.includes(value));
-                newOptions1.sort(function (a, b) {
-                    return filter != 'rating' ? parseFloat(a[filter]) - parseFloat(b[filter]) : parseFloat(b[filter]) - parseFloat(a[filter]);
-                });
-                newOptions2.sort(function (a, b) {
-                    return filter != 'rating' ? parseFloat(a[filter]) - parseFloat(b[filter]) : parseFloat(b[filter]) - parseFloat(a[filter]);
-                });
-                var tmp = []
-                newOptions1.forEach(d => {
-                    tmp.push(d['name'] + " :" + d[filter] + Unit[filter])
+                let marker;
+                data.forEach((d, i) => {
+                    if (d.name + ' ' == options[idx].split(':')[0] && d[filter].toString().substring(0, 5) + Unit[filter] == options[idx].split(':')[1]) {
+                        markerClick(d, i)
+                        console.log(d)
+                    }
                 })
-                newOptions2.forEach(d => {
-                    tmp.push(d['Name'] + " :" + d[filter] + Unit[filter])
-                })
-                console.log(tmp);
-                setOptions(tmp);
-            }}></TextInput>}>
+            }} dropdownStyle={styles.down} showSearch={false} adjustFrame={(s) => {
+            }}
+            // renderSearch={<TextInput style={styles.inputStyle} placeholder={'search...'} onChangeText={(value) => {
+            //     var newOptions1 = value == '' ? data : data.filter(o => o.Name.includes(value));
+            //     var newOptions2 = value == '' ? [] : data.filter(o => !o.Name.includes(value));
+            //     newOptions1.sort(function (a, b) {
+            //         return filter != 'rating' ? parseFloat(a[filter]) - parseFloat(b[filter]) : parseFloat(b[filter]) - parseFloat(a[filter]);
+            //     });
+            //     newOptions2.sort(function (a, b) {
+            //         return filter != 'rating' ? parseFloat(a[filter]) - parseFloat(b[filter]) : parseFloat(b[filter]) - parseFloat(a[filter]);
+            //     });
+            //     var tmp = []
+            //     newOptions1.forEach(d => {
+            //         tmp.push(d['name'] + " :" + d[filter] + Unit[filter])
+            //     })
+            //     newOptions2.forEach(d => {
+            //         tmp.push(d['Name'] + " :" + d[filter] + Unit[filter])
+            //     })
+            //     console.log(tmp);
+            //     setOptions(tmp);
+            // }}></TextInput>}
+            >
             </ModalDropdown>
             <ModalDropdown style={styles.drop} options={FilterList} defaultValue='Sort by:' onSelect={(idx) => {
                 setFilter(FilterList[idx])
