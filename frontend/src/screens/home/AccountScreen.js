@@ -9,17 +9,16 @@ import ThemeContext from '../../darkMode/ThemeContext';
 
 import { getAsyncStorageItem, setAsyncStorageItem } from '../../util';
 import { BACKEND_ENDPOINT_USERS } from '../../constants';
+import { useIsFocused } from "@react-navigation/core";
 
 import axios from "axios";
 
 const AccountScreen = ({ navigation }) => {
-
-  const [token, setToken] = useState();
-  const [user_username, set_user_username] = useState('');
-  const [user_email, set_user_email] = useState('');
-
+  const isFocused = useIsFocused();
   useEffect(() => {
-    getAsyncStorageItem('token')
+    if (isFocused) {
+      console.log("HELLO HOME");
+      getAsyncStorageItem('token')
       .then((tokenFromStorage) => {
         setToken(tokenFromStorage);
         axios
@@ -35,6 +34,34 @@ const AccountScreen = ({ navigation }) => {
               ToastAndroid.BOTTOM);
           });
       })
+      .catch(err => console.log(err));
+    }
+  }, [isFocused]);
+
+
+  const [token, setToken] = useState();
+  const [user_username, set_user_username] = useState('');
+  const [user_email, set_user_email] = useState('');
+
+  useEffect(() => {
+    getAsyncStorageItem('token')
+      .then((tokenFromStorage) => {
+        if(tokenFromStorage == null) navigation.navigate("Not logged in");
+        else{
+        setToken(tokenFromStorage);
+        axios
+          .post(BACKEND_ENDPOINT_USERS + 'get-user-data', { token: tokenFromStorage })
+          .then((response) => {
+            const { data } = response;
+            set_user_username(data.payload.username);
+            set_user_email(data.payload.email);
+          }).catch(err => {
+            ToastAndroid.showWithGravity(
+              err.response.data.message,
+              ToastAndroid.LONG,
+              ToastAndroid.BOTTOM);
+          });
+      }})
       .catch(err => console.log(err));
   }, []);
 

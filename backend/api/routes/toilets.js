@@ -35,7 +35,20 @@ router.post('/add-toilet', jsonParser, async (req, res, next) => {
 
     let { token, toiletObj } = req.body;
     let { name, address, openingHours, price, handicapAccess, details } = toiletObj;
-
+    // geocoder.geocode(address)
+    // .then(
+    //     () => {}
+    // )
+    // .catch(err => {res.status(400).json({ message: err.message });
+    //                 return;})
+    const result = await geocoder.geocode(address);
+    console.log(result);
+    if(result.length<=0){
+        return res.status(400).json({
+            message: 'Invalid address! check for any mispellings'
+        });
+    }
+    else{
     try {
         const decryptedSignature = jwt.verify(token, JWT_SECRET);
         // from this point we know that the request is not malformed. JWT has not been tampered with
@@ -45,16 +58,6 @@ router.post('/add-toilet', jsonParser, async (req, res, next) => {
 
         await checkIfUserIsDeleted(user);
 
-        // Toilet.find({ address: req.body.address })
-        //     .exec()
-        //     .then(toilet => {
-        //         if (toilet.length > 0) {
-        //             // here we should be able to add more toilets? Imagine a restaurant with more than one toilet
-        //             // one for male/female and one with handicap access for example
-        //             return res.status(409).json({
-        //                 message: 'Toilet at this location already exists.'
-        //             });
-        //         } else {
         const toilet = new Toilet({
             _id: new mongoose.Types.ObjectId(),
             name: name,
@@ -87,11 +90,11 @@ router.post('/add-toilet', jsonParser, async (req, res, next) => {
                     message: message,
                 });
             });
-
     }
     catch (e) {
         res.status(400).json({ message: e.message });
     }
+}
 
 });
 
@@ -184,6 +187,7 @@ router.post('/nearestToilets', jsonParser, async (req, res, next) => {
                 const result = await geocoder.geocode(entry.address);
 
                 var dist = distance(result[0].latitude, result[0].longitude, req.body.latitude, req.body.longitude, 'K');
+                console.log(dist);
                 if (dist < 2) {
                     const rate = await countAverageRating(entry);
 

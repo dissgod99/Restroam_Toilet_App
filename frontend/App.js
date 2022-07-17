@@ -27,6 +27,8 @@ import EditToiletScreen from './src/screens/editToilet/EditToiletScreen';
 import EditInfoScreen from './src/screens/editToilet/EditInfoScreen';
 import UploadImage from './src/screens/upload/UploadImage';
 import OverviewScreen from './src/screens/RateToilet/OverviewScreen'
+import OutloggedScreen from './src/screens/login/OutloggedScreen';
+
 const Stack = createNativeStackNavigator();
 
 export default function App() {
@@ -51,7 +53,7 @@ export default function App() {
 
     <ThemeContext.Provider value={mode == true ? Theme.dark : Theme.light}>
       <NavigationContainer >
-        <Stack.Navigator initialRouteName='Splash' >
+        <Stack.Navigator initialRouteName='Splash'  screenOptions={{ unmountOnBlur: true }}>
           <Stack.Screen
             name="Splash"
             component={SplashScreen}
@@ -70,7 +72,9 @@ export default function App() {
                 backgroundColor: headColor
               },
               headerShown: false,
-            }} />
+              unmountOnBlur: true,
+            }}
+             />
           <Stack.Screen
             name="Rating"
             component={RatingToiletScreen}
@@ -282,6 +286,17 @@ export default function App() {
                 }
               }
             }
+            />
+            <Stack.Screen
+            name='Not logged in'
+            component={OutloggedScreen}
+            options={{
+              headerStyle: {
+                //backgroundColor: "#ae8647"
+                backgroundColor: headColor
+              },
+              headerShown: false,
+            }} 
           />
         </Stack.Navigator>
       </NavigationContainer>

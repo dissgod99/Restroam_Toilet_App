@@ -6,6 +6,7 @@ import ReviewBox from "./ReviewBox";
 import axios from "axios";
 
 import { BACKEND_ENDPOINT_REVIEWS, BACKEND_ENDPOINT_IMAGES } from '../../constants';
+import { useIsFocused } from "@react-navigation/core";
 
 const OverviewScreen = ({ route, navigation }) => {
     // Themes (Dark Mode / Default Mode)
@@ -15,6 +16,7 @@ const OverviewScreen = ({ route, navigation }) => {
     const [reviews, setReviews] = useState([]);
     const [toiletImgsSrcs, setToiletImgsSrcs] = useState([]);
 
+    const isFocused = useIsFocused();
     useEffect(() => {
         async function getToiletImages() {
             axios.post(BACKEND_ENDPOINT_IMAGES + 'get-images-base64', { toiletAddr: toilet.location })
@@ -52,7 +54,7 @@ const OverviewScreen = ({ route, navigation }) => {
         return () => {
             setReviews([])
         }
-    }, [])
+    }, [isFocused])
 
     return (
         <View style={{ backgroundColor: theme.background, height: "100%" }}>
