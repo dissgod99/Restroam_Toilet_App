@@ -176,19 +176,23 @@ export default function UploadImage({ route, navigation }) {
         return data;
     };
 
-    const handleUploadPhotos = (photos, toiletId) => {
-        console.log('toiletId: ' + toiletId);
-        let formData = createFormData(photos, { 'toiletId': toiletId });
+    const handleUploadPhotos = async (photos, toiletAddr) => {
+        console.log('toiletId: ' + toiletAddr);
+        let formData = createFormData(photos, { 'toiletAddr': toiletAddr });
 
         console.log('formData: ' + formData);
-        fetch(
+        
+        let trueOrF = await fetch(
             BACKEND_ENDPOINT_IMAGES + 'upload-files',
             { method: "POST", body: formData }
         ).then(({ status }) => {
             if (status != 200) {
                 throw new Error('Refused from server');
             }
-            else console.log('Success');
+            else {
+                console.log('handleUploadPhotos Success');
+                return true;
+            }
         }).catch((err) => {
             ToastAndroid.showWithGravity(
                 err.message,
@@ -196,6 +200,8 @@ export default function UploadImage({ route, navigation }) {
                 ToastAndroid.BOTTOM);
             return false;
         });
+        console.log('trueOrF: ' + trueOrF);
+        return trueOrF;
     };
 
     const removeSelectedPhoto = (idx) => {
@@ -204,8 +210,10 @@ export default function UploadImage({ route, navigation }) {
         console.log('imageDataArray: ' + imageDataArray);
     };
 
-    const deleteToiletWithId = async (toiletId) => {
-        axios.post(BACKEND_ENDPOINT_TOILETS + "delete-toilet", { toiletId })
+    const deleteToilet = async (toiletAddr) => {
+        axios.post(BACKEND_ENDPOINT_TOILETS + "delete-toilet", { address: toiletAddr })
+            .then()
+            .catch(err => console.log('Something went terribly wrong: ' + err));
     }
 
     const submitData = () => {
@@ -217,15 +225,15 @@ export default function UploadImage({ route, navigation }) {
                     data.message,
                     ToastAndroid.LONG,
                     ToastAndroid.BOTTOM);
-                let toiletId = data.toiletId;
+                let toiletAddr = data.toiletAddr;
                 console.log('imageDataArray: ' + imageDataArray);
                 
-                if (!handleUploadPhotos(imageDataArray, toiletId)) {
-                    deleteToiletWithId(toiletId);
+                if (!handleUploadPhotos(imageDataArray, toiletAddr)) {
+                    deleteToilet(toiletAddr);
                     navigation.navigate("Home");
+                } else {
+                    navigation.navigate('ThankYou');
                 }
-                    
-                navigation.navigate('ThankYou');
             })
             .catch(err => {
                 console.log(err);

@@ -73,7 +73,8 @@ router.post('/add-toilet', jsonParser, async (req, res, next) => {
             .then(toilet => {
                 return res.status(201).json({
                     message: 'Toilet has been added.',
-                    toiletId: toilet._id
+                    toiletId: toilet._id,
+                    toiletAddr: toilet.address,
                 });
             })
             .catch(err => {
