@@ -4,17 +4,6 @@ import FontAwesome from "react-native-vector-icons/FontAwesome";
 import StarRating from 'react-native-star-rating';
 import ThemeContext from "../../darkMode/ThemeContext";
 
-const edit =()=>{
-
-};
-
-const deleteReview =()=>{
-    
-};
-const nothing =()=>{
-    
-};
-
 const Review = (props) => {
     const [text, setText] = useState(props.text);
     const theme = useContext(ThemeContext);
@@ -34,7 +23,6 @@ const Review = (props) => {
                 maxStars={5}
                 disabled={true}
                 rating={props.stars}
-                selectedStar={(rating) => nothing()}
                 fullStarColor={"gold"}
                 starSize={20}
             />
@@ -48,7 +36,7 @@ const Review = (props) => {
                 {/* <TouchableOpacity onPress={edit()}>
                     <FontAwesome name="edit" size={25}/>
                 </TouchableOpacity> */}
-                <TouchableOpacity onPress={deleteReview()}>
+                <TouchableOpacity>
                     <FontAwesome name="trash-o" size={25}/>
                 </TouchableOpacity>
                 

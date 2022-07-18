@@ -83,10 +83,10 @@ export default function MapScreen({ navigation ,route}) {
 
 
 
-    useEffect(() => {
-        checkPermission();
-        getToiletsAroundUser();
-    }, [])
+    // useEffect(() => {
+    //     checkPermission();
+    //     getToiletsAroundUser();
+    // }, [])
 
     useEffect(() => {
         if (isFocused) {
