@@ -77,6 +77,7 @@ router.post('/add-toilet', jsonParser, async (req, res, next) => {
                         message: 'Toilet has been added.',
                         toiletId: toilet._id,
                         toiletAddr: toilet.address,
+                        toilet,
                     });
                 })
                 .catch(err => {

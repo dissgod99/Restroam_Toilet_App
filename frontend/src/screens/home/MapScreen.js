@@ -82,13 +82,6 @@ export default function MapScreen({ navigation, route }) {
 
     const _map = useRef(1);
 
-
-
-    useEffect(() => {
-        checkPermission();
-        getToiletsAroundUser();
-    }, [])
-
     useEffect(() => {
         if (isFocused) {
             console.log("rerender")
@@ -120,7 +113,6 @@ export default function MapScreen({ navigation, route }) {
     const [vision, setVision] = useState(null);
 
     const markerClick = (item1, index) => {
-        console.log(item1);
         if (indexclicked == -1) {
             setMarkerlicked(!markerclicked);
             setIndexclicked(index);
@@ -155,9 +147,19 @@ export default function MapScreen({ navigation, route }) {
 
     const toiletIconColor = '#c9ac55';
 
+    useEffect(() => {
+        console.log(marker)
+    }, [marker])
+
     return (
         <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-            <DropDown data={toiletsAround}></DropDown>
+            <DropDown data={toiletsAround.length > 0 ? toiletsAround : [
+                {
+                    name: 'empty...',
+                    distance: 0,
+                    rating: 0,
+                    price: 0
+                }]} setMarker={setMarker} markerClick={markerClick}></DropDown>
             <MapView
                 ref={_map}
                 provider={PROVIDER_GOOGLE}

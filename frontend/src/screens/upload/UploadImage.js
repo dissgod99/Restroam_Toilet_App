@@ -198,7 +198,7 @@ export default function UploadImage({ route, navigation }) {
             endpoint = BACKEND_ENDPOINT_REV_IMAGES + 'upload-files';
         }
 
-        let trueOrF = await fetch(endpoint, { method: "POST", body: formData })
+        let uploadWasSuccess = await fetch(endpoint, { method: "POST", body: formData })
             .then(({ status }) => {
                 if (status != 200) {
                     throw new Error('Refused from server');
@@ -214,8 +214,20 @@ export default function UploadImage({ route, navigation }) {
                     ToastAndroid.BOTTOM);
                 return false;
             });
-        console.log('trueOrF: ' + trueOrF);
-        return trueOrF;
+        console.log('uploadWasSuccess: ' + uploadWasSuccess);
+
+        if (!uploadWasSuccess) {
+            if (toiletOrReview) {
+                deleteToilet(toiletAddr);
+                deleteToiletImgs(toiletAddr);
+            } else {
+                deleteReview(revTbAdded.address);
+                deleteReviewImgs(revId);
+            }
+            navigation.navigate("Home");
+        } else {
+            navigation.navigate('ThankYou');
+        }
     };
 
     const removeSelectedPhoto = (idx) => {
@@ -263,24 +275,10 @@ export default function UploadImage({ route, navigation }) {
                     ToastAndroid.BOTTOM);
                 console.log('imageDataArray: ' + imageDataArray);
 
-                let uploadWasSuccess;
                 if (toiletOrReview) {
-                    uploadWasSuccess = handleUploadPhotos(imageDataArray, data.toiletAddr, undefined);
+                    handleUploadPhotos(imageDataArray, data.toiletAddr, undefined);
                 } else {
-                    uploadWasSuccess = handleUploadPhotos(imageDataArray, undefined, data.reviewId);
-                }
-
-                if (!uploadWasSuccess) {
-                    if (toiletOrReview) {
-                        deleteToilet(data.toiletAddr);
-                        deleteToiletImgs(data.toiletAddr);
-                    } else {
-                        deleteReview(revTbAdded.address);
-                        deleteReviewImgs(data.reviewId);
-                    }
-                    navigation.navigate("Home");
-                } else {
-                    navigation.navigate('ThankYou');
+                    handleUploadPhotos(imageDataArray, undefined, data.reviewId);
                 }
             })
             .catch(err => {
