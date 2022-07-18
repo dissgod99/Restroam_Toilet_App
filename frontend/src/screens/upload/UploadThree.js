@@ -73,7 +73,7 @@ export default function UploadImage(navigation) {
             }
         }
         if (!legit) {
-            setLegitText("This image contains explicit containt and won't be accepted");
+            setLegitText("This image contains explicit content and won't be accepted");
             setTimeout(function () {
                 setLegitText('')
             }, 30000)

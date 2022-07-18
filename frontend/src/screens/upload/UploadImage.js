@@ -40,8 +40,8 @@ export default function UploadImage({ route, navigation }) {
                     alert('Sorry, we need camera roll permissions to make this work!');
                 }
                 setLoad(true);
-                // await tf.ready();
-                // setModel(await mobilenet.load());
+                await tf.ready();
+                setModel(await mobilenet.load());
                 setLoad(false);
             }
         })();
@@ -51,28 +51,28 @@ export default function UploadImage({ route, navigation }) {
         return Buffer.from(base64, 'base64');
     }
 
-    // function imageToTensor(rawImageData) {
-    //     const TO_UINT8ARRAY = true
-    //     const { width, height, data } = jpeg.decode(rawImageData, TO_UINT8ARRAY)
-    //     // Drop the alpha channel info for mobilenet
-    //     const buffer = new Uint8Array(width * height * 3)
-    //     let offset = 0 // offset into original data
-    //     for (let i = 0; i < buffer.length; i += 3) {
-    //         buffer[i] = data[offset]
-    //         buffer[i + 1] = data[offset + 1]
-    //         buffer[i + 2] = data[offset + 2]
+    function imageToTensor(rawImageData) {
+        const TO_UINT8ARRAY = true
+        const { width, height, data } = jpeg.decode(rawImageData, TO_UINT8ARRAY)
+        // Drop the alpha channel info for mobilenet
+        const buffer = new Uint8Array(width * height * 3)
+        let offset = 0 // offset into original data
+        for (let i = 0; i < buffer.length; i += 3) {
+            buffer[i] = data[offset]
+            buffer[i + 1] = data[offset + 1]
+            buffer[i + 2] = data[offset + 2]
 
-    //         offset += 4
-    //     }
-    //     return tf.tensor3d(buffer, [height, width, 3])
-    // }
+            offset += 4
+        }
+        return tf.tensor3d(buffer, [height, width, 3])
+    }
 
     const pickImage = async () => {
         setLoad(true);
         let result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.All,
             allowsEditing: true,
-            // base64: true,
+            base64: true,
             aspect: [4, 3],
             quality: 1,
         }).catch(e => console.log(e));
@@ -85,9 +85,9 @@ export default function UploadImage({ route, navigation }) {
             console.log('result: ' + result);
             result.fileName = filename;
         }
-        // let legit = await classifyImage(result.base64);
+        let legit = await classifyImage(result.base64);
 
-        // if (!result.cancelled && legit) {
+        if (!result.cancelled && legit) {
         for (let i = 0; i < 5; i++) {
             if (imageArray[i][0] == null) {
                 setImageDataArray(oldArray => [].concat([].concat(oldArray.slice(0, i), [result]), oldArray.slice(i + 1, 5)))
@@ -96,13 +96,13 @@ export default function UploadImage({ route, navigation }) {
                 break;
             }
         }
-        // }
-        // if (!legit) {
-        //     setLegitText("This image contains explicit containt and won't be accepted");
-        //     setTimeout(function () {
-        //         setLegitText('')
-        //     }, 30000)
-        // }
+        }
+        if (!legit) {
+            setLegitText("This image contains explicit content and won't be accepted");
+            setTimeout(function () {
+                setLegitText('')
+            }, 30000)
+        }
         setLoad(false);
     };
 
