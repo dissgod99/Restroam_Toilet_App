@@ -10,9 +10,9 @@ const Report = (props) => {
                 <Text style={styles.title} >
                     {props.title}
                 </Text>
-                <Text style = {styles.dateWritten}>
+                {/* <Text style = {styles.dateWritten}>
                     written on {props.date} by {props.username}
-                </Text>
+                </Text> */}
             </View>
             <View style={styles.text}>
                 <Text>

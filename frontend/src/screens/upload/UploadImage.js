@@ -40,8 +40,8 @@ export default function UploadImage({ route, navigation }) {
                     alert('Sorry, we need camera roll permissions to make this work!');
                 }
                 setLoad(true);
-                // await tf.ready();
-                // setModel(await mobilenet.load());
+                await tf.ready();
+                setModel(await mobilenet.load());
                 setLoad(false);
             }
         })();
@@ -85,21 +85,20 @@ export default function UploadImage({ route, navigation }) {
             console.log('result: ' + result);
             result.fileName = filename;
         }
-        // let legit = await classifyImage(result.base64);
-        let legit = true;
+        let legit = await classifyImage(result.base64);
 
         if (!result.cancelled && legit) {
-            for (let i = 0; i < 5; i++) {
-                if (imageArray[i][0] == null) {
-                    setImageDataArray(oldArray => [].concat([].concat(oldArray.slice(0, i), [result]), oldArray.slice(i + 1, 5)))
-                    imageArray[i][1](result);
-                    console.log('imageDataArray: ' + imageDataArray.toString());
-                    break;
-                }
+        for (let i = 0; i < 5; i++) {
+            if (imageArray[i][0] == null) {
+                setImageDataArray(oldArray => [].concat([].concat(oldArray.slice(0, i), [result]), oldArray.slice(i + 1, 5)))
+                imageArray[i][1](result);
+                console.log('imageDataArray: ' + imageDataArray.toString());
+                break;
             }
         }
+        }
         if (!legit) {
-            setLegitText("This image contains explicit containt and won't be accepted");
+            setLegitText("This image contains explicit content and won't be accepted");
             setTimeout(function () {
                 setLegitText('')
             }, 30000)

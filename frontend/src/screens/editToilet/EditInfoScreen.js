@@ -1,6 +1,6 @@
 import axios from "axios";
 import React, { useState, useContext, useEffect } from "react";
-import { ScrollView, StyleSheet, View, Text, TouchableOpacity, ToastAndroid } from "react-native";
+import { ScrollView, StyleSheet, View, Text, TouchableOpacity, ToastAndroid, Alert } from "react-native";
 import { TextInput, Switch } from "react-native-paper";
 import { BACKEND_ENDPOINT_TOILETS } from "../../constants";
 import ThemeContext from "../../darkMode/ThemeContext";
@@ -21,27 +21,32 @@ const EditInfoScreen = ({ route, navigation }) => {
         rescue
     } = route.params;
 
-    // const [newHours, setNewHours] = useState(rescue)
-
-
-    // const {timeline} = route.params.rescue;
-    var numberi = 0;
-
     let initName, initAddress, initDetails, initCurrentLocation;
-    // let initHours = []
     initName = initAddress = initDetails = initCurrentLocation = '';
     let initPrice = '0,00€';
     let initIsEnabled = false;
 
-    const [name, setName] = useState(initName);
+    let initTimes = {
+        Monday: "Closed",
+        Tuesday: "Closed",
+        Wednesday: "Closed",
+        Thursday: "Closed",
+        Friday: "Closed",
+        Saturday: "Closed",
+        Sunday: "Closed"
+    }
 
-    const [address, setAddress] = useState(initAddress);
+    const [name, setName] = useState(originalTitle);
+
+    const [address, setAddress] = useState(originalLocation);
     const [currentLocation, setCurrentLocation] = useState(initCurrentLocation);
 
-    const [price, setPrice] = useState(initPrice);
-    const [isEnabled, setIsEnabled] = useState(initIsEnabled);
+    const [price, setPrice] = useState(originalPrice);
+    const [isEnabled, setIsEnabled] = useState(false);
 
-    const [details, setDetails] = useState('');
+    const [details, setDetails] = useState(originalDetails);
+
+    const [openingH, setOpeningH] = useState(initTimes)
 
     var times = {
         Monday: "Closed",
@@ -104,14 +109,9 @@ const EditInfoScreen = ({ route, navigation }) => {
 
 
     const transformHours = () => {
-        // console.log("TimelineEDIT == ", timeline)
         rescue.forEach((obj) => {
-            //console.log("Obj == ", obj.days)
-            //console.log("True or false == ", obj.days.includes("Mon"))
-            if (obj.days.includes("Mon")) {
+            if(obj.days.includes("Mon")){
                 const hours_Mon = obj.start + "-" + obj.end
-                //console.log("hourrrrs == ", hours_Mon)
-                //console.log("times in === ", times)
                 times.Monday = hours_Mon;
                 console.log("times after edit === ", times)
             }
@@ -160,37 +160,52 @@ const EditInfoScreen = ({ route, navigation }) => {
                     newDetails: details
                 }
 
-                resetAllInputs();
-                // navigation.navigate("Upload Image", {
-                //     toiletOrReview: true,
-                //     updateOrAdd: true,
-                //     revTbAdded: undefined,
-                //     toiletTbAdded: toiletTbUpdated,
-                //     token: tokenFromStorage,
-                // });
-                let endpoint = BACKEND_ENDPOINT_TOILETS + 'edit-toilet';
-                let { address, newName, newAddress, newPrice, newDetails, newHandicapAccess, newOpeningHours } = toiletTbUpdated;
-                let reqBody = { address, newName, newAddress, newPrice, newDetails, newHandicapAccess, newOpeningHours };
+                if (name != "" && price != "") {
 
-                axios.post(endpoint, reqBody)
-                    .then(({ data }) => {
-                        ToastAndroid.showWithGravity(
-                            data.message,
-                            ToastAndroid.LONG,
-                            ToastAndroid.BOTTOM);
+                    resetAllInputs();
+                    // navigation.navigate("Upload Image", {
+                    //     toiletOrReview: true,
+                    //     updateOrAdd: true,
+                    //     revTbAdded: undefined,
+                    //     toiletTbAdded: toiletTbUpdated,
+                    //     token: tokenFromStorage,
+                    // });
+                    let endpoint = BACKEND_ENDPOINT_TOILETS + 'edit-toilet';
+                    let { address, newName, newAddress, newPrice, newDetails, newHandicapAccess, newOpeningHours } = toiletTbUpdated;
+                    let reqBody = { address, newName, newAddress, newPrice, newDetails, newHandicapAccess, newOpeningHours };
 
-                        navigation.navigate('ThankYou');
-                    })
-                    .catch(err => {
-                        console.log(err);
-                        ToastAndroid.showWithGravity(
-                            err.response.data.message,
-                            ToastAndroid.LONG,
-                            ToastAndroid.BOTTOM);
-                        navigation.navigate("Home");
-                    });
-            })
-            .catch(err => console.log(err));
+                    axios.post(endpoint, reqBody)
+                        .then(({ data }) => {
+                            ToastAndroid.showWithGravity(
+                                data.message,
+                                ToastAndroid.LONG,
+                                ToastAndroid.BOTTOM);
+
+                            navigation.navigate('ThankYou');
+                        })
+                        .catch(err => {
+                            console.log(err);
+                            ToastAndroid.showWithGravity(
+                                err.response.data.message,
+                                ToastAndroid.LONG,
+                                ToastAndroid.BOTTOM);
+                            navigation.navigate("Home");
+                        });
+                } else {
+                    Alert.alert(
+                        "ERROR",
+                        "Please fill all mandatory inputs",
+                        [
+                            {
+                                text: 'Cancel',
+                                onPress: () => console.log('Cancel ERROR Pressed'),
+                                style: 'cancel',
+                            },
+                            { text: 'OK', onPress: () => console.log('OK ERROR Pressed') },
+                        ]
+                    );
+                }
+            }).catch(err => console.log(err));
     };
 
     const resetAllInputs = () => {
@@ -199,33 +214,8 @@ const EditInfoScreen = ({ route, navigation }) => {
         setPrice(initPrice);
         setIsEnabled(initIsEnabled);
         setDetails(initDetails);
+        setOpeningH(initTimes)
     }
-
-    // const handleSubmit = () => {
-    //     ToastAndroid.showWithGravity(
-    //         'Please wait until update...',
-    //         ToastAndroid.SHORT,
-    //         ToastAndroid.BOTTOM);
-
-    //     axios.post(BACKEND_ENDPOINT_TOILETS + 'edit-toilet', {
-    //         name: originalTitle,
-    //         newName,
-    //         newAddress,
-    //         newPrice,
-    //         newDetails,
-    //         newHandicapAccess,
-    //     })
-    //         .then(({ data }) => {
-    //             ToastAndroid.showWithGravity(
-    //                 data.message,
-    //                 ToastAndroid.LONG,
-    //                 ToastAndroid.BOTTOM);
-    //             setTimeout(() => {
-    //                 navigation.navigate('Profile', { token });
-    //             }, 3000);
-    //         })
-    //         .catch((err) => console.log(err));
-    // }
 
     const theme = useContext(ThemeContext);
 
@@ -244,9 +234,6 @@ const EditInfoScreen = ({ route, navigation }) => {
                         <TextInput style={styles.box}
                             mode="outlined"
                             editable={true}
-                            //placeholder="Enter name"
-                            defaultValue={originalTitle}
-                            placeholder={originalTitle}
                             right={<TextInput.Affix text="/100" />}
                             activeOutlineColor={theme.activeOutColor}
                             onChangeText={(value) => changeName(value)}
@@ -257,17 +244,13 @@ const EditInfoScreen = ({ route, navigation }) => {
                         </Text>
                         <TextInput style={styles.box}
                             mode="outlined"
-                            editable={true}
-                            //label="Give address"
-                            //placeholder={"Enter address"}
-                            defaultValue={originalLocation}
-                            placeholder={originalLocation}
                             right={<TextInput.Affix text="/100" />}
                             activeOutlineColor={theme.activeOutColor}
                             onChangeText={(value) => changeAddress(value)}
                             value={address}
                         />
-                        <TouchableOpacity onPress={async () => fillWithCurrentAddress()}
+                        <TouchableOpacity
+                            onPress={async () => fillWithCurrentAddress()}
                             style={[styles.getAddress, { backgroundColor: theme.submitBtn }]}>
                             <Text style={styles.getAddressText}>Get current address</Text>
                             <Icon

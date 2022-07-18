@@ -20,6 +20,9 @@ const AccountScreen = ({ navigation }) => {
       console.log("HELLO HOME");
       getAsyncStorageItem('token')
       .then((tokenFromStorage) => {
+        if(tokenFromStorage == null){
+          navigation.navigate("Not logged in");
+        }else{
         setToken(tokenFromStorage);
         axios
           .post(BACKEND_ENDPOINT_USERS + 'get-user-data', { token: tokenFromStorage })
@@ -30,6 +33,7 @@ const AccountScreen = ({ navigation }) => {
           }).catch(err => {
             console.log(err);
           });
+          }
       })
       .catch(err => console.log(err));
     }
@@ -39,28 +43,6 @@ const AccountScreen = ({ navigation }) => {
   const [token, setToken] = useState();
   const [user_username, set_user_username] = useState('');
   const [user_email, set_user_email] = useState('');
-
-  useEffect(() => {
-    getAsyncStorageItem('token')
-      .then((tokenFromStorage) => {
-        if(tokenFromStorage == null) navigation.navigate("Not logged in");
-        else{
-        setToken(tokenFromStorage);
-        axios
-          .post(BACKEND_ENDPOINT_USERS + 'get-user-data', { token: tokenFromStorage })
-          .then((response) => {
-            const { data } = response;
-            set_user_username(data.payload.username);
-            set_user_email(data.payload.email);
-          }).catch(err => {
-            ToastAndroid.showWithGravity(
-              err.response.data.message,
-              ToastAndroid.LONG,
-              ToastAndroid.BOTTOM);
-          });
-      }})
-      .catch(err => console.log(err));
-  }, []);
 
   const logout = async () => {
     await setAsyncStorageItem('token', null);
@@ -81,12 +63,6 @@ const AccountScreen = ({ navigation }) => {
           </Text>
           <Text style={[styles.data, { color: theme.color }]}>
             E-Mail: {user_email}
-          </Text>
-          {/* <Text style={[styles.data, { color: theme.color }]}>
-            Toilets visited: 333
-          </Text> */}
-          <Text style={[styles.data, styles.dataMargin, { color: theme.color }]}>
-            Toilets owned: 1
           </Text>
 
           <View style={[styles.alignItems]}>
@@ -132,19 +108,7 @@ const AccountScreen = ({ navigation }) => {
             Received complaints 
           </Text>
         </TouchableOpacity>
-        {/* <TouchableOpacity onPress={() => navigation.navigate('WriteReport')}>
-          <Text style={[styles.menu, { color: theme.color, backgroundColor: theme.menuBackground }]}>
-            <Icon name="flag-outline" size={35} color={theme.color} />
-          </Text>
-        </TouchableOpacity> */}
-
-        {/* <TouchableOpacity onPress={() => navigation.navigate('Reviews')} style={[styles.alignItems, styles.menu, {backgroundColor: theme.menuBackground}]}>
-      <Icon name="cog-outline" size={35} color={theme.color} style={styles.paddingIcon} />
-        <Text style={{color: theme.color, fontSize: 25}}>
-          Settings 
-        </Text>
-        
-      </TouchableOpacity>  */}
+      
         <TouchableOpacity onPress={() => navigation.navigate('Settings', { token: token })}>
           <Text style={[styles.menu, { color: theme.color, backgroundColor: theme.menuBackground }]}>
             <Icon name="cog-outline" size={35} color={theme.color} />
@@ -168,6 +132,7 @@ const styles = StyleSheet.create({
   },
   person: {
     margin: 30,
+    marginTop: 60,
     padding: 20,
     borderColor: 'lightgrey',
     borderWidth: 5,
@@ -181,6 +146,7 @@ const styles = StyleSheet.create({
   data: {
     fontSize: 15,
     textAlign: 'left',
+    marginBottom: 4
   },
   dataMargin: {
     marginBottom: 20
@@ -188,12 +154,10 @@ const styles = StyleSheet.create({
   },
   logoutbtn: {
     textAlign: 'center',
-    //color:'#900',
     fontSize: 20,
     justifyContent: 'center',
   },
   menu: {
-    //backgroundColor: '#fae8e0', 
     borderWidth: 1,
     fontSize: 22,
     padding: 15,

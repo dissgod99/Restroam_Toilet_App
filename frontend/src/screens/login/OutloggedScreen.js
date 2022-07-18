@@ -31,6 +31,17 @@ const OutloggedScreen = ({navigation}) => {
                     Sign up
                 </Text>
             </TouchableOpacity>
+
+            <TouchableOpacity
+                style={styles.signup}
+                onPress={() => navigation.navigate("Map")}
+            >
+                <Text style={{ fontWeight: "bold" }}>
+                    Go back to map
+                </Text>
+            </TouchableOpacity>
+
+
         </View>
     )
 }
@@ -61,10 +72,10 @@ const styles = StyleSheet.create({
         paddingVertical: 8,
         borderRadius: 10,
         justifyContent: "center",
-        marginTop: 30,
+        marginTop: 20,
         borderColor: "black",
         borderWidth: 1,
-        marginBottom:"15%"
+        marginBottom:"8%"
     },
     signup:{
         width: "80%",
@@ -72,10 +83,10 @@ const styles = StyleSheet.create({
         paddingVertical: 8,
         borderRadius: 10,
         justifyContent: "center",
-        marginTop: 30,
+        marginTop: 10,
         borderColor: "black",
         borderWidth: 1,
-        marginBottom:"65%"
+        marginBottom:"8%"
     },
     icon:{
         marginTop: "50%"

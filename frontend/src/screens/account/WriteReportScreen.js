@@ -6,6 +6,7 @@ import ThemeContext from "../../darkMode/ThemeContext";
 
 import { getAsyncStorageItem } from "../../util";
 
+import { useIsFocused } from "@react-navigation/core";
 import axios from "axios";
 
 import { BACKEND_ENDPOINT_REPORTS } from '../../constants';
@@ -21,11 +22,32 @@ const ReportsScreen = ({ navigation, route }) => {
 
     const [text, onChangeText] = React.useState("");
 
+
+    const [token, setToken] = useState();
+
+        const isFocused = useIsFocused();
+        useEffect(() => {
+            if (isFocused) {
+            console.log("HELLO ADD");
+            getAsyncStorageItem('token')
+            .then((tokenFromStorage) => {
+                if(tokenFromStorage == null){
+                navigation.navigate("Not logged in");
+                }else{
+                setToken(tokenFromStorage);
+                }
+            })
+            .catch(err => console.log(err));
+            }
+        }, [isFocused]);
+
+
+
+
     const handleSubmit = () => {
         const { toilet } = route.params;
         getAsyncStorageItem('token').then(
             (tokenFromStorage) => {
-                //setToken(tokenFromStorage);
                 const complaints = (notFound ? `The toilet can no longer be found in its specified position.
             ` : ``) +
                     (clogged ? `The toilet is clogged so that it is no longer usable.
@@ -44,7 +66,6 @@ const ReportsScreen = ({ navigation, route }) => {
                     () => navigation.navigate("ThankYou")
 
                 ).catch(err => console.log("couldn't send report"))
-                //navigation.navigate("error occured")
             })
             .catch(err => console.log(err));
     }

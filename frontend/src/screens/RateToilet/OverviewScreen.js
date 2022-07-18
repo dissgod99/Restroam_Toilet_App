@@ -59,20 +59,32 @@ const OverviewScreen = ({ route, navigation }) => {
     return (
         <View style={{ backgroundColor: theme.background, height: "100%" }}>
             <ScrollView >
+
+                <View >
+                    <Text style={[styles.bold, styles.info, {color: theme.icon, fontSize: 25}]}>
+                        Toilet Information 
+                    </Text>
+
+                </View>
+
+
                 <View style={{
                     display: 'flex',
                     flexDirection: 'row',
                     justifyContent: 'space-between',
                     borderWidth: 1,
                     margin: 5,
+                    marginHorizontal: 10,
                     padding: 5,
                     borderRadius: 13,
                     borderColor: theme.reviewBorder,
                     borderWidth: 2
-                }}><View style={{
+                }}>
+                    <View style={{
                     width: '45%'
                 }}>
-                        <Text style={[styles.title, { color: theme.titleReview }]}>{toilet.name}</Text>
+                    
+                        <Text style={[styles.title, styles.bold, { color: theme.icon }]}>{toilet.name}</Text>
                         <Text style={{ fontSize: 10, color: theme.color }}>{toilet.location}</Text>
                         <View style={styles.stars}>
                             <StarRating
@@ -85,7 +97,7 @@ const OverviewScreen = ({ route, navigation }) => {
                             />
                         </View>
 
-                        <Text style={styles.item}>{toilet.description}</Text>
+                        <Text style={[styles.item, {color: theme.color}]}>{toilet.description}</Text>
                     </View>
                     <View style={{
                         width: '50%',
@@ -131,7 +143,20 @@ const OverviewScreen = ({ route, navigation }) => {
                     </ScrollView>
                 </View>
 
-                <TouchableOpacity
+                
+
+                <View style={{
+                    borderTopWidth: 1,
+                    borderColor: "#d3d3d3",
+                    margin: 5
+                }}><Text style={{
+                    fontSize: 30,
+                    fontWeight: 'bold',
+                    color: theme.icon
+                }}>
+                        Reviews
+                    </Text>
+                    <TouchableOpacity
                     style={[styles.btn, { backgroundColor: theme.submitBtn }]}
                     onPress={() => {
                         navigation.navigate("Rating", { toilet })
@@ -142,17 +167,7 @@ const OverviewScreen = ({ route, navigation }) => {
                     </Text>
                 </TouchableOpacity>
 
-                <View style={{
-                    borderTopWidth: 1,
-                    borderColor: "#d3d3d3",
-                    margin: 5
-                }}><Text style={{
-                    fontSize: 30,
-                    fontWeight: 'bold',
-                    color: theme.titleReview
-                }}>
-                        Reviews
-                    </Text>
+
                     {
                         reviews.map((r, idx) => {
                             return (
@@ -203,4 +218,12 @@ const styles = StyleSheet.create({
         borderRadius: 5,
         margin: 30
     },
+    bold: {
+        fontWeight: "bold"
+    },
+    info: {
+        marginLeft: 7,
+        marginTop: "3%"
+    }
+
 });

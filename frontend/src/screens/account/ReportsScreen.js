@@ -52,6 +52,7 @@ const ReportsScreen = ({ route, navigation }) => {
                     </View>
                     :
                     reports.map(({ address, username, description, date }, index) => {
+                        console.log("username === ", username)
                         return (
                             <Report
                                 key={index}
