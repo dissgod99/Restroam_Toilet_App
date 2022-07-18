@@ -11,23 +11,18 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
 const EditInfoScreen = ({ route, navigation }) => {
 
-    const { 
+    const {
         token,
         originalTitle,
         originalLocation,
         originalPrice,
         originalDetails,
         originalHandicapAccess,
-        rescue 
+        rescue
     } = route.params;
 
-    const [newHandicapAccess, setNewHandicapAccess] = useState(originalHandicapAccess);
-    const [newName, setNewName] = useState(originalTitle);
-    const [newAddress, setNewAddress] = useState(originalLocation);
-    const [newPrice, setNewPrice] = useState(originalPrice);
-    const [newDetails, setNewDetails] = useState(originalDetails);
     // const [newHours, setNewHours] = useState(rescue)
-    
+
 
     // const {timeline} = route.params.rescue;
     var numberi = 0;
@@ -113,34 +108,34 @@ const EditInfoScreen = ({ route, navigation }) => {
         rescue.forEach((obj) => {
             //console.log("Obj == ", obj.days)
             //console.log("True or false == ", obj.days.includes("Mon"))
-            if(obj.days.includes("Mon")){
+            if (obj.days.includes("Mon")) {
                 const hours_Mon = obj.start + "-" + obj.end
                 //console.log("hourrrrs == ", hours_Mon)
                 //console.log("times in === ", times)
                 times.Monday = hours_Mon;
                 console.log("times after edit === ", times)
             }
-            if(obj.days.includes("Tue")){
+            if (obj.days.includes("Tue")) {
                 const hours_Tue = obj.start + "-" + obj.end
                 times.Tuesday = hours_Tue;
             }
-            if(obj["days"].includes("Wed")){
+            if (obj["days"].includes("Wed")) {
                 const hours_Wed = obj["start"] + "-" + obj["end"]
                 times.Wednesday = hours_Wed;
             }
-            if(obj["days"].includes("Thu")){
+            if (obj["days"].includes("Thu")) {
                 const hours_Thu = obj["start"] + "-" + obj["end"]
                 times.Thursday = hours_Thu;
             }
-            if(obj["days"].includes("Fri")){
+            if (obj["days"].includes("Fri")) {
                 const hours_Fri = obj["start"] + "-" + obj["end"]
                 times.Friday = hours_Fri;
             }
-            if(obj["days"].includes("Sat")){
+            if (obj["days"].includes("Sat")) {
                 const hours_Sat = obj["start"] + "-" + obj["end"]
                 times.Saturday = hours_Sat;
             }
-            if(obj["days"].includes("Sun")){
+            if (obj["days"].includes("Sun")) {
                 const hours_Sun = obj["start"] + "-" + obj["end"]
                 times.Sunday = hours_Sun;
             }
@@ -153,32 +148,47 @@ const EditInfoScreen = ({ route, navigation }) => {
         getAsyncStorageItem('token')
             .then((tokenFromStorage) => {
                 //setToken(tokenFromStorage);
-                console.log("ENTERED SAFE REGION");
+
                 transformHours();
-                axios.post(`${baseUrl}`, {
-                    name: name,
-                    address: address,
-                    price: price,
-                    token: tokenFromStorage,
-                    openingHours: times,
-                    handicapAccess: isEnabled,
-                    details: details
-                })
+                let toiletTbUpdated = {
+                    address: originalLocation,
+                    newName: name,
+                    newAddress: address,
+                    newPrice: price,
+                    newOpeningHours: times,
+                    newHandicapAccess: isEnabled,
+                    newDetails: details
+                }
+
+                resetAllInputs();
+                // navigation.navigate("Upload Image", {
+                //     toiletOrReview: true,
+                //     updateOrAdd: true,
+                //     revTbAdded: undefined,
+                //     toiletTbAdded: toiletTbUpdated,
+                //     token: tokenFromStorage,
+                // });
+                let endpoint = BACKEND_ENDPOINT_TOILETS + 'edit-toilet';
+                let { address, newName, newAddress, newPrice, newDetails, newHandicapAccess, newOpeningHours } = toiletTbUpdated;
+                let reqBody = { address, newName, newAddress, newPrice, newDetails, newHandicapAccess, newOpeningHours };
+
+                axios.post(endpoint, reqBody)
                     .then(({ data }) => {
                         ToastAndroid.showWithGravity(
                             data.message,
                             ToastAndroid.LONG,
                             ToastAndroid.BOTTOM);
-                        resetAllInputs();
-                        navigation.navigate("Upload Image", { toiletId: data.toiletId });
+
+                        navigation.navigate('ThankYou');
                     })
                     .catch(err => {
+                        console.log(err);
                         ToastAndroid.showWithGravity(
                             err.response.data.message,
                             ToastAndroid.LONG,
                             ToastAndroid.BOTTOM);
-
-                    })
+                        navigation.navigate("Home");
+                    });
             })
             .catch(err => console.log(err));
     };
@@ -400,7 +410,7 @@ const EditInfoScreen = ({ route, navigation }) => {
         //                     right={<TextInput.Affix text="/100" />}
         //                     onChangeText={changeAddress}
         //                 />
-                        
+
         //             </View>
 
         //             <View style={styles.detailsContainer}>

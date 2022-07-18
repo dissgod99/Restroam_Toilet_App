@@ -12,4 +12,9 @@ const reviewSchema = new mongoose.Schema({
     date: {type: String, required: true},
 });
 
-module.exports = mongoose.model('Review', reviewSchema);
+let Review = module.exports = mongoose.model('Review', reviewSchema);
+
+module.exports.deleteReviewsByAddress = function(addr, cb) {
+    Review.deleteMany({ address: addr }, cb);
+};
+

@@ -10,6 +10,7 @@ const mongoose = require('mongoose');
 
 const User = require('../models/user');
 const Review = require('../models/review');
+const RevImage = require('../models/revImage');
 
 const jsonParser = bodyParser.json();
 const NodeGeocoder = require('node-geocoder');
@@ -101,26 +102,53 @@ router.post('/deleteReview', jsonParser, async (req, res, next) => {
 
         await checkIfUserIsDeleted(user);
 
-        Review.find({ user: user.username, address: req.body.address })
+        Review.findOne({ user: user.username, address: req.body.address })
             .exec()
             .then(async (review) => {
                 if (review) {
+                    console.log(JSON.stringify(review));
+
+                    // here revImages shoudl also be deleted based on the _id of review because it references it that way
+                    // but theres a problem with the code below.
+
+                    console.log('revId: ' + review._id);
+                    // let deleteRes = await RevImage.deleteMany({ review_id: new mongoose.Types.ObjectId(review._id) });
+                    let allRevImages = await RevImage.find();
+                    let imgs = []
+
+                    allRevImages.forEach(img => {
+                        console.log(img.review_id);
+                        console.log(review._id);
+                        if ((img.review_id).toString() == (review._id).toString()) imgs.push(img);
+                    });
+
+                    console.log('imgs: ' + imgs.length);
+                    // console.log('N:' + deleteRes.n);
+                    // if (deleteRes.ok != 1) {
+                    //     throw new Error('Smt went wrong delete revImgs');
+                    // }
+
+                    imgs.forEach(async (img) => {
+                        await RevImage.deleteOne({ _id: img._id });
+                    });
+
                     await Review.deleteOne({ user: user.username, address: req.body.address });
+
                     return res.status(200).json({
                         message: 'Review deleted successfully',
                     });
                 } else {
                     return res.status(500).json({
-                        message: "Review for this toilet doesn't exists"
+                        error: "Review for this toilet doesn't exists"
                     });
                 }
 
             })
             .catch(err => {
-                return res.status(400).json({ message: 'Oops! Smtg went wrong' });
+                return res.status(400).json({ error: err });
             });
-    } catch (e) {
-        res.status(400).json({ message: 'Oops! Smtg went wrong' });
+    } catch (err) {
+        return res.status(400).json({ error: err });
     }
 
 });

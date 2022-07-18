@@ -16,7 +16,7 @@ import { BACKEND_ENDPOINT_IMAGES, BACKEND_ENDPOINT_REVIEWS, BACKEND_ENDPOINT_REV
 
 export default function UploadImage({ route, navigation }) {
 
-    const { toiletOrReview, revTbAdded, toiletTbAdded, token } = route.params;
+    const { toiletOrReview, updateOrAdd, revTbAdded, toiletTbAdded, token } = route.params;
 
     // Dark Mode Variable
     const theme = useContext(ThemeContext);
@@ -231,8 +231,15 @@ export default function UploadImage({ route, navigation }) {
         let reqBody;
 
         if (toiletOrReview) {
-            endpoint = BACKEND_ENDPOINT_TOILETS + "add-toilet";
-            reqBody = { token, toiletObj: toiletTbAdded };
+            if (updateOrAdd) {
+                endpoint = BACKEND_ENDPOINT_TOILETS + 'edit-toilet';
+                let { address, newName, newAddress, newPrice, newDetails, newHandicapAccess, newOpeningHours } = toiletTbAdded;
+                reqBody = { address, newName, newAddress, newPrice, newDetails, newHandicapAccess, newOpeningHours };
+            } else {
+                endpoint = BACKEND_ENDPOINT_TOILETS + "add-toilet";
+                reqBody = { token, toiletObj: toiletTbAdded };
+            }
+
         } else {
             endpoint = BACKEND_ENDPOINT_REVIEWS + "addReview";
             reqBody = {
@@ -293,7 +300,7 @@ export default function UploadImage({ route, navigation }) {
     };
 
     const deleteReview = async (toiletAddr) => {
-        axios.post(BACKEND_ENDPOINT_REV_IMAGES + "deleteReview", { token, address: toiletAddr})
+        axios.post(BACKEND_ENDPOINT_REV_IMAGES + "deleteReview", { token, address: toiletAddr })
             .then()
             .catch(err => console.log('Something went terribly wrong: ' + err));
     };

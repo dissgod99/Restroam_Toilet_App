@@ -62,7 +62,12 @@ const RatingToiletScreen = ({ route, navigation }) => {
                     date: dateOfSubmission
                 };
 
-                navigation.navigate("Upload Image", { toiletOrReview: false, revTbAdded, token: tokenFromStorage });
+                navigation.navigate("Upload Image", { 
+                    toiletOrReview: false, 
+                    updateOrAdd: undefined, 
+                    revTbAdded, 
+                    toiletTbAdded: undefined,
+                    token: tokenFromStorage });
 
                 // axios.post(BACKEND_ENDPOINT_REVIEWS + 'addReview',).then(
                 //     () => {

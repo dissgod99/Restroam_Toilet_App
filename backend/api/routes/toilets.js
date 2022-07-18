@@ -11,6 +11,8 @@ const mongoose = require('mongoose');
 const User = require('../models/user');
 const Toilet = require('../models/toilet');
 const Review = require('../models/review');
+const Image = require('../models/image');
+const RevImage= require('../models/revImage');
 
 const jsonParser = bodyParser.json();
 const NodeGeocoder = require('node-geocoder');
@@ -43,69 +45,100 @@ router.post('/add-toilet', jsonParser, async (req, res, next) => {
     //                 return;})
     const result = await geocoder.geocode(address);
     console.log(result);
-    if(result.length<=0){
+    if (result.length <= 0) {
         return res.status(400).json({
             message: 'Invalid address! check for any mispellings'
         });
     }
-    else{
-    try {
-        const decryptedSignature = jwt.verify(token, JWT_SECRET);
-        // from this point we know that the request is not malformed. JWT has not been tampered with
+    else {
+        try {
+            const decryptedSignature = jwt.verify(token, JWT_SECRET);
+            // from this point we know that the request is not malformed. JWT has not been tampered with
 
-        let userId = decryptedSignature.id;
-        let user = await User.findById(userId);
+            let userId = decryptedSignature.id;
+            let user = await User.findById(userId);
 
-        await checkIfUserIsDeleted(user);
+            await checkIfUserIsDeleted(user);
 
-        const toilet = new Toilet({
-            _id: new mongoose.Types.ObjectId(),
-            name: name,
-            address: address,
-            owner: user,
-            openingHours: openingHours,
-            price: price,
-            handicapAccess: handicapAccess,
-            details: details,
-        });
-        toilet
-            .save()
-            .then(toilet => {
-                return res.status(201).json({
-                    message: 'Toilet has been added.',
-                    toiletId: toilet._id,
-                    toiletAddr: toilet.address,
-                });
-            })
-            .catch(err => {
-                let status = 500;
-                let message = 'Oops! Something went wrong...';
-                if (err.code === 11000) {
-                    status = 400;
-                    message = 'A toilet with the field ' + Object.keys(err.keyPattern) + ' already exists.';
-                } else if (err instanceof mongoose.Error.ValidationError) {
-                    status = 400;
-                    message = 'Please make sure to fill all required fields.';
-                }
-                return res.status(status).json({
-                    message: message,
-                });
+            const toilet = new Toilet({
+                _id: new mongoose.Types.ObjectId(),
+                name: name,
+                address: address,
+                owner: user,
+                openingHours: openingHours,
+                price: price,
+                handicapAccess: handicapAccess,
+                details: details,
             });
+            toilet
+                .save()
+                .then(toilet => {
+                    return res.status(201).json({
+                        message: 'Toilet has been added.',
+                        toiletId: toilet._id,
+                        toiletAddr: toilet.address,
+                    });
+                })
+                .catch(err => {
+                    let status = 500;
+                    let message = 'Oops! Something went wrong...';
+                    if (err.code === 11000) {
+                        status = 400;
+                        message = 'A toilet with the field ' + Object.keys(err.keyPattern) + ' already exists.';
+                    } else if (err instanceof mongoose.Error.ValidationError) {
+                        status = 400;
+                        message = 'Please make sure to fill all required fields.';
+                    }
+                    return res.status(status).json({
+                        message: message,
+                    });
+                });
+        }
+        catch (e) {
+            res.status(400).json({ message: e.message });
+        }
     }
-    catch (e) {
-        res.status(400).json({ message: e.message });
-    }
-}
-
 });
 
-// also need to pass in the token and check if it matches that of user that created toilet for security layer?
+
 router.post('/delete-toilet', jsonParser, async (req, res, next) => {
     Toilet.find({ address: req.body.address })
         .exec()
         .then(async (toilet) => {
             if (toilet.length > 0) {
                 await Toilet.deleteOne({ address: req.body.address });
+                await Image.deleteMany({ toilet_address: req.body.address });
+                let allToiletReviews = await Review.find({ address: req.body.address });
+
+                let allToietReviewIds = allToiletReviews.map(rev => rev._id);
+                console.log('/delete-toilet---allToietReviewIds: ' + allToietReviewIds);
+
+                let allRevImages = await RevImage.find();
+                let imgs = []
+
+                allRevImages.forEach(img => {
+                    console.log('/delete-toilet---img.review_id: ' + img.review_id);
+                    let test = false;
+                    allToietReviewIds.forEach(revId => {
+                        if ((img.review_id).toString() == (revId).toString()) {
+                            test = true;
+                        }
+                    })
+                    console.log('/delete-toilet---test: ' + test);
+                    //if ((img.review_id).toString() == (review._id).toString()) imgs.push(img);
+                    if (test) imgs.push(img);
+                });
+
+                console.log('imgs: ' + imgs.length);
+                // console.log('N:' + deleteRes.n);
+                // if (deleteRes.ok != 1) {
+                //     throw new Error('Smt went wrong delete revImgs');
+                // }
+
+                imgs.forEach(async (img) => {
+                    await RevImage.deleteOne({ _id: img._id });
+                });
+                await Review.deleteMany({ address: req.body.address });
                 return res.status(200).json({
                     message: 'Toilet deleted successfully',
                 });
@@ -130,14 +163,18 @@ router.post('/edit-toilet', jsonParser, async (req, res, next) => {
         details: newDetails,
         handicapAccess: newHandicapAccess,
         openingHours: newOpeningHours
-
     };
 
     let updatedToilet;
     try {
-        updatedToilet = await Toilet.findOneAndUpdate({ address }, updateObj, { new: true })
+        updatedToilet = await Toilet.findOneAndUpdate({ address }, updateObj, { new: true });
+        if (newAddress) {
+            await Image.updateMany({ toilet_address: address }, { toilet_address: newAddress });
+            await Review.updateMany({ address: address }, { address: newAddress });
+        }
         return res.status(200).json({
             message: 'Toilet updated successfully',
+            toiletAddr: newAddress,
         });
     }
     catch (err) {

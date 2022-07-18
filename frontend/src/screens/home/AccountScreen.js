@@ -1,5 +1,5 @@
 import React, { useContext, useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, ToastAndroid } from 'react-native';
 import { Switch } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 
@@ -28,10 +28,7 @@ const AccountScreen = ({ navigation }) => {
             set_user_username(data.payload.username);
             set_user_email(data.payload.email);
           }).catch(err => {
-            ToastAndroid.showWithGravity(
-              err.response.data.message,
-              ToastAndroid.LONG,
-              ToastAndroid.BOTTOM);
+            console.log(err);
           });
       })
       .catch(err => console.log(err));
