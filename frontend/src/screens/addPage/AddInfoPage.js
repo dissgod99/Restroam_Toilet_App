@@ -61,7 +61,7 @@ const AddInfoPage = ({ navigation, route }) => {
     };
 
     function changePrice(v) {
-        setPrice(v.to + " €");
+        setPrice(v);
     }
 
     function toggleSwitch() {
@@ -217,12 +217,12 @@ const AddInfoPage = ({ navigation, route }) => {
                     <View style={styles.detailsContainer}>
                         <View style={styles.position}>
                             <Text style={[styles.txt, { color: theme.color }]}>
-                                Price (€)*
+                                Price *
                             </Text>
                             <TextInput style={styles.boxPrice}
-                                defaultValue= "0,00 €"
+                                defaultValue= "0,00"
                                 mode="outlined"
-                                placeholder="0,00 €"
+                                placeholder="0,00"
                                 activeOutlineColor={theme.activeOutColor}
                                 keyboardType="numeric"
                                 onChangeText={(value) => changePrice(value)}

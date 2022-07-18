@@ -105,8 +105,10 @@ const OwnedToiletsScreen = ({ route, navigation }) => {
                     </Text>
                 </TouchableOpacity>
                 {toiletItems.length < 1 ?
-                    <View>
-                        <Text>You don't own any toilets yet. You can submit a new toilet by clicking on the button below.</Text>
+                    <View style={[styles.border]}>
+                        <Text style={[styles.data, { color: theme.color }]}>
+                            You don't own any toilets yet. You can submit a new toilet by clicking on the button below.
+                        </Text>
                     </View>
                     :
                     <View style={styles.toiletsWrapper}>
@@ -180,14 +182,26 @@ const styles = StyleSheet.create({
     },
     btn: {
         backgroundColor: "#e6697e",
-        alignItems:'center',
+        alignItems: 'center',
         paddingVertical: 10,
         borderRadius: 5,
         margin: 30,
         marginBottom: 0
     },
-    stOfAdd:{
+    stOfAdd: {
         fontWeight: "bold"
+    },
+    border: {
+        margin: 15,
+        padding: 10,
+        borderColor: 'lightgrey',
+        borderWidth: 5,
+        borderRadius: 20,
+        opacity: .9
+    },
+    data: {
+        fontSize: 20,
+        textAlign: 'left',
     },
 });
 

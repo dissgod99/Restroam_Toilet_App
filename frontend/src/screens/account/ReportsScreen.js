@@ -8,6 +8,7 @@ import axios from "axios";
 
 import { BACKEND_ENDPOINT_REPORTS, BACKEND_ENDPOINT_TOILETS } from '../../constants';
 
+
 const ReportsScreen = ({ route, navigation }) => {
 
     const theme = useContext(ThemeContext);
@@ -18,22 +19,33 @@ const ReportsScreen = ({ route, navigation }) => {
         fetchReports();
     }, []);
 
-    const FetchReportsForToilet = async (toilet) => {
-        axios
-            .post(BACKEND_ENDPOINT_REPORTS + 'fetchReportsForToilet', { address: toilet.address })
-            .then(({ status, data }) => {
-                updateReports(data.payload);
-            })
-            .catch(err => console.log(err));
+
+    const FetchReportsForToilet = async (toilets) => {
+        let tmp = [];
+        let reportstmp = await toilets.map(async (toilet) => {
+            tmp = await axios
+                .post(BACKEND_ENDPOINT_REPORTS + 'fetchReportsForToilet', { address: toilet.address })
+                .then(({ status, data }) => {
+                    // updateReports(data.payload);
+                    let x = [].concat(tmp, data.payload)
+                    return x;
+                })
+                .catch(err => console.log(err));
+            setReports(tmp)
+            return tmp
+        })
     }
+
     const fetchReports = async () => {
         const token = await getAsyncStorageItem('token');
-        axios
+        let toilets = await axios
             .post(BACKEND_ENDPOINT_TOILETS + 'user-owned-toilets', { token })
             .then(({ status, data }) => {
                 //setToiletItems(data.payload);
-                data.payload.map(toilet => FetchReportsForToilet(toilet));
+                //data.payload.forEach(toilet => FetchReportsForToilet(toilet));
+                return data.payload;
             }).catch(err => console.log(err));
+        await FetchReportsForToilet(toilets);
 
     }
 
@@ -43,7 +55,7 @@ const ReportsScreen = ({ route, navigation }) => {
     }
     return (
         <ScrollView style={{ backgroundColor: theme.background }}>
-            <View style={[styles.container]}>
+            <ScrollView style={[styles.container]}>
                 {reports.length < 1 ?
                     <View style={[styles.border]}>
                         <Text style={[styles.data, { color: theme.color }]}>
@@ -51,19 +63,22 @@ const ReportsScreen = ({ route, navigation }) => {
                         </Text>
                     </View>
                     :
-                    reports.map(({ address, username, description, date }, index) => {
-                        console.log("username === ", username)
+                    reports.map(({ address, username, description, date, issues }, index) => {
                         return (
-                            <Report
-                                key={index}
-                                title={address}
-                                date={date}
-                                username={username}
-                                text={description} />
+                            <View key={index}>
+                                <Report
+                                    key={index}
+                                    title={address}
+                                    date={date}
+                                    issues={issues}
+                                    username={username}
+                                    text={description} />
+
+                            </View>
                         )
                     }
                     )}
-            </View>
+            </ScrollView>
         </ScrollView>
     )
 }

@@ -23,7 +23,7 @@ const ChangePasswordScreen = ({ route, navigation }) => {
         secureTextEntryNewPasswordAgain: true
     });
 
-    const handleConfirm = (evt) => {
+    const handleConfirm = async (evt) => {
 
         evt.preventDefault();
         try {
@@ -31,7 +31,7 @@ const ChangePasswordScreen = ({ route, navigation }) => {
             console.log(token);
             console.log(data.oldPassword);
             console.log(data.newPassword);
-            axios
+            await axios
                 .post(BACKEND_ENDPOINT_USERS + 'change-password',
                     { token, oldPassword: data.oldPassword, newPassword: data.newPassword })
                 .then(({ data }) => {
@@ -39,7 +39,8 @@ const ChangePasswordScreen = ({ route, navigation }) => {
                         data.message,
                         ToastAndroid.LONG,
                         ToastAndroid.BOTTOM);
-                        NavigationHelpersContext('Home');
+                        navigation.navigate('Home');
+                        return;
                 })
                 .catch(err => {
                     ToastAndroid.showWithGravity(

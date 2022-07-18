@@ -74,7 +74,7 @@ if (process.env.MODE === 'DEVELOPMENT') {
 
 const checkPassword = async (plainText, storedHash) => {
     if (! await bcrypt.compare(plainText, storedHash))
-        throw new Error('Password is incorrect.');
+        throw new Error('Email address or password is incorrect.');
 };
 
 router.post('/login', jsonParser, async (req, res, next) => {

@@ -42,7 +42,7 @@ const EditInfoScreen = ({ route, navigation }) => {
     const [currentLocation, setCurrentLocation] = useState(initCurrentLocation);
 
     const [price, setPrice] = useState(originalPrice);
-    const [isEnabled, setIsEnabled] = useState(false);
+    const [isEnabled, setIsEnabled] = useState(originalHandicapAccess);
 
     const [details, setDetails] = useState(originalDetails);
 
@@ -281,7 +281,7 @@ const EditInfoScreen = ({ route, navigation }) => {
                                 Handicap Access *
                             </Text>
                             <Switch
-                                value={originalHandicapAccess}
+                                value={isEnabled}
                                 onValueChange={toggleSwitch}
                                 color={theme.activeOutColor}
                             />
